@@ -42,7 +42,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Style="{StaticResource PhoneTextNormalStyle}" Margin="12,0" Height="27">
+            <TextBlock Style="{StaticResource LongListSelectorGroupHeaderStyle}" Margin="12,0" Height="47">
             	<Run Text="Pinultimate"/>
             	<LineBreak/>
             	<Run/>
@@ -51,7 +51,7 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-                <maps:Map x:Name="PinultimateMap"/>
+                <maps:Map ZoomLevel="10" x:Name="PinultimateMap"/>
 
             </Grid>
 
