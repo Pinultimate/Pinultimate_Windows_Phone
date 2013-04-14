@@ -21,6 +21,12 @@ namespace Pinultimate_Windows_Phone
         public string ServerURL { get; set; }
         public string AppURL { get; set; }
 
+        // This will be used as a callback function when the JSON data is fully downloaded
+        public JSONLoadingCompletionHandler completionHandler { get; set; }
+
+        //public delegate void JSONLoadingCompletionHandler(Object[] checkIns); REAL FORM
+        public delegate void JSONLoadingCompletionHandler(string json);
+
         public Cluster[] FetchClusters(double latitude, double longitude, double latrange, double lonrange, double resolution)
         {
             string query = CreateClusterQuery(latitude, longitude, latrange, lonrange, resolution);
@@ -62,8 +68,10 @@ namespace Pinultimate_Windows_Phone
 
         /* QUERY URL GENERATORS */
 
-        public void JSONResponseForURL(string url)
+        public void JSONResponseForURL(string url, JSONLoadingCompletionHandler callback)
         {
+            // Set completion handler to supplied callback
+            this.completionHandler = callback;
             WebClient jsonWebClient = new WebClient();
             jsonWebClient.DownloadProgressChanged += jsonWebClient_DownloadProgressChanged;
             jsonWebClient.DownloadStringCompleted += jsonWebClient_DownloadStringCompleted;
@@ -83,6 +91,11 @@ namespace Pinultimate_Windows_Phone
         {
             string result = e.Result;
             Debug.WriteLine("JSON Result: {0}", result);
+            // Call user supplied callback function with result
+            if (this.completionHandler != null)
+            {
+                this.completionHandler(result);
+            }
         }
 
         /* Automatically Generated callback for download progress */
