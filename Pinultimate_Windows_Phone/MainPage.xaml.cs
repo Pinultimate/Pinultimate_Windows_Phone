@@ -69,11 +69,18 @@ namespace Pinultimate_Windows_Phone
             PinultimateMap.Layers.Add(currentLocationLayer);
         }
 
+        private void testAPI()
+        {
+            LocationFetcher locFetcher = new LocationFetcher();
+            locFetcher.JSONResponseForURL("http://www.google.com");
+        }
+
         // Constructor
         public MainPage()
         {
             InitializeComponent();
             showCurrentLocationOnMap();
+            testAPI();
             // Sample code to localize the ApplicationBar
             //BuildLocalizedApplicationBar();
         }
