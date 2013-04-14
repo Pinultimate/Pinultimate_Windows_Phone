@@ -14,24 +14,53 @@ namespace Pinultimate_Windows_Phone
 
         public LocationFetcher()
         {
-            ServerURL = "http://www.pinultimate.net";
+            ServerURL = "http://www.pinultimate.net/";
+            AppURL = "heatmap/";
         }
 
-        public string ServerURL { private get; set; }
+        public string ServerURL { get; set; }
+        public string AppURL { get; set; }
 
-        public Cluster[] FetchClusters(double latitude, double longitude, double size, double resolution)
+        public Cluster[] FetchClusters(double latitude, double longitude, double latrange, double lonrange, double resolution)
         {
-            string query = CreateClusterQuery(latitude, longitude, size, resolution);
+            string query = CreateClusterQuery(latitude, longitude, latrange, lonrange, resolution);
             WebRequest request = WebRequest.Create(query);
             return new Cluster[2]; // Just so it will compile, not an actual line of code
         }
 
-        private string CreateClusterQuery(double latitude, double longitude, double size, double resolution)
+        /* QUERY URL GENERATORS */
+        private string CreateClusterQuery(double latitude, double longitude, double latrange, double lonrange, double resolution)
         {
-            StringBuilder query = new StringBuilder(ServerURL);
+            StringBuilder query = new StringBuilder(ServerURL + AppURL);
             query.Append("search/");
             return query.ToString();
         }
+
+        private string CreateGridQuery(double latitude, double longitude, double latrange, double lonrange, double resolution)
+        {
+            StringBuilder query = new StringBuilder(ServerURL + AppURL);
+            query.Append("resolution/" + resolution + "/");
+            query.Append("search/center/" + latitude + "/" + longitude + "/region/" + latrange + "/" + lonrange + "/");
+            return query.ToString();
+        }
+
+        private string CreateRawQuery(double latitude, double longitude, double latrange, double lonrange)
+        {
+            StringBuilder query = new StringBuilder(ServerURL + AppURL);
+            query.Append("raw/");
+            query.Append("search/center/" + latitude + "/" + longitude + "/region/" + latrange + "/" + lonrange + "/");
+            return query.ToString();
+        }
+
+        private string CreateTimeRangeQuery(DateTime from, DateTime to)
+        {
+            StringBuilder query = new StringBuilder();
+            query.Append("from/" + from.Year + "/" + from.Month + "/" + from.Day + "/" + from.Hour + "/");
+            query.Append("to/" + to.Year + "/" + to.Month + "/" + to.Day + "/" + to.Hour + "/");
+            return query.ToString();
+        }
+
+        /* QUERY URL GENERATORS */
 
         public void JSONResponseForURL(string url)
         {
