@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows Phone
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinultimate_Windows_Phone", "Pinultimate_Windows_Phone\Pinultimate_Windows_Phone.csproj", "{F3B66F48-1686-4CCC-93A3-F3E763C21FE7}"
 EndProject
 Global

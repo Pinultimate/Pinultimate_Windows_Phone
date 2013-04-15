@@ -1,6 +1,7 @@
 ﻿using Microsoft.Phone.Controls;
 using Microsoft.Phone.Maps.Controls;
 using Microsoft.Phone.Shell;
+using Microsoft.Phone.Testing;
 using Pinultimate_Windows_Phone.Resources;
 using System;
 using System.Collections.Generic;
@@ -76,6 +77,7 @@ namespace Pinultimate_Windows_Phone
         }
 
         // Constructor
+        /*
         public MainPage()
         {
             InitializeComponent();
@@ -84,8 +86,14 @@ namespace Pinultimate_Windows_Phone
             // Sample code to localize the ApplicationBar
             //BuildLocalizedApplicationBar();
         }
-
-           
+        */
+        
+        public MainPage()
+        {
+            InitializeComponent();
+            this.Content = UnitTestSystem.CreateTestPage();
+        }
+        
 
         // Sample code for building a localized ApplicationBar
         //private void BuildLocalizedApplicationBar()
