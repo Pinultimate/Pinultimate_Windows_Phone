@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Diagnostics;
 using Windows.Devices.Geolocation;
 
 namespace Pinultimate_Windows_Phone
@@ -70,10 +71,18 @@ namespace Pinultimate_Windows_Phone
             PinultimateMap.Layers.Add(currentLocationLayer);
         }
 
+        /* This function is a place holder for a much more advanced function that will
+         * correctly handle data being received from the server.  This function will be
+         * called when data has been received and successfully parsed.*/
+        private void checkinHandler(string json)
+        {
+            Debug.WriteLine("\nCallBack called! Json: {0}",json);
+        }
+
         private void testAPI()
         {
             LocationFetcher locFetcher = new LocationFetcher();
-            locFetcher.JSONResponseForURL("http://www.google.com");
+            locFetcher.JSONResponseForURL("http://www.google.com",checkinHandler);
         }
 
         // Constructor
