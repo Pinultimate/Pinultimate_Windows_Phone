@@ -29,8 +29,26 @@ namespace Pinultimate_Windows_Phone
         {
             InitializeComponent();
             buildApplicationBar();
-            this.geoTracker = new GeoTracker(this.appBar);
+            this.geoTracker = new GeoTracker(this);
             this.Content = UnitTestSystem.CreateTestPage();
+        }
+
+        public void updateAppBar(String status)
+        {
+             Dispatcher.BeginInvoke(new Action(() =>
+            {
+                
+                
+            }));
+        }
+
+        public void updateMap(double Latitude, double Longitude)
+        {
+            Dispatcher.BeginInvoke(() =>
+            {
+                //LatitudeTextBlock.Text = args.Position.Coordinate.Latitude.ToString("0.00");
+                //LongitudeTextBlock.Text = args.Position.Coordinate.Longitude.ToString("0.00");
+            });
         }
 
         private void buildApplicationBar()

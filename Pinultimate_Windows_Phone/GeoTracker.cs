@@ -15,7 +15,7 @@ namespace Pinultimate_Windows_Phone
     {
         private Geolocator geolocator;
         private bool tracking;
-        private ApplicationBar applicationBar;
+        private MainPage mainPage;
 
         private void geolocator_StatusChanged(Geolocator sender, StatusChangedEventArgs args)
         {
@@ -45,20 +45,13 @@ namespace Pinultimate_Windows_Phone
                     break;
             }
 
-            applicationBar.Dispatcher.BeginInvoke((Action)() =>
-            {
-                
-                StatusTextBlock.Text = status;
-            });
+            mainPage.updateAppBar(status);
+           
         }
 
         private void geolocator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
         {
-            Dispatcher.BeginInvoke(() =>
-            {
-                //LatitudeTextBlock.Text = args.Position.Coordinate.Latitude.ToString("0.00");
-                //LongitudeTextBlock.Text = args.Position.Coordinate.Longitude.ToString("0.00");
-            });
+            mainPage.updateMap(args.Position.Coordinate.Latitude, args.Position.Coordinate.Longitude);
         }
 
         public void StartTracking()
@@ -100,9 +93,9 @@ namespace Pinultimate_Windows_Phone
             return null;            
         }
 
-        public GeoTracker(ApplicationBar applicationBar)
+        public GeoTracker(MainPage mainPage)
         {
-            this.applicationBar = applicationBar;
+            this.mainPage = mainPage;
             this.tracking = false;
         }
     }
