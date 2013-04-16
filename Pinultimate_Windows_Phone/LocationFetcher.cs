@@ -18,7 +18,7 @@ namespace Pinultimate_Windows_Phone
         // This will be used as a callback function when the JSON data is fully downloaded
         public JSONLoadingCompletionHandler completionHandler { get; set; }
 
-        //public delegate void JSONLoadingCompletionHandler(Object[] checkIns); REAL FORM
+        // The callback function called when the JSON has successfully been loaded and deserialized
         public delegate void JSONLoadingCompletionHandler(QueryResult<GridLocationData> result);
 
         public Cluster[] FetchClusters(double latitude, double longitude, double latrange, double lonrange, double resolution)

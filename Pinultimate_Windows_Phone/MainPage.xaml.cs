@@ -78,6 +78,14 @@ namespace Pinultimate_Windows_Phone
         {
 
             Debug.WriteLine("\nNumber Of Response Objects: {0}",result.ResponseData.Count());
+            foreach (ResponseData<GridLocationData> timePeriodData in result.ResponseData) 
+            {
+                Debug.WriteLine("\nTimeStamp: {0}", timePeriodData.RawTimestamp);
+                foreach (GridLocationData gridLocDataPoint in timePeriodData.LocationData)
+                {
+                    Debug.WriteLine("\nLatitude: {0} , Longitude: {1}, Count: {2}", gridLocDataPoint.Latitude, gridLocDataPoint.Longitude, gridLocDataPoint.Count);
+                }
+            }
         }
 
         private void testAPI()
