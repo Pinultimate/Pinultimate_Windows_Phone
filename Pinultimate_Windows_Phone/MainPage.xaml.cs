@@ -74,19 +74,21 @@ namespace Pinultimate_Windows_Phone
         /* This function is a place holder for a much more advanced function that will
          * correctly handle data being received from the server.  This function will be
          * called when data has been received and successfully parsed.*/
-        private void checkinHandler(string json)
+        private void checkinHandler(QueryResult<GridLocationData> result)
         {
-            Debug.WriteLine("\nCallBack called! Json: {0}",json);
+
+            Debug.WriteLine("\nNumber Of Response Objects: {0}",result.ResponseData.Count());
         }
 
         private void testAPI()
         {
             LocationFetcher locFetcher = new LocationFetcher();
-            locFetcher.JSONResponseForURL("http://www.google.com",checkinHandler);
+
+            string gridQuery = QueryURL.CreateGridQuery(37.0, -122.0, 0.5, 0.5, 5);
+            locFetcher.JSONResponseForURL(gridQuery,checkinHandler);
         }
 
         // Constructor
-        /*
         public MainPage()
         {
             InitializeComponent();
@@ -95,14 +97,13 @@ namespace Pinultimate_Windows_Phone
             // Sample code to localize the ApplicationBar
             //BuildLocalizedApplicationBar();
         }
-        */
-        
+        /*
         public MainPage()
         {
             InitializeComponent();
-            this.Content = UnitTestSystem.CreateTestPage();
+            //this.Content = UnitTestSystem.CreateTestPage();
         }
-        
+        */ 
 
         // Sample code for building a localized ApplicationBar
         //private void BuildLocalizedApplicationBar()

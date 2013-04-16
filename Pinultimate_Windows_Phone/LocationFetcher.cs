@@ -19,7 +19,7 @@ namespace Pinultimate_Windows_Phone
         public JSONLoadingCompletionHandler completionHandler { get; set; }
 
         //public delegate void JSONLoadingCompletionHandler(Object[] checkIns); REAL FORM
-        public delegate void JSONLoadingCompletionHandler(string json);
+        public delegate void JSONLoadingCompletionHandler(QueryResult<GridLocationData> result);
 
         public Cluster[] FetchClusters(double latitude, double longitude, double latrange, double lonrange, double resolution)
         {
@@ -52,11 +52,12 @@ namespace Pinultimate_Windows_Phone
         void jsonWebClient_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
             string result = e.Result;
+            QueryResult<GridLocationData> queryResult = ResponseParser.Parse<GridLocationData>(result);
             Debug.WriteLine("JSON Result: {0}", result);
             // Call user supplied callback function with result
             if (this.completionHandler != null)
             {
-                this.completionHandler(result);
+                this.completionHandler(queryResult);
             }
         }
 
