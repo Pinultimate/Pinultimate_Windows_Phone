@@ -16,18 +16,19 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using Windows.Devices.Geolocation;
+using System.IO.IsolatedStorage;
 
 namespace Pinultimate_Windows_Phone
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        private async Task<GeoCoordinate> getCurrentLocation()
+        private GeoTracker geoTracker;
+
+        public MainPage()
         {
-            // Get current location
-            Geolocator locator = new Geolocator();
-            Geoposition position = await locator.GetGeopositionAsync();
-            Geocoordinate coordinate = position.Coordinate;
-            return CoordinateConverter.ConvertGeocoordinate(coordinate);
+            InitializeComponent();
+            this.geoTracker = new GeoTracker();
+            this.Content = UnitTestSystem.CreateTestPage();
         }
 
         private Ellipse createCircleForCurrentLocation()
@@ -51,7 +52,7 @@ namespace Pinultimate_Windows_Phone
         private async void showCurrentLocationOnMap()
         {
             // Get current location
-            Task<GeoCoordinate> geoCoordinateTask = getCurrentLocation();
+            Task<GeoCoordinate> geoCoordinateTask = geoTracker.GetCurrentLocation();
             
 
             // Create a small circle to mark the current location.
@@ -105,14 +106,55 @@ namespace Pinultimate_Windows_Phone
             // Sample code to localize the ApplicationBar
             //BuildLocalizedApplicationBar();
         }
-        /*
-        public MainPage()
-        {
-            InitializeComponent();
-            //this.Content = UnitTestSystem.CreateTestPage();
-        }
-        */ 
 
+        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        {
+            if (IsolatedStorageSettings.ApplicationSettings.Contains("LocationConsent"))
+            {
+                // User has opted in or out of Location
+                return;
+            }
+            else
+            {
+                MessageBoxResult result =
+                    MessageBox.Show("This app accesses your phone's location. Is that ok?",
+                    "Location",
+                    MessageBoxButton.OKCancel);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    IsolatedStorageSettings.ApplicationSettings["LocationConsent"] = true;
+                    IsolatedStorageSettings.ApplicationSettings["LocationTimeInterval"] = "1 min";
+                }
+                else
+                {
+                    IsolatedStorageSettings.ApplicationSettings["LocationConsent"] = false;
+                }
+
+                IsolatedStorageSettings.ApplicationSettings.Save();
+            }
+        }
+
+        private void TrackLocation_Click(object sender, RoutedEventArgs e)
+        {
+            if ((bool)IsolatedStorageSettings.ApplicationSettings["LocationConsent"] != true)
+            {
+                // The user has opted out of Location.
+                return;
+            }
+
+            if (!this.geoTracker.IsTracking())
+            {
+                geoTracker.StartTracking();
+                TrackLocationButton.Content = "stop tracking";
+            }
+            else
+            {
+                geoTracker.StopTracking();
+                TrackLocationButton.Content = "track location";
+                StatusTextBlock.Text = "stopped";
+            }
+        }
         // Sample code for building a localized ApplicationBar
         //private void BuildLocalizedApplicationBar()
         //{
