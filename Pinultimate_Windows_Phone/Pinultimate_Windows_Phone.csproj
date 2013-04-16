@@ -93,6 +93,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="KMeansClustering.cs" />
     <Compile Include="Cluster.cs" />
     <Compile Include="CoordinateConverter.cs" />
     <Compile Include="LocalizedStrings.cs" />
