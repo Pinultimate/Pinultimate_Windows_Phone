@@ -24,12 +24,14 @@ namespace Pinultimate_Windows_Phone
     {
         private GeoTracker geoTracker;
         private ApplicationBar appBar;
+        private AppSettings appSettings;
 
         public MainPage()
         {
             InitializeComponent();
             buildApplicationBar();
             this.geoTracker = new GeoTracker(this);
+            this.appSettings = new AppSettings();
             this.Content = UnitTestSystem.CreateTestPage();
         }
 
