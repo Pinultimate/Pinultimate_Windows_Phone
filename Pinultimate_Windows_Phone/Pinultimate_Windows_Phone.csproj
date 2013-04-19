@@ -96,6 +96,7 @@
     <Compile Include="KMeansClustering.cs" />
     <Compile Include="Cluster.cs" />
     <Compile Include="CoordinateConverter.cs" />
+    <Compile Include="GeoTracker.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="LocationFetcher.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -120,7 +121,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Properties\AppManifest.xml" />
+    <None Include="Properties\AppManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
     </None>
