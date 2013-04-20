@@ -147,25 +147,18 @@ namespace Pinultimate_Windows_Phone
             return results;
         }
 
-        private void InitClusters(List<GridLocationData> checkins, List<Cluster> kmeansClusters, string method)
+        private List<ClusterCenter> InitClusters()
         {
-            if (method.Equals("naive")  )
+            List<ClusterCenter> clusters = new List<ClusterCenter>();
+            int n = Data.LocationData.Count();
+            Random rand = new Random();
+            for (int i = 0; i < K; i++)
             {
-                int n = checkins.Count();
-                Random rand = new Random();
-                for (int i = 0; i < K; i++)
-                {
-                    GridLocationData checkin = checkins.ElementAt(rand.Next(0, n));
-                    kmeansClusters.Add(new Cluster(checkin.Latitude, checkin.Longitude, checkin.Count)); 
-                }
-            } else {
-                int n = checkins.Count();
-                for (int i = 0; i < k; i++)
-                {
-                    kmeansClusters.Add(new Cluster(1, 1, 1));
-                }
+                GridLocationData checkin = Data.LocationData.ElementAt(rand.Next(0, n));
+                ClusterCenter cluster = new ClusterCenter(checkin.Latitude, checkin.Longitude);
+                clusters.Add(cluster);
             }
-            
+            return clusters;
         }
 
 
