@@ -160,10 +160,5 @@ namespace Pinultimate_Windows_Phone
             }
             return clusters;
         }
-
-
-
-
-
     }
 }
