@@ -3,70 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-
+using 
 
 namespace Pinultimate_Windows_Phone
 {
-    class KMeansClustering<T>
+    class ClusteringProcessor
     {
-
-        private IEnumerable<ResponseData<T>> data;
-        private int k; 
-        private Dictionary<string, IEnumerable<Cluster>> clusters;
-
-        public KMeansClustering() 
+        // TODO
+        public static List<ClusteringProcessor> InitClusteringProcessors(QueryResult<GridLocationData> queryResult)
         {
-            data = null;
-            k = 1;
-            clusters = new Dictionary<string, IEnumerable<Cluster>>();
+            return null;
         }
 
-        
+        private int K { get; set; }
+        private ResponseData<GridLocationData> Data { get; set; }
 
-        public int K { 
-            get; 
-            set {
-                k = value;
-            }
-        }
-
-        // Set data through query
-        public QueryResult<T> Query 
-        { 
-            get; 
-            set {
-                data = value.ResponseData;
-            }
-        }
-
-
-        // Set data through responseData
-        public IEnumerable<ResponseData<T>> ResponseData
+        private class ClusterCenter
         {
-            get;
-            set
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
+
+            public ClusterCenter(double lat, double lon)
             {
-                data = value;
+                Latitude = lat;
+                Longitude = lon;
             }
-        }
 
-
-        public void clusteringAllTime()
-        {
-            if (data == null) return;
-
-            foreach (ResponseData<T> timeSlice in data) 
+            public double Distance(GridLocationData datum)
             {
-                IEnumerable<Cluster> clusterAtTime = clustering(timeSlice.LocationData);
-                String time = timeSlice.RawTimestamp;
-                clusters.Add(time, clusterAtTime);
+                double dist = Math.Sqrt(Math.Pow(Latitude - datum.Latitude, 2) + Math.Pow(Longitude - datum.Longitude, 2));
+                return dist;
             }
         }
 
-
-        public List<Cluster> clustering(IEnumerable<T> locationData)
+        public List<Cluster> cluster()
         {
+            List<ClusterCenter> initClusters = InitClusters();
+            //Dictionary<ClusterCenter, List<GridLocationData>> clusters = InitClusters();
             List<Cluster> kmeansClusters = new List<Cluster>();
 
             //Keep this for simplicity, will consider how to deal with generic
@@ -89,17 +62,13 @@ namespace Pinultimate_Windows_Phone
             return kmeansClusters;
         }
 
-        private void resetK(IEnumerable<GridLocationData> checkins) 
-        {
-        }
-
-        private void initializeClusters(IEnumerable<GridLocationData> checkins, List<Cluster> kmeansClusters, string method)
+        private void InitClusters(List<GridLocationData> checkins, List<Cluster> kmeansClusters, string method)
         {
             if (method.Equals("naive")  )
             {
                 int n = checkins.Count();
                 Random rand = new Random();
-                for (int i = 0; i < k; i++)
+                for (int i = 0; i < K; i++)
                 {
                     GridLocationData checkin = checkins.ElementAt(rand.Next(0, n));
                     kmeansClusters.Add(new Cluster(checkin.Latitude, checkin.Longitude, checkin.Count)); 
