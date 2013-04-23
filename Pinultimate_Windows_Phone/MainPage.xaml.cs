@@ -23,16 +23,16 @@ namespace Pinultimate_Windows_Phone
     public partial class MainPage : PhoneApplicationPage
     {
         private GeoTracker geoTracker;
-        private ApplicationBar appBar;
         private AppSettings appSettings;
 
         public MainPage()
         {
             InitializeComponent();
+          
             buildApplicationBar();
-            this.geoTracker = new GeoTracker(this);
-            this.appSettings = new AppSettings();
-            this.Content = UnitTestSystem.CreateTestPage();
+            //this.geoTracker = new GeoTracker(this);
+            // this.appSettings = new AppSettings();
+            // this.Content = UnitTestSystem.CreateTestPage();
         }
 
         public void updateAppBar(String status)
@@ -55,20 +55,24 @@ namespace Pinultimate_Windows_Phone
 
         private void buildApplicationBar()
         {
-            this.appBar = new ApplicationBar();
-            this.appBar.IsMenuEnabled = false;
-            this.appBar.IsVisible = true;
+            ApplicationBar = new ApplicationBar();
+
+            ApplicationBar.Mode = ApplicationBarMode.Default;
+            ApplicationBar.Opacity = 1.0;
+            ApplicationBar.IsVisible = true;
+            ApplicationBar.IsMenuEnabled = false;
+
 
             ApplicationBarIconButton settings = new ApplicationBarIconButton();
             settings.IconUri = new Uri("/Images/settings.png", UriKind.Relative);
-            settings.Text = "settings";
-            this.appBar.Buttons.Add(settings);
+            settings.Text = "Settings";
+            ApplicationBar.Buttons.Add(settings);
             settings.Click += new EventHandler(Settings_Click);
 
             ApplicationBarIconButton tracker = new ApplicationBarIconButton();
-            tracker.IconUri = new Uri("/Images/play.png", UriKind.Relative);
-            tracker.Text = "track";
-            this.appBar.Buttons.Add(tracker);
+            tracker.IconUri = new Uri("/Images/start.png", UriKind.Relative);
+            tracker.Text = "Track";
+            ApplicationBar.Buttons.Add(tracker);
             tracker.Click += new EventHandler(TrackLocation_Click);
         }
 
@@ -173,14 +177,14 @@ namespace Pinultimate_Windows_Phone
         }
 
         // Constructor
-        public MainPage()
-        {
-            InitializeComponent();
-            showCurrentLocationOnMap();
-            testAPI();
+        //public MainPage()
+        //{
+        //   InitializeComponent();
+        //    showCurrentLocationOnMap();
+        //    testAPI();
             // Sample code to localize the ApplicationBar
             //BuildLocalizedApplicationBar();
-        }
+        //}
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
