@@ -165,24 +165,72 @@ namespace Pinultimate_Windows_Phone
                 distances.Add(checkin, dist);
             }
             return sum;
+        } 
+
+        private List<ClusterCenter> InitClusters()
+        {
+            List<ClusterCenter> centers = KMeansLine();
+            return recluster(centers);
         }
 
-        // Recluster using K-Means++
         private List<ClusterCenter> recluster(List<ClusterCenter> oldCenters)
         {
-            List<ClusterCenter> centers = new List<ClusterCenter>();
-            List<GridLocationData> oldCentersConvert = new List<GridLocationData>();
-
+            List<GridLocationData> oldCentersLocation = new List<GridLocationData>();
             foreach (ClusterCenter oldCenter in oldCenters)
             {
                 GridLocationData data = new GridLocationData();
                 data.Latitude = oldCenter.Latitude;
                 data.Longitude = oldCenter.Longitude;
-                oldCentersConvert.Add(data);
+                oldCentersLocation.Add(data);
             }
 
-            Dictionary<GridLocationData, int> weights = new Dictionary<GridLocationData,int>(); 
-            Dictionary<GridLocationData, double> distances = new Dictionary<GridLocationData,double>();
+            List<ClusterCenter> centers = KMeansPlus(oldCentersLocation, oldCenters);
+
+            List<Cluster> clusters = ClusterLocationFromCenters(centers, oldCentersLocation);
+            List<ClusterCenter> result = new List<ClusterCenter>();
+            foreach (Cluster c in clusters)
+            {
+                ClusterCenter cen = new ClusterCenter(c.latitude, c.longitude);
+                result.Add(cen);
+            }
+
+            return result;
+        }
+
+        // Initialize using K-Means||
+        private List<ClusterCenter> KMeansLine()
+        {
+            int NUM_ITERATIONS = 5; //Can be 5 - 10 
+            int l = K / 2;
+
+            List<ClusterCenter> centers = new List<ClusterCenter>();
+            Dictionary<GridLocationData, double> distances = new Dictionary<GridLocationData, double>();
+            Random rand = new Random();
+            GridLocationData initCenter = Data.LocationData.ElementAt(new Random().Next(Data.LocationData.Count()));
+            ClusterCenter initCluster = new ClusterCenter(initCenter.Latitude, initCenter.Longitude);
+            centers.Add(initCluster);
+            double sum = calculateCost(centers, distances, Data.LocationData.ToList());
+
+            for (int i = 0; i < NUM_ITERATIONS; i++)
+            {
+                foreach (GridLocationData checkin in Data.LocationData)
+                {
+                    double prob = rand.NextDouble() * sum * l;
+                    if (prob - distances[checkin] > 0) continue;
+                    ClusterCenter newCenter = new ClusterCenter(checkin.Latitude, checkin.Longitude);
+                    centers.Add(newCenter);
+                }
+                sum = calculateCost(centers, distances, Data.LocationData.ToList());
+            }
+            return centers;
+        }
+
+        // Reinitialize using K-Means++
+        private List<ClusterCenter> KMeansPlus(List<GridLocationData> oldCentersLocation, List<ClusterCenter> oldCenters)
+        {
+            List<ClusterCenter> centers = new List<ClusterCenter>();
+            Dictionary<GridLocationData, int> weights = new Dictionary<GridLocationData, int>();
+            Dictionary<GridLocationData, double> distances = new Dictionary<GridLocationData, double>();
 
             double totalWeight = Data.LocationData.Count();
 
@@ -192,24 +240,23 @@ namespace Pinultimate_Windows_Phone
                 GridLocationData nearestLocation = new GridLocationData();
                 nearestLocation.Latitude = nearestCenter.Latitude;
                 nearestLocation.Longitude = nearestCenter.Longitude;
-                if (weights.ContainsKey(nearestLocation)) 
+                if (weights.ContainsKey(nearestLocation))
                 {
                     weights.Add(nearestLocation, weights[nearestLocation] + 1);
-                } 
-                else 
+                }
+                else
                 {
                     weights.Add(nearestLocation, 1);
                 }
             }
-            
-               
+
             ClusterCenter initCluster = oldCenters.ElementAt(new Random().Next(oldCenters.Count));
             centers.Add(initCluster);
-            double sum = calculateCost(centers, distances, oldCentersConvert);
+            double sum = calculateCost(centers, distances, oldCentersLocation);
 
-            for (int i = 0; i < K; i++)
+            while (true)
             {
-                foreach (GridLocationData oldCenter in oldCentersConvert)
+                foreach (GridLocationData oldCenter in oldCentersLocation)
                 {
                     double prob = new Random().NextDouble() * sum * weights[oldCenter] / totalWeight;
                     if (prob - distances[oldCenter] > 0) continue;
@@ -217,39 +264,10 @@ namespace Pinultimate_Windows_Phone
                     centers.Add(newCentere);
                     break;
                 }
-                sum = calculateCost(centers, distances, oldCentersConvert);
+                if (centers.Count() == K) break;
+                sum = calculateCost(centers, distances, oldCentersLocation);
             }
-
             return centers;
-        }
-
-        // Initialize using K-Means||
-        private List<ClusterCenter> InitClusters()
-        {
-            int NUM_ITERATIONS = 5; //Can be 5 - 10 
-            int l = K; 
-            List<ClusterCenter> centers = new List<ClusterCenter>();
-            Dictionary<GridLocationData, double> distances = new Dictionary<GridLocationData,double>();
-            Random rand = new Random();
-
-            GridLocationData initCenter = Data.LocationData.ElementAt(new Random().Next(Data.LocationData.Count()));
-            ClusterCenter initCluster = new ClusterCenter(initCenter.Latitude, initCenter.Longitude);
-            centers.Add(initCluster);
-            double sum = calculateCost(centers, distances, Data.LocationData.ToList());
-
-            for (int i = 0; i < NUM_ITERATIONS; i++) {
-                foreach (GridLocationData checkin in Data.LocationData) 
-                {
-                    double prob = rand.NextDouble() * sum * l;
-                    if (prob - distances[checkin] > 0) continue;
-                    ClusterCenter newCenter = new ClusterCenter(checkin.Latitude, checkin.Longitude);
-                    centers.Add(newCenter);
-                }
-                sum = calculateCost(centers, distances, Data.LocationData.ToList());
-            }
-
-            List<ClusterCenter> reclusteredCenters = recluster(centers);
-            return reclusteredCenters;
         }
     }
 }
