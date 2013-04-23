@@ -8,11 +8,6 @@ namespace Pinultimate_Windows_Phone
 {
     class ClusteringProcessor
     {
-        // TODO
-        public static List<ClusteringProcessor> InitClusteringProcessors(QueryResult<GridLocationData> queryResult)
-        {
-            return null;
-        }
 
         private int K { get; set; }
         private ResponseData<GridLocationData> Data { get; set; }
@@ -56,6 +51,20 @@ namespace Pinultimate_Windows_Phone
             public bool Equals(ClusterCenter other)
             {
                 return Latitude == other.Latitude && Longitude == other.Longitude;
+            }
+
+            public double Radius(List<GridLocationData> data)
+            {
+                double result = 0;
+                foreach (GridLocationData datum in data)
+                {
+                    double radius = this.Distance(datum);
+                    if (radius > result)
+                    {
+                        result = radius;
+                    }
+                }
+                return result;
             }
         }
 
@@ -142,7 +151,8 @@ namespace Pinultimate_Windows_Phone
             List<Cluster> results = new List<Cluster>();
             foreach (ClusterCenter center in clusters.Keys)
             {
-                Cluster cluster = new Cluster(center.Latitude, center.Longitude, clusters[center].Count);
+                double radius = center.Radius(clusters[center]);
+                Cluster cluster = new Cluster(center.Latitude, center.Longitude, clusters[center].Count, radius);
                 results.Add(cluster);
             }
             return results;
@@ -190,7 +200,7 @@ namespace Pinultimate_Windows_Phone
             List<ClusterCenter> result = new List<ClusterCenter>();
             foreach (Cluster c in clusters)
             {
-                ClusterCenter cen = new ClusterCenter(c.latitude, c.longitude);
+                ClusterCenter cen = new ClusterCenter(c.Latitude, c.Longitude);
                 result.Add(cen);
             }
 
