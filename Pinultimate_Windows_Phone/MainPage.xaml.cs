@@ -78,9 +78,8 @@ namespace Pinultimate_Windows_Phone
 
         private void Settings_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Settings button works!");
             //Do work for your application here.
-            throw new NotImplementedException();
+            NavigationService.Navigate(new Uri("/SettingsPanorama.xaml", UriKind.Relative));
         }
 
         private void TrackLocation_Click(object sender, EventArgs e)
