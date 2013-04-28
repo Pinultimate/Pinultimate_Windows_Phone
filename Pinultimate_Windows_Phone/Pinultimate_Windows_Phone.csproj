@@ -93,6 +93,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Data\MapsViewModel.cs" />
+    <Compile Include="Data\Cluster.cs" />
+    <Compile Include="Data\ClusterList.cs" />
     <Compile Include="KMeansClustering.cs" />
     <Compile Include="Cluster.cs" />
     <Compile Include="CoordinateConverter.cs" />

@@ -30,8 +30,8 @@ namespace Pinultimate_Windows_Phone
             InitializeComponent();
           
             buildApplicationBar();
-            //this.geoTracker = new GeoTracker(this);
-            // this.appSettings = new AppSettings();
+            this.geoTracker = new GeoTracker(this);
+            this.appSettings = new AppSettings();
             // this.Content = UnitTestSystem.CreateTestPage();
         }
 
@@ -90,12 +90,13 @@ namespace Pinultimate_Windows_Phone
                 return;
             }
 
-            ApplicationBarIconButton btn = (ApplicationBarIconButton)ApplicationBar.Buttons[0];
+            ApplicationBarIconButton btn = (ApplicationBarIconButton)ApplicationBar.Buttons[1];
 
             if (!this.geoTracker.IsTracking())
             {
                 Debug.Assert(btn.Text == "track");
                 geoTracker.StartTracking();
+                showCurrentLocationOnMap();
                 btn.Text = "don't track";
                 btn.IconUri = new Uri("/Images/stop.png", UriKind.Relative);
             }
