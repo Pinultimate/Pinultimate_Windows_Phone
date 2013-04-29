@@ -9,9 +9,17 @@
     /// </summary>
     public class ClusterList : ObservableCollectionEx<Cluster>
     {
+        public event NotifyCollectionChangedEventHandler ClustersChanged;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClusterList"/> class
         /// </summary>
+        public ClusterList(NotifyCollectionChangedEventHandler clustersHandler)
+        {
+            this.CollectionChanged += ClusterList_CollectionChanged;
+            this.ClustersChanged += clustersHandler;
+        }
+
         public ClusterList()
         {
             this.CollectionChanged += ClusterList_CollectionChanged;
@@ -19,15 +27,21 @@
 
         private void ClusterList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            if (ClustersChanged.GetInvocationList().Length > 0)
+            {
+                ClustersChanged(sender, e);
+            }
         }
 
         internal void AddResults(Cluster[] results)
         {
             this.Clear();
-            foreach (Cluster result in results)
+            using (ObservableCollectionEx<Cluster> temp = this.DelayNotifications())
             {
-                this.Add(result);
+                foreach (Cluster result in results)
+                {
+                    temp.Add(result);
+                }
             }
         }
     }

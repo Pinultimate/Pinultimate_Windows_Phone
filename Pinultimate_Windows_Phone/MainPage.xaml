@@ -60,7 +60,7 @@
                 </TextBox.InputScope>
             </TextBox>
             <Slider x:Name="TimeSlider" HorizontalAlignment="Left" VerticalAlignment="Bottom" Minimum="0" Maximum="24" Width="356" Height="93" RenderTransformOrigin="0.635,0.558" Margin="0,0,0,-13" />
-            <Button x:Name="SliderControl" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="White" Width="100" Content="Play" ClickMode="Press" Height="93" />
+            <Button x:Name="SliderControl" HorizontalAlignment="Right" VerticalAlignment="Bottom" BorderBrush="Gray" Foreground="Gray" Width="100" Content="Play" ClickMode="Press" Height="93" />
 
         </Grid>
 

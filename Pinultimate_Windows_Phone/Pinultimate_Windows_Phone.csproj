@@ -121,6 +121,7 @@
     <Compile Include="SettingsPanorama.xaml.cs">
       <DependentUpon>SettingsPanorama.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TrendMapDrawingUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

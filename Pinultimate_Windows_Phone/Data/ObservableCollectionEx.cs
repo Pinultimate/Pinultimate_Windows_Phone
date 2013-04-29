@@ -28,7 +28,6 @@ namespace System.Collections.ObjectModel
     /// Observable collection with ability to delay or suspend CollectionChanged notifications
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    [Serializable]
     public class ObservableCollectionEx<T> : Collection<T>, INotifyCollectionChanged, INotifyPropertyChanged,
                                              IDisposable
     {
@@ -47,7 +46,6 @@ namespace System.Collections.ObjectModel
         /// <summary>
         /// Empty delegate used to initialize <see cref="CollectionChanged"/> event if it is empty
         /// </summary>
-        [field: NonSerialized()]
         private static readonly NotifyCollectionChangedEventHandler _emptyDelegate = delegate { };
 
         #endregion
@@ -61,26 +59,21 @@ namespace System.Collections.ObjectModel
         /// <summary>
         /// 
         /// </summary>
-        [field: NonSerialized()]
         private ReentryMonitor _monitor = new ReentryMonitor();
 
         /// <summary>
         /// Placeholder for all data related to delayed 
         /// notifications.
         /// </summary>
-        [field: NonSerialized()]
         private NotificationInfo _notifyInfo;
 
         /// <summary>
         /// Indicates if modification of container allowed during change notification.
         /// </summary>
-        [field: NonSerialized()]
         private bool _disableReentry;
 
-        [field: NonSerialized()]
         Action FireCountAndIndexerChanged = delegate { };
 
-        [field: NonSerialized()]
         Action FireIndexerChanged = delegate { };
 
         #endregion Private Fields
@@ -94,14 +87,12 @@ namespace System.Collections.ObjectModel
         /// <summary> 
         /// PropertyChanged event <see cref="INotifyPropertyChanged" />.
         /// </summary> 
-        [field: NonSerializedAttribute()]
         protected virtual event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary> 
         /// Occurs when the collection changes, either by adding or removing an item.
         /// </summary>
         /// <remarks>See <seealso cref="INotifyCollectionChanged"/></remarks>
-        [field: NonSerialized()]
         protected virtual event NotifyCollectionChangedEventHandler CollectionChanged = _emptyDelegate;
 
         #endregion Protected Fields
@@ -555,7 +546,6 @@ namespace System.Collections.ObjectModel
 
         #region Private Types
 
-        [Serializable()]
         private class ReentryMonitor : IDisposable
         {
             #region Fields

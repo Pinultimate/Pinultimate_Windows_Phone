@@ -1,6 +1,13 @@
 ﻿using Microsoft.Phone.Maps.Controls;
 using System.Device.Location;
 using System.Windows;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace Pinultimate_Windows_Phone.Data
 {
@@ -9,12 +16,16 @@ namespace Pinultimate_Windows_Phone.Data
         public Map trendMap { get; set; }
         public ClusterList clusterList { get; set; }
 
+
+        private readonly LocationFetcher locationFetcher = new LocationFetcher();
+
         public TrendMapViewModel(Map TrendMap)
         {
             trendMap = TrendMap;
             trendMap.ZoomLevelChanged += TrendMap_ZoomLevelChanged;
             trendMap.CenterChanged += TrendMap_CenterChanged;
             clusterList = new ClusterList();
+            clusterList.ClustersChanged += UpdateMapWithNewClusters;
         }
 
         private void TrendMap_CenterChanged(object sender, MapCenterChangedEventArgs e)
@@ -32,6 +43,25 @@ namespace Pinultimate_Windows_Phone.Data
             GeoCoordinate Point1 = trendMap.ConvertViewportPointToGeoCoordinate(new Point(0, 0));
             GeoCoordinate Point2 = trendMap.ConvertViewportPointToGeoCoordinate(new Point(trendMap.ActualHeight, trendMap.ActualWidth));
             return new LocationRectangle(Point1, Point2);
+        }
+
+        private void UpdateMapWithNewClusters(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (Cluster cluster in clusterList)
+            {
+                DrawCluster(cluster);
+            }
+        }
+
+        private void DrawCluster(Cluster cluster)
+        {
+            trendMap.Layers.Add(TrendMapDrawingUtils.CreateMapLayerForCluster(cluster));
+        }
+
+        public void FetchLocations(double latitude, double longitude, double latrange, double lonrange, double resolution)
+        {
+            Cluster[] results = locationFetcher.FetchClusters(latitude, longitude, latrange, lonrange, resolution);
+            clusterList.AddResults(results);
         }
     }
 }

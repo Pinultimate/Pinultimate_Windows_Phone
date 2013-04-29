@@ -24,10 +24,12 @@ namespace Pinultimate_Windows_Phone.Data
             applicationBar.IsMenuEnabled = false;
             ApplicationBarIconButton settingsButton = CreateIconButton(new Uri("/Images/settings.png", UriKind.Relative), "Settings");
             settingsButton.Click += SettingsButton_Click;
-            ApplicationBar.Buttons.Add(settingsButton);
+            applicationBar.Buttons.Add(settingsButton);
             ApplicationBarIconButton meButton = CreateIconButton(new Uri("/Images/start.png", UriKind.Relative), "Me");
             meButton.Click += MeButton_Click;
-            ApplicationBar.Buttons.Add(meButton);
+            applicationBar.Buttons.Add(meButton);
+
+            mainPage.ApplicationBar = applicationBar;
         }
 
         private ApplicationBarIconButton CreateIconButton(Uri iconUri, String text)

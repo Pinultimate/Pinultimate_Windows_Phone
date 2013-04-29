@@ -44,11 +44,6 @@
         public int Count { get; set; }
         public double Radius { get; set; }
 
-        public void draw()
-        {
-            return;
-        }
-
         /// <summary>
         /// Gets or sets the GeoCoordinate of the store
         /// </summary>
@@ -57,6 +52,10 @@
         {
             get
             {
+                if (this.geoCoordinate == null)
+                {
+                    this.geoCoordinate = new GeoCoordinate(Latitude, Longitude);
+                }
                 return this.geoCoordinate;
             }
 
