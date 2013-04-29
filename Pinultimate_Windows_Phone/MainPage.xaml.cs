@@ -28,11 +28,34 @@ namespace Pinultimate_Windows_Phone
         public MainPage()
         {
             InitializeComponent();
+            PinultimateMap.ZoomLevelChanged += PinultimateMap_ZoomLevelChanged;
+            PinultimateMap.CenterChanged += PinultimateMap_CenterChanged;
           
             buildApplicationBar();
             this.geoTracker = new GeoTracker(this);
             this.appSettings = new AppSettings();
+            Debug.WriteLine("\nZoom Level: {0}", PinultimateMap.ZoomLevel);
             // this.Content = UnitTestSystem.CreateTestPage();
+        }
+
+        private LocationRectangle getBoundingBox()
+        {
+            GeoCoordinate Point1 = PinultimateMap.ConvertViewportPointToGeoCoordinate(new Point(0, 0));
+            GeoCoordinate Point2 = PinultimateMap.ConvertViewportPointToGeoCoordinate(new Point(PinultimateMap.ActualHeight, PinultimateMap.ActualWidth));
+            LocationRectangle boundingBox = new LocationRectangle(Point1, Point2);
+            Debug.WriteLine("Location = {0}", boundingBox);
+            return boundingBox;
+        }
+
+        void PinultimateMap_CenterChanged(object sender, MapCenterChangedEventArgs e)
+        {
+            Debug.WriteLine("Center moved to: Lat:{0} Long:{1}", PinultimateMap.Center.Latitude, PinultimateMap.Center.Longitude);
+            LocationRectangle boundingBox = this.getBoundingBox();
+        }
+
+        void PinultimateMap_ZoomLevelChanged(object sender, MapZoomLevelChangedEventArgs e)
+        {
+            Debug.WriteLine("Zoom level changed to: {0}", PinultimateMap.ZoomLevel);
         }
 
         public void updateAppBar(String status)
