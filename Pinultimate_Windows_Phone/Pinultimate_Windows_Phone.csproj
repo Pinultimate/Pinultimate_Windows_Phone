@@ -93,6 +93,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Data\ApplicationBarViewModel.cs" />
     <Compile Include="Data\ObservableCollectionEx.cs" />
     <Compile Include="Data\TrendMapViewModel.cs" />
     <Compile Include="Data\Cluster.cs" />

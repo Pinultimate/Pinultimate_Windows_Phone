@@ -1,23 +1,17 @@
 ﻿using Microsoft.Phone.Controls;
 using Microsoft.Phone.Maps.Controls;
 using Microsoft.Phone.Shell;
-using Microsoft.Phone.Testing;
-using Pinultimate_Windows_Phone.Resources;
+using Pinultimate_Windows_Phone.Data;
 using System;
-using System.Collections.Generic;
 using System.Device.Location;
+using System.Diagnostics;
+using System.IO.IsolatedStorage;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Diagnostics;
-using Windows.Devices.Geolocation;
-using System.IO.IsolatedStorage;
-using Pinultimate_Windows_Phone.Data;
 
 namespace Pinultimate_Windows_Phone
 {
@@ -27,6 +21,7 @@ namespace Pinultimate_Windows_Phone
         private AppSettings appSettings;
 
         private DateTime currentTimestamp { get; set; }
+        private ApplicationBarViewModel applicationBarViewModel { get; set; }
         private TrendMapViewModel trendMapViewModel { get; set; }
         private SearchBarViewModel searchBarViewModel { get; set; }
         private TimeSliderViewModel timeSliderViewModel { get; set; }
@@ -35,13 +30,10 @@ namespace Pinultimate_Windows_Phone
         public MainPage()
         {
             InitializeComponent();
-            InitializeTrendMap();
-            InitializeSearchBar();
-            InitializeTimeSlider();
-            InitializeApplicationBar();
+            applicationBarViewModel = new ApplicationBarViewModel(ApplicationBar, this);
             trendMapViewModel = new TrendMapViewModel(TrendMap);
-            timeSliderViewModel = new TimeSliderViewModel(TimeSlider, SliderControl);
-            searchBarViewModel = new SearchBarViewModel(SearchBar);
+            timeSliderViewModel = new TimeSliderViewModel(trendMapViewModel, TimeSlider, SliderControl);
+            searchBarViewModel = new SearchBarViewModel(trendMapViewModel, SearchBar);
 
             this.geoTracker = new GeoTracker(this);
             this.appSettings = new AppSettings();
@@ -54,91 +46,6 @@ namespace Pinultimate_Windows_Phone
         private DateTime NormalizeTimestamp(DateTime time)
         {
             return new DateTime(time.Year, time.Month, time.Day, time.Hour, 0, 0);
-        }
-
-        private void InitializeTrendMap()
-        {
-            TrendMap.ZoomLevelChanged += TrendMap_ZoomLevelChanged;
-            TrendMap.CenterChanged += TrendMap_CenterChanged;
-        }
-
-        private void InitializeSearchBar()
-        {
-            SearchBar.GotFocus += SearchBar_GotFocus;
-            SearchBar.LostFocus += SearchBar_LostFocus;
-            SearchBar.KeyUp += SearchBar_KeyUp;
-        }
-
-        private void InitializeTimeSlider()
-        {
-            TimeSlider.Value = TimeSlider.Maximum;
-            TimeSlider.ValueChanged += TimeSlider_ValueChanged;
-            SliderControl.Click += SliderControl_OnClick;
-        }
-
-        #region "Trend Map Callbacks"
-        void TrendMap_CenterChanged(object sender, MapCenterChangedEventArgs e)
-        {
-            Debug.WriteLine("Center moved to: Lat:{0} Long:{1}", TrendMap.Center.Latitude, TrendMap.Center.Longitude);
-            LocationRectangle boundingBox = this.getBoundingBox();
-        }
-
-        void TrendMap_ZoomLevelChanged(object sender, MapZoomLevelChangedEventArgs e)
-        {
-            Debug.WriteLine("Zoom level changed to: {0}", TrendMap.ZoomLevel);
-            LocationRectangle boundingBox = this.getBoundingBox();
-        }
-        #endregion
-
-        #region "Search Bar Callbacks"
-        void SearchBar_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == System.Windows.Input.Key.Enter)
-            {
-                // Perform search with Search_Bar text
-                // Dismiss Search_Bar
-                TrendMap.Focus();
-                //this.Focus();
-            }
-        }
-
-        void SearchBar_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (SearchBar.Text == String.Empty)
-            {
-                // If user didn't enter anything, re-enter place holder text
-                SearchBar.Text = "Search...";
-            }
-        }
-
-        void SearchBar_GotFocus(object sender, RoutedEventArgs e)
-        {
-            SearchBar.Text = "";
-        }
-        #endregion
-
-
-        #region "Time Slider Callbacks"
-        private void TimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            int oldHourAgo = (int)e.OldValue;
-            int newHourAgo = (int)e.NewValue;
-        }
-
-        private void SliderControl_OnClick(object sender, RoutedEventArgs e)
-        {
-
-        }
-        #endregion
-
-
-        private LocationRectangle getBoundingBox()
-        {
-            GeoCoordinate Point1 = TrendMap.ConvertViewportPointToGeoCoordinate(new Point(0, 0));
-            GeoCoordinate Point2 = TrendMap.ConvertViewportPointToGeoCoordinate(new Point(TrendMap.ActualHeight, TrendMap.ActualWidth));
-            LocationRectangle boundingBox = new LocationRectangle(Point1, Point2);
-            Debug.WriteLine("Location = {0}", boundingBox);
-            return boundingBox;
         }
 
         public void updateAppBar(String status)
@@ -157,61 +64,6 @@ namespace Pinultimate_Windows_Phone
                 //LatitudeTextBlock.Text = args.Position.Coordinate.Latitude.ToString("0.00");
                 //LongitudeTextBlock.Text = args.Position.Coordinate.Longitude.ToString("0.00");
             });
-        }
-
-        private void InitializeApplicationBar()
-        {
-            ApplicationBar = new ApplicationBar();
-
-            ApplicationBar.Mode = ApplicationBarMode.Default;
-            ApplicationBar.Opacity = 1.0;
-            ApplicationBar.IsVisible = true;
-            ApplicationBar.IsMenuEnabled = false;
-
-            ApplicationBarIconButton settings = new ApplicationBarIconButton();
-            settings.IconUri = new Uri("/Images/settings.png", UriKind.Relative);
-            settings.Text = "Settings";
-            ApplicationBar.Buttons.Add(settings);
-            settings.Click += new EventHandler(Settings_Click);
-
-            ApplicationBarIconButton tracker = new ApplicationBarIconButton();
-            tracker.IconUri = new Uri("/Images/start.png", UriKind.Relative);
-            tracker.Text = "Track";
-            ApplicationBar.Buttons.Add(tracker);
-            tracker.Click += new EventHandler(TrackLocation_Click);
-        }
-
-        private void Settings_Click(object sender, EventArgs e)
-        {
-            //Do work for your application here.
-            NavigationService.Navigate(new Uri("/SettingsPanorama.xaml", UriKind.Relative));
-        }
-
-        private void TrackLocation_Click(object sender, EventArgs e)
-        {
-            if ((bool)IsolatedStorageSettings.ApplicationSettings["LocationConsent"] != true)
-            {
-                // The user has opted out of Location.
-                return;
-            }
-
-            ApplicationBarIconButton btn = (ApplicationBarIconButton)ApplicationBar.Buttons[1];
-
-            if (!this.geoTracker.IsTracking())
-            {
-                Debug.Assert(btn.Text == "track");
-                geoTracker.StartTracking();
-                showCurrentLocationOnMap();
-                btn.Text = "don't track";
-                btn.IconUri = new Uri("/Images/stop.png", UriKind.Relative);
-            }
-            else
-            {
-                Debug.Assert(btn.Text == "don't track");
-                geoTracker.StopTracking();
-                btn.Text = "track";
-                btn.IconUri = new Uri("/Images/start.png", UriKind.Relative);
-            }
         }
 
         private Ellipse createCircleForCurrentLocation()
