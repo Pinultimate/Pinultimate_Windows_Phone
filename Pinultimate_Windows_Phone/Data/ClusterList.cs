@@ -1,4 +1,4 @@
-﻿namespace Pinultimate_Windows_Phone.Data.Maps
+﻿namespace Pinultimate_Windows_Phone.Data
 {
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;

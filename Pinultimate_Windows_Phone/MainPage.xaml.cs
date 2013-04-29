@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using System.Diagnostics;
 using Windows.Devices.Geolocation;
 using System.IO.IsolatedStorage;
+using Pinultimate_Windows_Phone.Data;
 
 namespace Pinultimate_Windows_Phone
 {
@@ -24,52 +25,112 @@ namespace Pinultimate_Windows_Phone
     {
         private GeoTracker geoTracker;
         private AppSettings appSettings;
-        private readonly MapsViewModel mainViewModel = new MapsViewModel();
+
+        private DateTime currentTimestamp { get; set; }
+        private TrendMapViewModel trendMapViewModel { get; set; }
+        private SearchBarViewModel searchBarViewModel { get; set; }
+        private TimeSliderViewModel timeSliderViewModel { get; set; }
 
 
         public MainPage()
         {
             InitializeComponent();
-            buildApplicationBar();
-            setUpComponents();
+            InitializeTrendMap();
+            InitializeSearchBar();
+            InitializeTimeSlider();
+            InitializeApplicationBar();
+            trendMapViewModel = new TrendMapViewModel(TrendMap);
+            timeSliderViewModel = new TimeSliderViewModel(TimeSlider, SliderControl);
+            searchBarViewModel = new SearchBarViewModel(SearchBar);
+
             this.geoTracker = new GeoTracker(this);
             this.appSettings = new AppSettings();
+            this.currentTimestamp = NormalizeTimestamp(DateTime.Now);
+
             Debug.WriteLine("\nZoom Level: {0}", TrendMap.ZoomLevel);
             // this.Content = UnitTestSystem.CreateTestPage();
         }
 
-        private void setUpComponents()
+        private DateTime NormalizeTimestamp(DateTime time)
         {
-            TrendMap.ZoomLevelChanged += Map_ZoomLevelChanged;
-            TrendMap.CenterChanged += Map_CenterChanged;
-            SearchBar.GotFocus += Search_Bar_GotFocus;
-            SearchBar.LostFocus += Search_Bar_LostFocus;
-            SearchBar.KeyUp += Search_Bar_KeyUp;
+            return new DateTime(time.Year, time.Month, time.Day, time.Hour, 0, 0);
         }
 
-        void Search_Bar_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private void InitializeTrendMap()
+        {
+            TrendMap.ZoomLevelChanged += TrendMap_ZoomLevelChanged;
+            TrendMap.CenterChanged += TrendMap_CenterChanged;
+        }
+
+        private void InitializeSearchBar()
+        {
+            SearchBar.GotFocus += SearchBar_GotFocus;
+            SearchBar.LostFocus += SearchBar_LostFocus;
+            SearchBar.KeyUp += SearchBar_KeyUp;
+        }
+
+        private void InitializeTimeSlider()
+        {
+            TimeSlider.Value = TimeSlider.Maximum;
+            TimeSlider.ValueChanged += TimeSlider_ValueChanged;
+            SliderControl.Click += SliderControl_OnClick;
+        }
+
+        #region "Trend Map Callbacks"
+        void TrendMap_CenterChanged(object sender, MapCenterChangedEventArgs e)
+        {
+            Debug.WriteLine("Center moved to: Lat:{0} Long:{1}", TrendMap.Center.Latitude, TrendMap.Center.Longitude);
+            LocationRectangle boundingBox = this.getBoundingBox();
+        }
+
+        void TrendMap_ZoomLevelChanged(object sender, MapZoomLevelChangedEventArgs e)
+        {
+            Debug.WriteLine("Zoom level changed to: {0}", TrendMap.ZoomLevel);
+            LocationRectangle boundingBox = this.getBoundingBox();
+        }
+        #endregion
+
+        #region "Search Bar Callbacks"
+        void SearchBar_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
                 // Perform search with Search_Bar text
                 // Dismiss Search_Bar
-                this.Focus();
+                TrendMap.Focus();
+                //this.Focus();
             }
         }
 
-        void Search_Bar_LostFocus(object sender, RoutedEventArgs e)
+        void SearchBar_LostFocus(object sender, RoutedEventArgs e)
         {
             if (SearchBar.Text == String.Empty)
             {
                 // If user didn't enter anything, re-enter place holder text
-                SearchBar.Text = "Search Locations...";
+                SearchBar.Text = "Search...";
             }
         }
 
-        void Search_Bar_GotFocus(object sender, RoutedEventArgs e)
+        void SearchBar_GotFocus(object sender, RoutedEventArgs e)
         {
             SearchBar.Text = "";
         }
+        #endregion
+
+
+        #region "Time Slider Callbacks"
+        private void TimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            int oldHourAgo = (int)e.OldValue;
+            int newHourAgo = (int)e.NewValue;
+        }
+
+        private void SliderControl_OnClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+        #endregion
+
 
         private LocationRectangle getBoundingBox()
         {
@@ -78,18 +139,6 @@ namespace Pinultimate_Windows_Phone
             LocationRectangle boundingBox = new LocationRectangle(Point1, Point2);
             Debug.WriteLine("Location = {0}", boundingBox);
             return boundingBox;
-        }
-
-        void Map_CenterChanged(object sender, MapCenterChangedEventArgs e)
-        {
-            Debug.WriteLine("Center moved to: Lat:{0} Long:{1}", TrendMap.Center.Latitude, TrendMap.Center.Longitude);
-            LocationRectangle boundingBox = this.getBoundingBox();
-        }
-
-        void Map_ZoomLevelChanged(object sender, MapZoomLevelChangedEventArgs e)
-        {
-            Debug.WriteLine("Zoom level changed to: {0}", TrendMap.ZoomLevel);
-            LocationRectangle boundingBox = this.getBoundingBox();
         }
 
         public void updateAppBar(String status)
@@ -110,7 +159,7 @@ namespace Pinultimate_Windows_Phone
             });
         }
 
-        private void buildApplicationBar()
+        private void InitializeApplicationBar()
         {
             ApplicationBar = new ApplicationBar();
 
