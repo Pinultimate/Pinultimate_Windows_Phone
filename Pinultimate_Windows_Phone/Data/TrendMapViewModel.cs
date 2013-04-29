@@ -32,6 +32,7 @@ namespace Pinultimate_Windows_Phone.Data
         {
             mainPage = MainPage;
             trendMap = TrendMap;
+            trendMap.Loaded += TrendMap_Loaded;
             trendMap.ZoomLevelChanged += TrendMap_ZoomLevelChanged;
             trendMap.CenterChanged += TrendMap_CenterChanged;
             geoTracker = new GeoTracker(mainPage);
@@ -42,14 +43,22 @@ namespace Pinultimate_Windows_Phone.Data
         }
 
         #region "callbacks"
+
+        private void TrendMap_Loaded(object sender, RoutedEventArgs e)
+        {
+            LocationRectangle boundingBox = GetBoundingBox();
+            // TODO - try switching width and height order to correctly match lat and long, figure out proper resolution
+            locationFetcher.FetchClusters(callback, boundingBox.Northwest.Latitude, boundingBox.Northwest.Longitude, boundingBox.WidthInDegrees, boundingBox.HeightInDegrees);
+        }
+
         private void TrendMap_CenterChanged(object sender, MapCenterChangedEventArgs e)
         {
-            LocationRectangle boundingBox = getBoundingBox();
+            LocationRectangle boundingBox = GetBoundingBox();
         }
 
         private void TrendMap_ZoomLevelChanged(object sender, MapZoomLevelChangedEventArgs e)
         {
-            LocationRectangle boundingBox = getBoundingBox();
+            LocationRectangle boundingBox = GetBoundingBox();
         }
         #endregion
 
@@ -100,7 +109,7 @@ namespace Pinultimate_Windows_Phone.Data
 
         #endregion
 
-        private LocationRectangle getBoundingBox()
+        private LocationRectangle GetBoundingBox()
         {
             GeoCoordinate Point1 = trendMap.ConvertViewportPointToGeoCoordinate(new Point(0, 0));
             GeoCoordinate Point2 = trendMap.ConvertViewportPointToGeoCoordinate(new Point(trendMap.ActualHeight, trendMap.ActualWidth));
@@ -122,7 +131,7 @@ namespace Pinultimate_Windows_Phone.Data
 
         public void FetchLocations(double latitude, double longitude, double latrange, double lonrange, double resolution)
         {
-            Cluster[] results = locationFetcher.FetchClusters(latitude, longitude, latrange, lonrange, resolution);
+            Cluster[] results = locationFetcher.FetchClusters(callback, latitude, longitude, latrange, lonrange);
             clusterList.AddResults(results);
         }
 

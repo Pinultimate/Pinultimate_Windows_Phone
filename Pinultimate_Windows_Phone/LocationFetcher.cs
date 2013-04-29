@@ -12,7 +12,7 @@ using Pinultimate_Windows_Phone.Data;
 
 namespace Pinultimate_Windows_Phone
 {
-    class LocationFetcher
+    public class LocationFetcher
     {
         public LocationFetcher() { }
 
@@ -22,14 +22,11 @@ namespace Pinultimate_Windows_Phone
         // The callback function called when the JSON has successfully been loaded and deserialized
         public delegate void JSONLoadingCompletionHandler(QueryResult<GridLocationData> result);
 
-        public Cluster[] FetchClusters(double latitude, double longitude, double latrange, double lonrange, double resolution)
+        public void FetchClusters(JSONLoadingCompletionHandler callback, double latitude, double longitude, double latrange, double lonrange)
         {
-            //string query = CreateClusterQuery(latitude, longitude, latrange, lonrange, resolution);
-            //WebRequest request = WebRequest.Create(query);
-            return new Cluster[2]; // Just so it will compile, not an actual line of code
+            string query = QueryURL.CreateGridQuery(latitude, longitude, latrange, lonrange, 1);
+            JSONResponseForURL(query, callback);
         }
-
-        
 
         public void JSONResponseForURL(string url, JSONLoadingCompletionHandler callback)
         {
@@ -52,6 +49,18 @@ namespace Pinultimate_Windows_Phone
         /* Automatically Generated callback for download completion */
         void jsonWebClient_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
+            if (e.Cancelled == true)
+            {
+                Debug.WriteLine("Download cancelled.");
+                return;
+            }
+
+            if (e.Error != null)
+            {
+                Debug.WriteLine("Download error: {0}", e.Error.ToString());
+                return;
+            }
+
             string result = e.Result;
             QueryResult<GridLocationData> queryResult = ResponseParser.Parse<GridLocationData>(result);
             Debug.WriteLine("JSON Result: {0}", result);

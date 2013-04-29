@@ -11,21 +11,8 @@ namespace Pinultimate_Windows_Phone.Data
 {
     public class ApplicationBarViewModel
     {
-        public IApplicationBar applicationBar { get; set; }
-        public MainPage mainPage { get; set; }
-        private TrendMapViewModel trendMapViewModel
-        {
-            get
-            {
-                return mainPage.trendMapViewModel;
-            }
-            set
-            {
-                mainPage.trendMapViewModel = value;
-            }
-        }
-
-        public ApplicationBarViewModel(IApplicationBar ApplicationBar, MainPage MainPage)
+       
+        public ApplicationBarViewModel(MainPage MainPage)
         {
             mainPage = MainPage;
             applicationBar = new ApplicationBar();
@@ -44,9 +31,35 @@ namespace Pinultimate_Windows_Phone.Data
             applicationBar.Buttons.Add(reloadButton);
             applicationBar.Buttons.Add(settingsButton);
             applicationBar.Buttons.Add(meButton);
-
-            mainPage.ApplicationBar = applicationBar;
         }
+
+
+        public IApplicationBar applicationBar
+        {
+            get
+            {
+                return mainPage.ApplicationBar;
+            }
+
+            set
+            {
+                mainPage.ApplicationBar = value;
+            }
+        }
+
+        private TrendMapViewModel trendMapViewModel
+        {
+            get
+            {
+                return mainPage.trendMapViewModel;
+            }
+            set
+            {
+                mainPage.trendMapViewModel = value;
+            }
+        }
+
+        public MainPage mainPage { get; set; }
 
         private ApplicationBarIconButton CreateIconButton(Uri iconUri, String text)
         {

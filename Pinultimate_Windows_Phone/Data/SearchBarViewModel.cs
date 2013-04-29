@@ -7,7 +7,7 @@ namespace Pinultimate_Windows_Phone.Data
     public class SearchBarViewModel
     {
         public TrendMapViewModel trendMapViewModel { get; set; }
-        public TextBox searchBar { get; set;}
+        public TextBox searchBar { get; set; }
 
         public SearchBarViewModel(TrendMapViewModel TrendMapViewModel, TextBox SearchBar)
         {

@@ -23,7 +23,6 @@ namespace Pinultimate_Windows_Phone
             MapLayer clusterLayer = new MapLayer();
             clusterLayer.Add(overlay);
 
-            // Add the MapLayer to the Map
             overlay.GeoCoordinate = cluster.GeoCoordinate;
             return clusterLayer;
         }
