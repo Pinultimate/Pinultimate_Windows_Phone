@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 namespace Pinultimate_Windows_Phone.Data
 {
-    class TimeSliderViewModel
+    public class TimeSliderViewModel
     {
         public TrendMapViewModel trendMapViewModel { get; set; }
         public Slider timeSlider { get; set; }

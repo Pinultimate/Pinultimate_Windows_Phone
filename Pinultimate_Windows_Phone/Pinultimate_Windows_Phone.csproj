@@ -171,9 +171,13 @@
     <Content Include="Assets\Tiles\IconicTileSmall.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Images\refresh.png" />
     <Content Include="Images\settings.png" />
+    <Content Include="Images\share.png" />
     <Content Include="Images\stop.png" />
     <Content Include="Images\start.png" />
+    <Content Include="Images\transport.pause.png" />
+    <Content Include="Images\transport.play.png" />
     <Content Include="README_FIRST.txt" />
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />

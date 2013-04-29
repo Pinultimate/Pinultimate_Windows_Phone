@@ -66,47 +66,6 @@ namespace Pinultimate_Windows_Phone
             });
         }
 
-        private Ellipse createCircleForCurrentLocation()
-        {
-            Ellipse toReturn = new Ellipse();
-            toReturn.Fill = new SolidColorBrush(Colors.Blue);
-            toReturn.Height = 20;
-            toReturn.Width = 20;
-            toReturn.Opacity = 50;
-            return toReturn;
-        }
-
-        private MapOverlay createMapOverlay(Ellipse circle)
-        {
-            MapOverlay toReturn = new MapOverlay();
-            toReturn.Content = circle;
-            toReturn.PositionOrigin = new Point(0.5, 0.5);
-            return toReturn;
-        }
-
-        private async void showCurrentLocationOnMap()
-        {
-            // Get current location
-            Task<GeoCoordinate> geoCoordinateTask = geoTracker.GetCurrentLocation();
-            if (geoCoordinateTask != null)
-            {
-                // Create a small circle to mark the current location.
-                Ellipse circle = createCircleForCurrentLocation();
-
-                // Create a MapOverlay to contain the circle.
-                MapOverlay overlay = createMapOverlay(circle);
-
-                // Create a MapLayer to contain the MapOverlay.
-                MapLayer currentLocationLayer = new MapLayer();
-                currentLocationLayer.Add(overlay);
-
-                // Add the MapLayer to the Map
-                GeoCoordinate geoCoordinate = await geoCoordinateTask;
-                TrendMap.Center = geoCoordinate;
-                overlay.GeoCoordinate = geoCoordinate;
-                TrendMap.Layers.Add(currentLocationLayer);
-            }
-        }
 
         /* This function is a place holder for a much more advanced function that will
          * correctly handle data being received from the server.  This function will be

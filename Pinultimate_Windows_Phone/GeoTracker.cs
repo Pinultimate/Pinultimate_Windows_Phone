@@ -11,7 +11,7 @@ using Windows.Devices.Geolocation;
 
 namespace Pinultimate_Windows_Phone
 {
-    class GeoTracker
+    public class GeoTracker
     {
         private Geolocator geolocator;
         private bool tracking;

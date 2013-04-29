@@ -9,10 +9,21 @@ using System.Windows.Navigation;
 
 namespace Pinultimate_Windows_Phone.Data
 {
-    class ApplicationBarViewModel
+    public class ApplicationBarViewModel
     {
         public IApplicationBar applicationBar { get; set; }
         public MainPage mainPage { get; set; }
+        private TrendMapViewModel trendMapViewModel
+        {
+            get
+            {
+                return mainPage.trendMapViewModel;
+            }
+            set
+            {
+                mainPage.trendMapViewModel = value;
+            }
+        }
 
         public ApplicationBarViewModel(IApplicationBar ApplicationBar, MainPage MainPage)
         {
@@ -49,7 +60,8 @@ namespace Pinultimate_Windows_Phone.Data
         {
             ApplicationBarIconButton reloadButton = (ApplicationBarIconButton)applicationBar.Buttons[0];
             // reloads the current view
-            //mainPage.trendMapViewModel.refresh();
+            //trendMapViewModel.refresh();
+            trendMapViewModel.RelocateAndRedrawMe();
         }
 
         private void SettingsButton_Click(object sender, EventArgs e)
@@ -62,16 +74,23 @@ namespace Pinultimate_Windows_Phone.Data
         private void MeButton_Click(object sender, EventArgs e)
         {
             ApplicationBarIconButton meButton = (ApplicationBarIconButton)applicationBar.Buttons[2];
+            trendMapViewModel.LocateMapToMe();
+        }
+
+        /*
+        private void MeButton_Click(object sender, EventArgs e)
+        {
+            ApplicationBarIconButton meButton = (ApplicationBarIconButton)applicationBar.Buttons[2];
             if ((bool)IsolatedStorageSettings.ApplicationSettings["LocationConsent"] != true)
             {
                 // The user has opted out of Location.
                 return;
             }
-            /*if (!this.geoTracker.IsTracking())
+            if (!trendMapViewModel.geoTracker.IsTracking())
             {
-                geoTracker.StartTracking();
-                showCurrentLocationOnMap();
-                btn.Text = "don't track";
+                trendMapViewModel.geoTracker.StartTracking();
+                trendMapViewModel.DrawCurrentLocation();
+                meButton.Text = "don't track";
                 btn.IconUri = new Uri("/Images/stop.png", UriKind.Relative);
             }
             else
@@ -80,8 +99,8 @@ namespace Pinultimate_Windows_Phone.Data
                 geoTracker.StopTracking();
                 btn.Text = "track";
                 btn.IconUri = new Uri("/Images/start.png", UriKind.Relative);
-            }*/
-        }
+            }
+        }*/
 
     }
 }

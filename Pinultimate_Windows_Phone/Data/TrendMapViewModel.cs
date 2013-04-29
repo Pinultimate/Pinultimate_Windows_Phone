@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Shapes;
+using System.Windows.Media;
 
 namespace Pinultimate_Windows_Phone.Data
 {
@@ -15,8 +17,14 @@ namespace Pinultimate_Windows_Phone.Data
     {
         public Map trendMap { get; set; }
         public ClusterList clusterList { get; set; }
-        public GeoTracker geoTracker { get; set; }
         public MainPage mainPage { get; set; }
+
+        #region "Me"
+        public GeoTracker geoTracker { get; set; }
+        public GeoCoordinate meLocation { get; set; }
+        //public Ellipse meIndicator { get; set; }
+        public MapOverlay meIndicatorOverlay { get; set; }
+        #endregion
 
         private readonly LocationFetcher locationFetcher = new LocationFetcher();
 
@@ -26,11 +34,14 @@ namespace Pinultimate_Windows_Phone.Data
             trendMap = TrendMap;
             trendMap.ZoomLevelChanged += TrendMap_ZoomLevelChanged;
             trendMap.CenterChanged += TrendMap_CenterChanged;
-            geoTracker = new GeoTracker(this.mainPage);
+            geoTracker = new GeoTracker(mainPage);
+            geoTracker.StartTracking();
+            InitializeMeIndicator();
             clusterList = new ClusterList();
             clusterList.ClustersChanged += UpdateMapWithNewClusters;
         }
 
+        #region "callbacks"
         private void TrendMap_CenterChanged(object sender, MapCenterChangedEventArgs e)
         {
             LocationRectangle boundingBox = getBoundingBox();
@@ -40,6 +51,54 @@ namespace Pinultimate_Windows_Phone.Data
         {
             LocationRectangle boundingBox = getBoundingBox();
         }
+        #endregion
+
+        #region "Map Center Change Functions"
+
+        public void LocateMapToCoordinate(GeoCoordinate coordinate)
+        {
+            trendMap.Center = coordinate;
+        }
+
+
+        #endregion
+
+        #region "Me Indicator"
+
+        public async void RelocateAndRedrawMe()
+        {
+            meLocation = await geoTracker.GetCurrentLocation();
+            meIndicatorOverlay.GeoCoordinate = meLocation;
+        }
+
+        public void LocateMapToMe()
+        {
+            LocateMapToCoordinate(meLocation);
+        }
+
+        private async void InitializeMeIndicator()
+        {
+            Task<GeoCoordinate> geoCoordinateTask = geoTracker.GetCurrentLocation();
+            if (geoCoordinateTask != null)
+            {
+                MapLayer meIndicatorLayer = new MapLayer();
+                meIndicatorOverlay = new MapOverlay();
+                Ellipse meIndicator = new Ellipse();
+                meIndicator.Fill = new SolidColorBrush(Colors.Blue);
+                meIndicator.Height = 10;
+                meIndicator.Width = 10;
+                meIndicator.Opacity = 50;
+                meIndicatorOverlay.Content = meIndicator;
+                meIndicatorOverlay.PositionOrigin = new Point(0.5, 0.5);
+                meIndicatorLayer.Add(meIndicatorOverlay);
+                meLocation = await geoTracker.GetCurrentLocation();
+                meIndicatorOverlay.GeoCoordinate = meLocation;
+                trendMap.Layers.Add(meIndicatorLayer);
+                LocateMapToMe();
+            }
+        }
+
+        #endregion
 
         private LocationRectangle getBoundingBox()
         {
@@ -66,5 +125,6 @@ namespace Pinultimate_Windows_Phone.Data
             Cluster[] results = locationFetcher.FetchClusters(latitude, longitude, latrange, lonrange, resolution);
             clusterList.AddResults(results);
         }
+
     }
 }

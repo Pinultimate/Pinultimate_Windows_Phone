@@ -4,7 +4,7 @@ using System.Windows.Controls;
 
 namespace Pinultimate_Windows_Phone.Data
 {
-    class SearchBarViewModel
+    public class SearchBarViewModel
     {
         public TrendMapViewModel trendMapViewModel { get; set; }
         public TextBox searchBar { get; set;}
