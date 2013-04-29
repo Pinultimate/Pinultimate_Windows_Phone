@@ -51,8 +51,8 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-                <maps:Map ZoomLevel="10" x:Name="PinultimateMap"/>
-            <TextBox x:Name="Search_Bar" HorizontalAlignment="Left" Height="72" Margin="0,10,0,0" TextWrapping="Wrap" Text="Search Locations..." VerticalAlignment="Top" Width="456">
+                <maps:Map ZoomLevel="10" x:Name="TrendMap"/>
+            <TextBox x:Name="SearchBar" HorizontalAlignment="Left" Height="72" Margin="0,10,0,0" TextWrapping="Wrap" Text="Search Locations..." VerticalAlignment="Top" Width="456">
                 <TextBox.InputScope>
                     <InputScope>
                         <InputScopeName NameValue="Maps"></InputScopeName>

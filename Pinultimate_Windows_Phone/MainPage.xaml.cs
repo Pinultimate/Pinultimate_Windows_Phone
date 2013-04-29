@@ -28,21 +28,21 @@ namespace Pinultimate_Windows_Phone
         public MainPage()
         {
             InitializeComponent();
-            setUpComponents();
             buildApplicationBar();
+            setUpComponents();
             this.geoTracker = new GeoTracker(this);
             this.appSettings = new AppSettings();
-            Debug.WriteLine("\nZoom Level: {0}", PinultimateMap.ZoomLevel);
+            Debug.WriteLine("\nZoom Level: {0}", TrendMap.ZoomLevel);
             // this.Content = UnitTestSystem.CreateTestPage();
         }
 
         private void setUpComponents()
         {
-            PinultimateMap.ZoomLevelChanged += PinultimateMap_ZoomLevelChanged;
-            PinultimateMap.CenterChanged += PinultimateMap_CenterChanged;
-            Search_Bar.GotFocus += Search_Bar_GotFocus;
-            Search_Bar.LostFocus += Search_Bar_LostFocus;
-            Search_Bar.KeyUp += Search_Bar_KeyUp;
+            TrendMap.ZoomLevelChanged += PinultimateMap_ZoomLevelChanged;
+            TrendMap.CenterChanged += PinultimateMap_CenterChanged;
+            SearchBar.GotFocus += Search_Bar_GotFocus;
+            SearchBar.LostFocus += Search_Bar_LostFocus;
+            SearchBar.KeyUp += Search_Bar_KeyUp;
         }
 
         void Search_Bar_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
@@ -57,22 +57,22 @@ namespace Pinultimate_Windows_Phone
 
         void Search_Bar_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (Search_Bar.Text == String.Empty)
+            if (SearchBar.Text == String.Empty)
             {
                 // If user didn't enter anything, re-enter place holder text
-                Search_Bar.Text = "Search Locations...";
+                SearchBar.Text = "Search Locations...";
             }
         }
 
         void Search_Bar_GotFocus(object sender, RoutedEventArgs e)
         {
-            Search_Bar.Text = "";
+            SearchBar.Text = "";
         }
 
         private LocationRectangle getBoundingBox()
         {
-            GeoCoordinate Point1 = PinultimateMap.ConvertViewportPointToGeoCoordinate(new Point(0, 0));
-            GeoCoordinate Point2 = PinultimateMap.ConvertViewportPointToGeoCoordinate(new Point(PinultimateMap.ActualHeight, PinultimateMap.ActualWidth));
+            GeoCoordinate Point1 = TrendMap.ConvertViewportPointToGeoCoordinate(new Point(0, 0));
+            GeoCoordinate Point2 = TrendMap.ConvertViewportPointToGeoCoordinate(new Point(TrendMap.ActualHeight, TrendMap.ActualWidth));
             LocationRectangle boundingBox = new LocationRectangle(Point1, Point2);
             Debug.WriteLine("Location = {0}", boundingBox);
             return boundingBox;
@@ -80,13 +80,13 @@ namespace Pinultimate_Windows_Phone
 
         void PinultimateMap_CenterChanged(object sender, MapCenterChangedEventArgs e)
         {
-            Debug.WriteLine("Center moved to: Lat:{0} Long:{1}", PinultimateMap.Center.Latitude, PinultimateMap.Center.Longitude);
+            Debug.WriteLine("Center moved to: Lat:{0} Long:{1}", TrendMap.Center.Latitude, TrendMap.Center.Longitude);
             LocationRectangle boundingBox = this.getBoundingBox();
         }
 
         void PinultimateMap_ZoomLevelChanged(object sender, MapZoomLevelChangedEventArgs e)
         {
-            Debug.WriteLine("Zoom level changed to: {0}", PinultimateMap.ZoomLevel);
+            Debug.WriteLine("Zoom level changed to: {0}", TrendMap.ZoomLevel);
             LocationRectangle boundingBox = this.getBoundingBox();
         }
 
@@ -116,7 +116,6 @@ namespace Pinultimate_Windows_Phone
             ApplicationBar.Opacity = 1.0;
             ApplicationBar.IsVisible = true;
             ApplicationBar.IsMenuEnabled = false;
-
 
             ApplicationBarIconButton settings = new ApplicationBarIconButton();
             settings.IconUri = new Uri("/Images/settings.png", UriKind.Relative);
@@ -200,9 +199,9 @@ namespace Pinultimate_Windows_Phone
 
                 // Add the MapLayer to the Map
                 GeoCoordinate geoCoordinate = await geoCoordinateTask;
-                PinultimateMap.Center = geoCoordinate;
+                TrendMap.Center = geoCoordinate;
                 overlay.GeoCoordinate = geoCoordinate;
-                PinultimateMap.Layers.Add(currentLocationLayer);
+                TrendMap.Layers.Add(currentLocationLayer);
             }
         }
 
@@ -230,16 +229,6 @@ namespace Pinultimate_Windows_Phone
             string gridQuery = QueryURL.CreateGridQuery(37.0, -122.0, 0.5, 0.5, 5);
             locFetcher.JSONResponseForURL(gridQuery,checkinHandler);
         }
-
-        // Constructor
-        //public MainPage()
-        //{
-        //   InitializeComponent();
-        //    showCurrentLocationOnMap();
-        //    testAPI();
-            // Sample code to localize the ApplicationBar
-            //BuildLocalizedApplicationBar();
-        //}
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
