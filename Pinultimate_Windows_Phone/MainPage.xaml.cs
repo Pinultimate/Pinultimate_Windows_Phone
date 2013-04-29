@@ -24,6 +24,8 @@ namespace Pinultimate_Windows_Phone
     {
         private GeoTracker geoTracker;
         private AppSettings appSettings;
+        private readonly MapsViewModel mainViewModel = new MapsViewModel();
+
 
         public MainPage()
         {
@@ -38,8 +40,8 @@ namespace Pinultimate_Windows_Phone
 
         private void setUpComponents()
         {
-            TrendMap.ZoomLevelChanged += PinultimateMap_ZoomLevelChanged;
-            TrendMap.CenterChanged += PinultimateMap_CenterChanged;
+            TrendMap.ZoomLevelChanged += Map_ZoomLevelChanged;
+            TrendMap.CenterChanged += Map_CenterChanged;
             SearchBar.GotFocus += Search_Bar_GotFocus;
             SearchBar.LostFocus += Search_Bar_LostFocus;
             SearchBar.KeyUp += Search_Bar_KeyUp;
@@ -78,13 +80,13 @@ namespace Pinultimate_Windows_Phone
             return boundingBox;
         }
 
-        void PinultimateMap_CenterChanged(object sender, MapCenterChangedEventArgs e)
+        void Map_CenterChanged(object sender, MapCenterChangedEventArgs e)
         {
             Debug.WriteLine("Center moved to: Lat:{0} Long:{1}", TrendMap.Center.Latitude, TrendMap.Center.Longitude);
             LocationRectangle boundingBox = this.getBoundingBox();
         }
 
-        void PinultimateMap_ZoomLevelChanged(object sender, MapZoomLevelChangedEventArgs e)
+        void Map_ZoomLevelChanged(object sender, MapZoomLevelChangedEventArgs e)
         {
             Debug.WriteLine("Zoom level changed to: {0}", TrendMap.ZoomLevel);
             LocationRectangle boundingBox = this.getBoundingBox();

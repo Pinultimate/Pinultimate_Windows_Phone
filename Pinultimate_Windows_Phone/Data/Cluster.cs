@@ -31,6 +31,24 @@
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public Cluster(double latitude, double longitude, int count, double radius)
+        {
+            Latitude = latitude;
+            Longitude = longitude;
+            Count = count;
+            Radius = radius;
+        }
+
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public int Count { get; set; }
+        public double Radius { get; set; }
+
+        public void draw()
+        {
+            return;
+        }
+
         /// <summary>
         /// Gets or sets the GeoCoordinate of the store
         /// </summary>

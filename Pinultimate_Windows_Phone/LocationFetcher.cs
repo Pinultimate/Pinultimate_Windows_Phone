@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
+using Pinultimate_Windows_Phone.Data.Maps;
 
 namespace Pinultimate_Windows_Phone
 {
