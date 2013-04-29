@@ -17,26 +17,26 @@ namespace Pinultimate_Windows_Phone
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        private GeoTracker geoTracker;
-        private AppSettings appSettings;
-
+        
         private DateTime currentTimestamp { get; set; }
+
+        public AppSettings appSettings { get; set; }
         public ApplicationBarViewModel applicationBarViewModel { get; set; }
         public TrendMapViewModel trendMapViewModel { get; set; }
         public SearchBarViewModel searchBarViewModel { get; set; }
         public TimeSliderViewModel timeSliderViewModel { get; set; }
 
-
         public MainPage()
         {
             InitializeComponent();
+            appSettings = new AppSettings();
             applicationBarViewModel = new ApplicationBarViewModel(ApplicationBar, this);
-            trendMapViewModel = new TrendMapViewModel(TrendMap);
+            trendMapViewModel = new TrendMapViewModel(TrendMap, this);
             timeSliderViewModel = new TimeSliderViewModel(trendMapViewModel, TimeSlider, SliderControl);
             searchBarViewModel = new SearchBarViewModel(trendMapViewModel, SearchBar);
 
-            this.geoTracker = new GeoTracker(this);
-            this.appSettings = new AppSettings();
+            //this.geoTracker = new GeoTracker(this);
+            
             this.currentTimestamp = NormalizeTimestamp(DateTime.Now);
 
             Debug.WriteLine("\nZoom Level: {0}", TrendMap.ZoomLevel);

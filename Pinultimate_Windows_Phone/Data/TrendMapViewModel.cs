@@ -15,15 +15,18 @@ namespace Pinultimate_Windows_Phone.Data
     {
         public Map trendMap { get; set; }
         public ClusterList clusterList { get; set; }
-
+        public GeoTracker geoTracker { get; set; }
+        public MainPage mainPage { get; set; }
 
         private readonly LocationFetcher locationFetcher = new LocationFetcher();
 
-        public TrendMapViewModel(Map TrendMap)
+        public TrendMapViewModel(Map TrendMap, MainPage MainPage)
         {
+            mainPage = MainPage;
             trendMap = TrendMap;
             trendMap.ZoomLevelChanged += TrendMap_ZoomLevelChanged;
             trendMap.CenterChanged += TrendMap_CenterChanged;
+            geoTracker = new GeoTracker(this.mainPage);
             clusterList = new ClusterList();
             clusterList.ClustersChanged += UpdateMapWithNewClusters;
         }
