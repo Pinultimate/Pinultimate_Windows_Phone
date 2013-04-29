@@ -21,10 +21,10 @@ namespace Pinultimate_Windows_Phone
         private AppSettings appSettings;
 
         private DateTime currentTimestamp { get; set; }
-        private ApplicationBarViewModel applicationBarViewModel { get; set; }
-        private TrendMapViewModel trendMapViewModel { get; set; }
-        private SearchBarViewModel searchBarViewModel { get; set; }
-        private TimeSliderViewModel timeSliderViewModel { get; set; }
+        public ApplicationBarViewModel applicationBarViewModel { get; set; }
+        public TrendMapViewModel trendMapViewModel { get; set; }
+        public SearchBarViewModel searchBarViewModel { get; set; }
+        public TimeSliderViewModel timeSliderViewModel { get; set; }
 
 
         public MainPage()
