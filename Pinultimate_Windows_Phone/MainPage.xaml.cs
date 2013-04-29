@@ -28,14 +28,45 @@ namespace Pinultimate_Windows_Phone
         public MainPage()
         {
             InitializeComponent();
-            PinultimateMap.ZoomLevelChanged += PinultimateMap_ZoomLevelChanged;
-            PinultimateMap.CenterChanged += PinultimateMap_CenterChanged;
-          
+            setUpComponents();
             buildApplicationBar();
             this.geoTracker = new GeoTracker(this);
             this.appSettings = new AppSettings();
             Debug.WriteLine("\nZoom Level: {0}", PinultimateMap.ZoomLevel);
             // this.Content = UnitTestSystem.CreateTestPage();
+        }
+
+        private void setUpComponents()
+        {
+            PinultimateMap.ZoomLevelChanged += PinultimateMap_ZoomLevelChanged;
+            PinultimateMap.CenterChanged += PinultimateMap_CenterChanged;
+            Search_Bar.GotFocus += Search_Bar_GotFocus;
+            Search_Bar.LostFocus += Search_Bar_LostFocus;
+            Search_Bar.KeyUp += Search_Bar_KeyUp;
+        }
+
+        void Search_Bar_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                // Perform search with Search_Bar text
+                // Dismiss Search_Bar
+                this.Focus();
+            }
+        }
+
+        void Search_Bar_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (Search_Bar.Text == String.Empty)
+            {
+                // If user didn't enter anything, re-enter place holder text
+                Search_Bar.Text = "Search Locations...";
+            }
+        }
+
+        void Search_Bar_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Search_Bar.Text = "";
         }
 
         private LocationRectangle getBoundingBox()
@@ -56,6 +87,7 @@ namespace Pinultimate_Windows_Phone
         void PinultimateMap_ZoomLevelChanged(object sender, MapZoomLevelChangedEventArgs e)
         {
             Debug.WriteLine("Zoom level changed to: {0}", PinultimateMap.ZoomLevel);
+            LocationRectangle boundingBox = this.getBoundingBox();
         }
 
         public void updateAppBar(String status)
