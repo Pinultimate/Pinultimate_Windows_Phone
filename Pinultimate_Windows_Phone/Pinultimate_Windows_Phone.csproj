@@ -95,11 +95,11 @@
     </Compile>
     <Compile Include="Data\ApplicationBarViewModel.cs" />
     <Compile Include="Data\ObservableCollectionEx.cs" />
+    <Compile Include="Data\TimelineViewModel.cs" />
     <Compile Include="Data\TrendMapViewModel.cs" />
     <Compile Include="Data\Cluster.cs" />
     <Compile Include="Data\ClusterList.cs" />
     <Compile Include="Data\SearchBarViewModel.cs" />
-    <Compile Include="Data\TimeSliderViewModel.cs" />
     <Compile Include="KMeansClustering.cs" />
     <Compile Include="CoordinateConverter.cs" />
     <Compile Include="GeoTracker.cs" />
@@ -172,7 +172,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\feature.search.png" />
+    <Content Include="Images\location.png" />
+    <Content Include="Images\play.backward.png" />
+    <Content Include="Images\play.forward.png" />
     <Content Include="Images\refresh.png" />
+    <Content Include="Images\search.png" />
     <Content Include="Images\settings.png" />
     <Content Include="Images\share.png" />
     <Content Include="Images\stop.png" />

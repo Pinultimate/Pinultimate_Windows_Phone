@@ -16,6 +16,7 @@ namespace Pinultimate_Windows_Phone.Data
         {
             trendMapViewModel = TrendMapViewModel;
             searchBar = SearchBar;
+            searchBar.FontSize = 22;
             FillDefaultSearchBarText();
             searchBar.SelectionChanged += SearchBar_SelectionChanged;
             searchBar.GotFocus += SearchBar_GotFocus;

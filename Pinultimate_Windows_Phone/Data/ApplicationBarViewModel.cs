@@ -18,21 +18,30 @@ namespace Pinultimate_Windows_Phone.Data
             applicationBar.Mode = ApplicationBarMode.Default;
             applicationBar.Opacity = 1.0;
             applicationBar.IsVisible = true;
-            applicationBar.IsMenuEnabled = false;
-            ApplicationBarIconButton reloadButton = CreateIconButton(new Uri("Images/refresh.png", UriKind.Relative), "Reload");
-            reloadButton.Click += ReloadButton_Click;
-            ApplicationBarIconButton meButton = CreateIconButton(new Uri("/Images/share.png", UriKind.Relative), "Me");
+            applicationBar.IsMenuEnabled = true;
+
+            ApplicationBarMenuItem reloadMenuItem = CreateMenuItem("Reload");
+            reloadMenuItem.Click += ReloadMenuItem_Click;
+            ApplicationBarMenuItem settingsMenuItem = CreateMenuItem("Settings");
+            settingsMenuItem.Click += SettingsMenuItem_Click;
+
+            ApplicationBarIconButton meButton = CreateIconButton(new Uri("/Images/location.png", UriKind.Relative), "Me");
             meButton.Click += MeButton_Click;
-            ApplicationBarIconButton settingsButton = CreateIconButton(new Uri("/Images/settings.png", UriKind.Relative), "Settings");
-            settingsButton.Click += SettingsButton_Click;
-            ApplicationBarIconButton searchButton = CreateIconButton(new Uri("/Images/feature.search.png", UriKind.Relative), "Search");
+            ApplicationBarIconButton searchButton = CreateIconButton(new Uri("/Images/search.png", UriKind.Relative), "Search");
             searchButton.Click += SearchButton_Click;
+            ApplicationBarIconButton backwardButton = CreateIconButton(new Uri("/Images/play.backward.png", UriKind.Relative), "Previous");
+            backwardButton.Click += BackwardButton_Click;
+            ApplicationBarIconButton forwardButton = CreateIconButton(new Uri("/Images/play.forward.png", UriKind.Relative), "Next");
+            forwardButton.Click += ForwardButton_Click;
 
             // IMPORTANT: the order in which the buttons are added is important.
-            applicationBar.Buttons.Add(reloadButton);
-            applicationBar.Buttons.Add(settingsButton);
             applicationBar.Buttons.Add(meButton);
             applicationBar.Buttons.Add(searchButton);
+            applicationBar.Buttons.Add(backwardButton);
+            applicationBar.Buttons.Add(forwardButton);
+
+            applicationBar.MenuItems.Add(reloadMenuItem);
+            applicationBar.MenuItems.Add(settingsMenuItem);
         }
 
         public MainPage mainPage { get; set; }
@@ -74,6 +83,18 @@ namespace Pinultimate_Windows_Phone.Data
             }
         }
 
+        private TimelineViewModel timelineViewModel
+        {
+            get
+            {
+                return mainPage.timelineViewModel;
+            }
+            set
+            {
+                mainPage.timelineViewModel = value;
+            }
+        }
+
         private ApplicationBarIconButton CreateIconButton(Uri iconUri, String text)
         {
             ApplicationBarIconButton button = new ApplicationBarIconButton();
@@ -82,30 +103,37 @@ namespace Pinultimate_Windows_Phone.Data
             return button;
         }
 
-        private void ReloadButton_Click(object sender, EventArgs e)
+        private ApplicationBarMenuItem CreateMenuItem(String text)
         {
-            ApplicationBarIconButton reloadButton = (ApplicationBarIconButton)applicationBar.Buttons[0];
+            ApplicationBarMenuItem menuItem = new ApplicationBarMenuItem();
+            menuItem.Text = text;
+            return menuItem;
+        }
+
+        private void ReloadMenuItem_Click(object sender, EventArgs e)
+        {
+            ApplicationBarMenuItem reloadMenuItem = (ApplicationBarMenuItem)applicationBar.MenuItems[0];
             // reloads the current view
             //trendMapViewModel.refresh();
             trendMapViewModel.RelocateAndRedrawMe();
         }
 
-        private void SettingsButton_Click(object sender, EventArgs e)
+        private void SettingsMenuItem_Click(object sender, EventArgs e)
         {
-            //ApplicationBarIconButton settingsButton = (ApplicationBarIconButton)applicationBar.Buttons[1];
+            ApplicationBarMenuItem settingsMenuItem = (ApplicationBarMenuItem)applicationBar.MenuItems[1];
             Uri settingsUri = new Uri("/SettingsPanorama.xaml", UriKind.Relative);
             mainPage.NavigationService.Navigate(settingsUri);
         }
 
         private void MeButton_Click(object sender, EventArgs e)
         {
-            ApplicationBarIconButton meButton = (ApplicationBarIconButton)applicationBar.Buttons[2];
+            ApplicationBarIconButton meButton = (ApplicationBarIconButton)applicationBar.Buttons[0];
             trendMapViewModel.LocateMapToMe();
         }
 
         private void SearchButton_Click(object sender, EventArgs e)
         {
-            ApplicationBarIconButton meButton = (ApplicationBarIconButton)applicationBar.Buttons[3];
+            ApplicationBarIconButton meButton = (ApplicationBarIconButton)applicationBar.Buttons[1];
             if (searchBarViewModel.searchBar.Visibility == System.Windows.Visibility.Collapsed)
             {
                 searchBarViewModel.searchBar.Visibility = System.Windows.Visibility.Visible;
@@ -113,30 +141,40 @@ namespace Pinultimate_Windows_Phone.Data
             searchBarViewModel.searchBar.Focus();
         }
 
-        /*
-        private void MeButton_Click(object sender, EventArgs e)
+        private void ForwardButton_Click(object sender, EventArgs e)
         {
-            ApplicationBarIconButton meButton = (ApplicationBarIconButton)applicationBar.Buttons[2];
-            if ((bool)IsolatedStorageSettings.ApplicationSettings["LocationConsent"] != true)
-            {
-                // The user has opted out of Location.
-                return;
-            }
-            if (!trendMapViewModel.geoTracker.IsTracking())
-            {
-                trendMapViewModel.geoTracker.StartTracking();
-                trendMapViewModel.DrawCurrentLocation();
-                meButton.Text = "don't track";
-                btn.IconUri = new Uri("/Images/stop.png", UriKind.Relative);
-            }
-            else
-            {
-                Debug.Assert(btn.Text == "don't track");
-                geoTracker.StopTracking();
-                btn.Text = "track";
-                btn.IconUri = new Uri("/Images/start.png", UriKind.Relative);
-            }
-        }*/
+            timelineViewModel.IncreaseHour();
+        }
 
+        private void BackwardButton_Click(object sender, EventArgs e)
+        {
+            timelineViewModel.DecreaseHour();
+        }
+
+        #region "Button Enabler/Disabler"
+        public void EnablePrevButton()
+        {
+            ApplicationBarIconButton prevButton = (ApplicationBarIconButton)applicationBar.Buttons[2];
+            prevButton.IsEnabled = true;
+        }
+
+        public void DisablePrevButton()
+        {
+            ApplicationBarIconButton prevButton = (ApplicationBarIconButton)applicationBar.Buttons[2];
+            prevButton.IsEnabled = false;
+        }
+
+        public void EnableNextButton()
+        {
+            ApplicationBarIconButton nextButton = (ApplicationBarIconButton)applicationBar.Buttons[3];
+            nextButton.IsEnabled = true;
+        }
+
+        public void DisableNextButton()
+        {
+            ApplicationBarIconButton nextButton = (ApplicationBarIconButton)applicationBar.Buttons[3];
+            nextButton.IsEnabled = false;
+        }
+        #endregion
     }
 }

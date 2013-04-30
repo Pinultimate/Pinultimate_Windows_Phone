@@ -24,19 +24,17 @@ namespace Pinultimate_Windows_Phone
         public ApplicationBarViewModel applicationBarViewModel { get; set; }
         public TrendMapViewModel trendMapViewModel { get; set; }
         public SearchBarViewModel searchBarViewModel { get; set; }
-        public TimeSliderViewModel timeSliderViewModel { get; set; }
+        public TimelineViewModel timelineViewModel { get; set; }
 
         public MainPage()
         {
             InitializeComponent();
             appSettings = new AppSettings();
             applicationBarViewModel = new ApplicationBarViewModel(this);
-            trendMapViewModel = new TrendMapViewModel(TrendMap, this);
-
-            timeSliderViewModel = new TimeSliderViewModel(trendMapViewModel, TimeSlider, SliderControl);
+            trendMapViewModel = new TrendMapViewModel(this);
+            timelineViewModel = new TimelineViewModel(this);
             searchBarViewModel = new SearchBarViewModel(trendMapViewModel, SearchBar);
 
-            //this.geoTracker = new GeoTracker(this);
             
             this.currentTimestamp = NormalizeTimestamp(DateTime.Now);
 

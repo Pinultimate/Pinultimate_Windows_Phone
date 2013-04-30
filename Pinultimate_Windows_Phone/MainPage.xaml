@@ -59,9 +59,9 @@
                     </InputScope>
                 </TextBox.InputScope>
             </TextBox>
-            <Slider x:Name="TimeSlider" HorizontalAlignment="Left" VerticalAlignment="Bottom" Minimum="0" Maximum="24" Width="356" Height="93" RenderTransformOrigin="0.635,0.558" Margin="0,0,0,-13" />
-            <Button x:Name="SliderControl" HorizontalAlignment="Right" VerticalAlignment="Bottom" BorderBrush="Gray" Foreground="Gray" Width="100" Content="Play" ClickMode="Press" Height="93" />
-
+            <!--<Slider x:Name="TimeSlider" HorizontalAlignment="Left" VerticalAlignment="Bottom" Minimum="0" Maximum="24" Width="356" Height="93" RenderTransformOrigin="0.635,0.558" Margin="0,0,0,-13" />-->
+            <TextBlock x:Name="TimeLabel" VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="22" TextWrapping="Wrap" Margin="0,0,10,29" />
+            <ProgressBar x:Name="Timeline" Height="20" VerticalAlignment="Bottom"  HorizontalAlignment="Center" Width="470" Margin="15,0,15,10"/>
         </Grid>
 
         <!--Uncomment to see an alignment grid to help ensure your controls are
