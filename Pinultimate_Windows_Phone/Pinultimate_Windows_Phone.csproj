@@ -171,6 +171,7 @@
     <Content Include="Assets\Tiles\IconicTileSmall.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Images\feature.search.png" />
     <Content Include="Images\refresh.png" />
     <Content Include="Images\settings.png" />
     <Content Include="Images\share.png" />

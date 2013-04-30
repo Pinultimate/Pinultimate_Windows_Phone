@@ -16,11 +16,11 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" MinHeight="92"/>
+        <!--<Grid.RowDefinitions>
+            <RowDefinition Height="Auto" MinHeight="93"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-
+-->
         <!-- LOCALIZATION NOTE:
             To localize the displayed strings copy their values to appropriately named
             keys in the app's neutral language resource file (AppResources.resx) then
@@ -41,18 +41,18 @@
          -->
 
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+        <!--<StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
             <TextBlock Style="{StaticResource LongListSelectorGroupHeaderStyle}" Margin="12,0" Height="48">
             	<Run Text="TrendMap"/>
             	<LineBreak/>
                	<Run/>
             </TextBlock>
         </StackPanel>
-
+        -->
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <maps:Map ZoomLevel="10" x:Name="TrendMap" />
-            <TextBox x:Name="SearchBar" HorizontalAlignment="Left" Height="70" TextWrapping="Wrap" Text="Search..." VerticalAlignment="Top" Width="456">
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0">
+            <maps:Map ZoomLevel="10" x:Name="TrendMap" Margin="0,0,0,0" />
+            <TextBox x:Name="SearchBar" HorizontalAlignment="Right" Height="70" TextWrapping="Wrap" VerticalAlignment="Top" Width="480">
                 <TextBox.InputScope>
                     <InputScope>
                         <InputScopeName NameValue="Maps"></InputScopeName>

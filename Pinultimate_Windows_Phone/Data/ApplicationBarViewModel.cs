@@ -11,7 +11,6 @@ namespace Pinultimate_Windows_Phone.Data
 {
     public class ApplicationBarViewModel
     {
-       
         public ApplicationBarViewModel(MainPage MainPage)
         {
             mainPage = MainPage;
@@ -26,13 +25,17 @@ namespace Pinultimate_Windows_Phone.Data
             meButton.Click += MeButton_Click;
             ApplicationBarIconButton settingsButton = CreateIconButton(new Uri("/Images/settings.png", UriKind.Relative), "Settings");
             settingsButton.Click += SettingsButton_Click;
+            ApplicationBarIconButton searchButton = CreateIconButton(new Uri("/Images/feature.search.png", UriKind.Relative), "Search");
+            searchButton.Click += SearchButton_Click;
 
             // IMPORTANT: the order in which the buttons are added is important.
             applicationBar.Buttons.Add(reloadButton);
             applicationBar.Buttons.Add(settingsButton);
             applicationBar.Buttons.Add(meButton);
+            applicationBar.Buttons.Add(searchButton);
         }
 
+        public MainPage mainPage { get; set; }
 
         public IApplicationBar applicationBar
         {
@@ -59,7 +62,17 @@ namespace Pinultimate_Windows_Phone.Data
             }
         }
 
-        public MainPage mainPage { get; set; }
+        private SearchBarViewModel searchBarViewModel
+        {
+            get
+            {
+                return mainPage.searchBarViewModel;
+            }
+            set
+            {
+                mainPage.searchBarViewModel = value;
+            }
+        }
 
         private ApplicationBarIconButton CreateIconButton(Uri iconUri, String text)
         {
@@ -88,6 +101,16 @@ namespace Pinultimate_Windows_Phone.Data
         {
             ApplicationBarIconButton meButton = (ApplicationBarIconButton)applicationBar.Buttons[2];
             trendMapViewModel.LocateMapToMe();
+        }
+
+        private void SearchButton_Click(object sender, EventArgs e)
+        {
+            ApplicationBarIconButton meButton = (ApplicationBarIconButton)applicationBar.Buttons[3];
+            if (searchBarViewModel.searchBar.Visibility == System.Windows.Visibility.Collapsed)
+            {
+                searchBarViewModel.searchBar.Visibility = System.Windows.Visibility.Visible;
+            }
+            searchBarViewModel.searchBar.Focus();
         }
 
         /*
