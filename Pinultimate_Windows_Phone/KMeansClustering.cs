@@ -227,6 +227,7 @@ namespace Pinultimate_Windows_Phone
                 foreach (GridLocationData checkin in Data.LocationData)
                 {
                     double prob = rand.NextDouble() * sum * l;
+                    if (centers.Contains(new ClusterCenter(checkin.Latitude, checkin.Longitude))) continue;
                     if (prob - distances[checkin] > 0) continue;
                     ClusterCenter newCenter = new ClusterCenter(checkin.Latitude, checkin.Longitude);
                     centers.Add(newCenter);
@@ -264,19 +265,23 @@ namespace Pinultimate_Windows_Phone
             ClusterCenter initCluster = oldCenters.ElementAt(new Random().Next(oldCenters.Count));
             centers.Add(initCluster);
             double sum = calculateCost(centers, distances, oldCentersLocation);
-
+            int FLAG = 0;
             while (true)
             {
                 foreach (GridLocationData oldCenter in oldCentersLocation)
                 {
                     double prob = new Random().NextDouble() * sum * weights[oldCenter] / totalWeight;
+                    if (centers.Contains(new ClusterCenter(oldCenter.Latitude, oldCenter.Longitude))) continue;
                     if (prob - distances[oldCenter] > 0) continue;
                     ClusterCenter newCentere = new ClusterCenter(oldCenter.Latitude, oldCenter.Longitude);
                     centers.Add(newCentere);
-                    break;
+                    if (centers.Count() == K) {
+                        FLAG = 1;
+                        break;
+                    }
                 }
-                if (centers.Count() == K) break;
                 sum = calculateCost(centers, distances, oldCentersLocation);
+                if (FLAG == 1) break;
             }
             return centers;
         }
