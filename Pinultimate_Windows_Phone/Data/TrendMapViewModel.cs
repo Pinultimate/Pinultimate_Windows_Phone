@@ -17,6 +17,7 @@ namespace Pinultimate_Windows_Phone.Data
     public class TrendMapViewModel
     {
         public ClusterList clusterList { get; set; }
+        public List<ClusteringProcessor> processors { get; set; }
         public MainPage mainPage { get; set; }
         public Map trendMap
         {
@@ -52,13 +53,24 @@ namespace Pinultimate_Windows_Phone.Data
             clusterList.ClustersChanged += UpdateMapWithNewClusters;
         }
 
+        public void fetchClustersCallback(QueryResult<GridLocationData> result)
+        {
+            processors = ClusteringProcessor.GetClusteringProcessors(result);
+            // TODO: we only get the first one for now, we'll get the rest later
+            // TODO: make it asynchronous
+            List<Cluster> clusters = processors[0].Clusters();
+            clusterList.AddResults(clusters);
+        }
+
         #region "callbacks"
 
         private void TrendMap_Loaded(object sender, RoutedEventArgs e)
         {
             LocationRectangle boundingBox = GetBoundingBox();
             // TODO - try switching width and height order to correctly match lat and long, figure out proper resolution
-            //locationFetcher.FetchClusters(callback, boundingBox.Northwest.Latitude, boundingBox.Northwest.Longitude, boundingBox.WidthInDegrees, boundingBox.HeightInDegrees);
+
+            locationFetcher.FetchClusters(new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingCompletionHandler(fetchClustersCallback),
+                boundingBox.Northwest.Latitude, boundingBox.Northwest.Longitude, boundingBox.WidthInDegrees, boundingBox.HeightInDegrees);
         }
 
         private void TrendMap_CenterChanged(object sender, MapCenterChangedEventArgs e)
@@ -144,12 +156,5 @@ namespace Pinultimate_Windows_Phone.Data
         {
             trendMap.Layers.Add(TrendMapDrawingUtils.CreateMapLayerForCluster(cluster));
         }
-
-        public void FetchLocations(double latitude, double longitude, double latrange, double lonrange, double resolution)
-        {
-            //Cluster[] results = locationFetcher.FetchClusters(callback, latitude, longitude, latrange, lonrange);
-            //clusterList.AddResults(results);
-        }
-
     }
 }

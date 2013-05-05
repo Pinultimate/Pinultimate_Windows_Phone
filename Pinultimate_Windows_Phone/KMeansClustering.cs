@@ -4,11 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Pinultimate_Windows_Phone.Data;
+using System.Collections.Generic;
 
 namespace Pinultimate_Windows_Phone
 {
-    class ClusteringProcessor
+    public class ClusteringProcessor
     {
+
+        #region "Public API for ClusteringProcessor"
+
+        private const int TESTING_K = 10;
 
         private int K { get; set; }
         private ResponseData<GridLocationData> Data { get; set; }
@@ -17,6 +22,34 @@ namespace Pinultimate_Windows_Phone
                 return (List<GridLocationData>)Data.LocationData;
             }
         }
+
+        private ClusteringProcessor(ResponseData<GridLocationData> locationData)
+        {
+            Data = locationData;
+            K = TESTING_K;
+        }
+    
+        public static List<ClusteringProcessor> GetClusteringProcessors(QueryResult<GridLocationData> queryResult)
+        {
+            List<ClusteringProcessor> toReturn = new List<ClusteringProcessor>();
+            foreach (ResponseData<GridLocationData> data in queryResult.ResponseData)
+            {
+                ClusteringProcessor processor = new ClusteringProcessor(data);
+                toReturn.Add(processor);
+            }
+            return toReturn;
+        }
+
+        
+        public List<Cluster> Clusters()
+        {
+            List<ClusterCenter> centers = InitClusters();
+            return ClusterLocationFromCenters(centers, LocationData);
+        }
+
+        #endregion
+
+        #region "Internal classes, methods to generate clusters"
 
         private class ClusterCenter
         {
@@ -159,12 +192,6 @@ namespace Pinultimate_Windows_Phone
             return results;
         }
 
-        public List<Cluster> Cluster()
-        {
-            List<ClusterCenter> centers = InitClusters();
-            return ClusterLocationFromCenters(centers, LocationData);
-        }
-
         private double calculateCost(List<ClusterCenter> centers, Dictionary<GridLocationData, double> distances,  List<GridLocationData> locationData) 
         {
             double sum = 0;
@@ -181,10 +208,10 @@ namespace Pinultimate_Windows_Phone
         private List<ClusterCenter> InitClusters()
         {
             List<ClusterCenter> centers = KMeansLine();
-            return recluster(centers);
+            return ReCluster(centers);
         }
 
-        private List<ClusterCenter> recluster(List<ClusterCenter> oldCenters)
+        private List<ClusterCenter> ReCluster(List<ClusterCenter> oldCenters)
         {
             List<GridLocationData> oldCentersLocation = new List<GridLocationData>();
             foreach (ClusterCenter oldCenter in oldCenters)
@@ -285,5 +312,7 @@ namespace Pinultimate_Windows_Phone
             }
             return centers;
         }
+
+        #endregion
     }
 }
