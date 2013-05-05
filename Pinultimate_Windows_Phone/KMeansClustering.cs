@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Pinultimate_Windows_Phone.Data;
-using System.Collections.Generic;
 
 namespace Pinultimate_Windows_Phone
 {
@@ -13,13 +12,13 @@ namespace Pinultimate_Windows_Phone
 
         #region "Public API for ClusteringProcessor"
 
-        private const int TESTING_K = 10;
+        private const int TESTING_K = 1;
 
         private int K { get; set; }
         private ResponseData<GridLocationData> Data { get; set; }
         private List<GridLocationData> LocationData {
             get {
-                return (List<GridLocationData>)Data.LocationData;
+                return Data.LocationData.ToList<GridLocationData>();
             }
         }
 
@@ -51,7 +50,7 @@ namespace Pinultimate_Windows_Phone
 
         #region "Internal classes, methods to generate clusters"
 
-        private class ClusterCenter
+        private class ClusterCenter : Object
         {
             public static ClusterCenter FindCenter(List<GridLocationData> locations)
             {
@@ -82,9 +81,16 @@ namespace Pinultimate_Windows_Phone
                 return dist;
             }
 
-            public bool Equals(ClusterCenter other)
+            public override bool Equals(Object obj)
             {
+                if (obj == null || obj.GetType() != GetType()) return false;
+                ClusterCenter other = (ClusterCenter)obj;
                 return Latitude == other.Latitude && Longitude == other.Longitude;
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
             }
 
             public double Radius(List<GridLocationData> data)
@@ -126,7 +132,7 @@ namespace Pinultimate_Windows_Phone
                 List<GridLocationData> locations = clusters[center];
                 ClusterCenter newCenter = ClusterCenter.FindCenter(locations);
                 clusters.Remove(center);
-                clusters.Add(newCenter, locations);
+                clusters[newCenter] = locations;
             }
         }
 
@@ -135,14 +141,14 @@ namespace Pinultimate_Windows_Phone
             Dictionary<ClusterCenter, List<GridLocationData>> clusters = new Dictionary<ClusterCenter, List<GridLocationData>>();
             foreach (ClusterCenter center in centers)
             {
-                clusters.Add(center, new List<GridLocationData>());
+                clusters[center] = new List<GridLocationData>();
             }
             foreach (GridLocationData location in locationData)
             {
                 ClusterCenter center = FindCluster(location, clusters.Keys.ToList<ClusterCenter>());
                 List<GridLocationData> locations = clusters[center];
                 locations.Add(location);
-                clusters.Add(center, locations);
+                clusters[center] = locations;
             }
             UpdateClusterCenters(clusters);
 
@@ -151,7 +157,7 @@ namespace Pinultimate_Windows_Phone
                 Dictionary<ClusterCenter, List<GridLocationData>> newClusters = new Dictionary<ClusterCenter, List<GridLocationData>>();
                 foreach (ClusterCenter center in clusters.Keys)
                 {
-                    newClusters.Add(center, new List<GridLocationData>());
+                    newClusters[center] = new List<GridLocationData>();
                 }
                 int reassignments = 0;
                 foreach (ClusterCenter center in clusters.Keys)
@@ -162,7 +168,7 @@ namespace Pinultimate_Windows_Phone
                         ClusterCenter newCenter = FindCluster(location, newClusters.Keys.ToList<ClusterCenter>());
                         List<GridLocationData> newLocations = newClusters[newCenter];
                         newLocations.Add(location);
-                        newClusters.Add(newCenter, newLocations);
+                        newClusters[newCenter] = newLocations;
 
                         if (!newCenter.Equals(center))
                         {
@@ -200,7 +206,7 @@ namespace Pinultimate_Windows_Phone
                 ClusterCenter cluster = FindCluster(checkin, centers);
                 double dist = Math.Pow(cluster.Distance(checkin), 2);
                 sum += dist;
-                distances.Add(checkin, dist);
+                distances[checkin] = dist;
             }
             return sum;
         } 
@@ -219,6 +225,7 @@ namespace Pinultimate_Windows_Phone
                 GridLocationData data = new GridLocationData();
                 data.Latitude = oldCenter.Latitude;
                 data.Longitude = oldCenter.Longitude;
+                data.Count = 1;
                 oldCentersLocation.Add(data);
             }
 
@@ -268,7 +275,8 @@ namespace Pinultimate_Windows_Phone
         private List<ClusterCenter> KMeansPlus(List<GridLocationData> oldCentersLocation, List<ClusterCenter> oldCenters)
         {
             List<ClusterCenter> centers = new List<ClusterCenter>();
-            Dictionary<GridLocationData, int> weights = new Dictionary<GridLocationData, int>();
+            GridLocationDataEqCoordinates comparator = new GridLocationDataEqCoordinates();
+            Dictionary<GridLocationData, int> weights = new Dictionary<GridLocationData, int>(comparator);
             Dictionary<GridLocationData, double> distances = new Dictionary<GridLocationData, double>();
 
             double totalWeight = Data.LocationData.Count();
@@ -279,9 +287,10 @@ namespace Pinultimate_Windows_Phone
                 GridLocationData nearestLocation = new GridLocationData();
                 nearestLocation.Latitude = nearestCenter.Latitude;
                 nearestLocation.Longitude = nearestCenter.Longitude;
+                nearestLocation.Count = 1;
                 if (weights.ContainsKey(nearestLocation))
                 {
-                    weights.Add(nearestLocation, weights[nearestLocation] + 1);
+                    weights[nearestLocation] = weights[nearestLocation] + 1;
                 }
                 else
                 {
@@ -292,7 +301,7 @@ namespace Pinultimate_Windows_Phone
             ClusterCenter initCluster = oldCenters.ElementAt(new Random().Next(oldCenters.Count));
             centers.Add(initCluster);
             double sum = calculateCost(centers, distances, oldCentersLocation);
-            int FLAG = 0;
+            bool flag = true;
             while (true)
             {
                 foreach (GridLocationData oldCenter in oldCentersLocation)
@@ -300,15 +309,17 @@ namespace Pinultimate_Windows_Phone
                     double prob = new Random().NextDouble() * sum * weights[oldCenter] / totalWeight;
                     if (centers.Contains(new ClusterCenter(oldCenter.Latitude, oldCenter.Longitude))) continue;
                     if (prob - distances[oldCenter] > 0) continue;
-                    ClusterCenter newCentere = new ClusterCenter(oldCenter.Latitude, oldCenter.Longitude);
-                    centers.Add(newCentere);
+                    ClusterCenter newCenter = new ClusterCenter(oldCenter.Latitude, oldCenter.Longitude);
+                    centers.Add(newCenter);
+                    flag = false;
                     if (centers.Count() == K) {
-                        FLAG = 1;
+                        flag = true;
                         break;
                     }
                 }
                 sum = calculateCost(centers, distances, oldCentersLocation);
-                if (FLAG == 1) break;
+                // flag is true if 1) centers.Count() == K or centers.Count() did not change after an iteration
+                if (flag) break;
             }
             return centers;
         }

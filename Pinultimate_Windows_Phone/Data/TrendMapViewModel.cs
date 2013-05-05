@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Threading;
+using System.Diagnostics;
 
 namespace Pinultimate_Windows_Phone.Data
 {
@@ -39,43 +40,51 @@ namespace Pinultimate_Windows_Phone.Data
         #endregion
 
         private readonly LocationFetcher locationFetcher = new LocationFetcher();
+        private MapLayer meIndicatorLayer;
 
         public TrendMapViewModel(MainPage MainPage)
         {
             mainPage = MainPage;
-            trendMap.Loaded += TrendMap_Loaded;
             trendMap.ZoomLevelChanged += TrendMap_ZoomLevelChanged;
             trendMap.CenterChanged += TrendMap_CenterChanged;
             geoTracker = new GeoTracker(mainPage);
             geoTracker.StartTracking();
-            InitializeMeIndicator();
             clusterList = new ClusterList();
             clusterList.ClustersChanged += UpdateMapWithNewClusters;
+            InitializeMeIndicator();
         }
+
+        #region "data callbacks"
 
         public void fetchClustersCallback(QueryResult<GridLocationData> result)
         {
             processors = ClusteringProcessor.GetClusteringProcessors(result);
             // TODO: we only get the first one for now, we'll get the rest later
             // TODO: make it asynchronous
-            List<Cluster> clusters = processors[0].Clusters();
-            clusterList.AddResults(clusters);
+            if (processors.Count() > 0)
+            {
+                List<Cluster> clusters = processors[processors.Count - 1].Clusters();
+                clusterList.AddResults(clusters);
+            }
+            else
+            {
+                MessageBox.Show("No clusters could be found",
+                  "Location",
+                  MessageBoxButton.OK);
+            }
+            
         }
 
-        #region "callbacks"
+        #endregion
 
-        private void TrendMap_Loaded(object sender, RoutedEventArgs e)
-        {
-            LocationRectangle boundingBox = GetBoundingBox();
-            // TODO - try switching width and height order to correctly match lat and long, figure out proper resolution
-
-            locationFetcher.FetchClusters(new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingCompletionHandler(fetchClustersCallback),
-                boundingBox.Northwest.Latitude, boundingBox.Northwest.Longitude, boundingBox.WidthInDegrees, boundingBox.HeightInDegrees);
-        }
+        #region "map UI callbacks"
 
         private void TrendMap_CenterChanged(object sender, MapCenterChangedEventArgs e)
         {
             LocationRectangle boundingBox = GetBoundingBox();
+
+            locationFetcher.FetchClusters(new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingCompletionHandler(fetchClustersCallback),
+    boundingBox.Northwest.Latitude, boundingBox.Northwest.Longitude, boundingBox.WidthInDegrees, boundingBox.HeightInDegrees);
         }
 
         private void TrendMap_ZoomLevelChanged(object sender, MapZoomLevelChangedEventArgs e)
@@ -112,7 +121,7 @@ namespace Pinultimate_Windows_Phone.Data
             Task<GeoCoordinate> geoCoordinateTask = geoTracker.GetCurrentLocation();
             if (geoCoordinateTask != null)
             {
-                MapLayer meIndicatorLayer = new MapLayer();
+                meIndicatorLayer = new MapLayer();
                 meIndicatorOverlay = new MapOverlay();
                 Ellipse meIndicator = new Ellipse();
                 meIndicator.Fill = new SolidColorBrush(Colors.Blue);
@@ -146,10 +155,23 @@ namespace Pinultimate_Windows_Phone.Data
 
         private void UpdateMapWithNewClusters(object sender, NotifyCollectionChangedEventArgs e)
         {
+            
+            if (clusterList.Count == 0)
+            {
+                ClearMap();
+                return;
+            }
+            Debug.WriteLine("Drawing Clusters");
             foreach (Cluster cluster in clusterList)
             {
                 DrawCluster(cluster);
             }
+        }
+
+        private void ClearMap()
+        {
+            trendMap.Layers.Clear();
+            trendMap.Layers.Add(meIndicatorLayer);
         }
 
         private void DrawCluster(Cluster cluster)

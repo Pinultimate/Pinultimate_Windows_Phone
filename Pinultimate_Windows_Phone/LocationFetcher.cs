@@ -14,6 +14,8 @@ namespace Pinultimate_Windows_Phone
 {
     public class LocationFetcher
     {
+        private const double RESOLUTION = 0.05;
+
         public LocationFetcher() { }
 
         // This will be used as a callback function when the JSON data is fully downloaded
@@ -24,7 +26,7 @@ namespace Pinultimate_Windows_Phone
 
         public void FetchClusters(JSONLoadingCompletionHandler callback, double latitude, double longitude, double latrange, double lonrange)
         {
-            string query = QueryURL.CreateGridQuery(latitude, longitude, latrange, lonrange, 1);
+            string query = QueryURL.CreateGridQuery(latitude, longitude, latrange, lonrange, RESOLUTION);
             JSONResponseForURL(query, callback);
         }
 
@@ -123,7 +125,7 @@ namespace Pinultimate_Windows_Phone
     }
 
     [DataContract]
-    public class GridLocationData
+    public class GridLocationData : IEquatable<GridLocationData>
     {
         [DataMember(Name = "latitude")]
         public double Latitude { get; set; }
@@ -133,6 +135,32 @@ namespace Pinultimate_Windows_Phone
 
         [DataMember(Name = "count")]
         public int Count { get; set; }
+
+        public bool Equals(GridLocationData obj)
+        {
+            if (obj == null || obj.GetType() != GetType()) return false;
+            GridLocationData other = (GridLocationData) obj;
+            return Latitude == other.Latitude && Longitude == other.Longitude && Count == other.Count;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+    }
+
+    public class GridLocationDataEqCoordinates : EqualityComparer<GridLocationData>
+    {
+        public override int GetHashCode(GridLocationData data)
+        {
+            int hCode = (int)data.Latitude ^ (int)data.Longitude;
+            return hCode.GetHashCode();
+        }
+
+        public override bool Equals(GridLocationData d1, GridLocationData d2)
+        {
+            return EqualityComparer<GridLocationData>.Default.Equals(d1, d2);
+        }
     }
 
     [DataContract]
