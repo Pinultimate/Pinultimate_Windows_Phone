@@ -27,7 +27,7 @@
 
     <!--LayoutRoot contains the root grid where all other page content is placed-->
     <Grid x:Name="LayoutRoot">
-        <phone:Panorama x:Name="Settings_Panorama" Title="Pinultimate">
+        <phone:Panorama x:Name="Settings_Panorama" Title="Settings">
 
             <phone:PanoramaItem x:Name="UI_Settings" Header="UI:">
                 <Grid x:Name="Main_Content" HorizontalAlignment="Left" Height="483" VerticalAlignment="Top" Width="420">

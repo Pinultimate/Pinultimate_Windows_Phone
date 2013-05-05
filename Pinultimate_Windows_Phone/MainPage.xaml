@@ -50,7 +50,8 @@
         </StackPanel>
         -->
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,0,0,0">
+
+        <Grid x:Name="ContentPanel" Grid.Row="0" Margin="0,0,0,0">
             <maps:Map ZoomLevel="7" x:Name="TrendMap" Margin="0,0,0,0" />
             <TextBox x:Name="SearchBar" HorizontalAlignment="Right" Height="70" TextWrapping="Wrap" VerticalAlignment="Top" Width="480">
                 <TextBox.InputScope>

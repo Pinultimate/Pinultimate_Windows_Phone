@@ -93,6 +93,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ClusterInformationPanorama.xaml.cs">
+      <DependentUpon>ClusterInformationPanorama.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Data\ApplicationBarViewModel.cs" />
     <Compile Include="Data\ObservableCollectionEx.cs" />
     <Compile Include="Data\TimelineViewModel.cs" />
@@ -115,9 +118,6 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
     <Compile Include="AppSettings.cs" />
-    <Compile Include="Settings.xaml.cs">
-      <DependentUpon>Settings.xaml</DependentUpon>
-    </Compile>
     <Compile Include="SettingsPanorama.xaml.cs">
       <DependentUpon>SettingsPanorama.xaml</DependentUpon>
     </Compile>
@@ -128,11 +128,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
+    <Page Include="ClusterInformationPanorama.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Settings.xaml">
+    <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

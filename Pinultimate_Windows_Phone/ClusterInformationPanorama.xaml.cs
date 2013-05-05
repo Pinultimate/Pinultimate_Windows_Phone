@@ -10,9 +10,9 @@ using Microsoft.Phone.Shell;
 
 namespace Pinultimate_Windows_Phone
 {
-    public partial class Settings : PhoneApplicationPage
+    public partial class ClusterInformationPanorama : PhoneApplicationPage
     {
-        public Settings()
+        public ClusterInformationPanorama()
         {
             InitializeComponent();
         }

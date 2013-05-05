@@ -1,0 +1,114 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="Pinultimate_Windows_Phone.ClusterInformationPanorama"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait"  Orientation="Portrait"
+    shell:SystemTray.IsVisible="False">
+
+    <!--LayoutRoot contains the root grid where all other page content is placed-->
+    <Grid x:Name="LayoutRoot">
+        <phone:Panorama Title="Cluster Information">
+
+            <!--Panorama item one-->
+            <phone:PanoramaItem Header="About">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="160" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock x:Name="Latitude" 
+                               Grid.Row="0" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="Latitude:" FontSize="30"/>
+                    <TextBox x:Name="Latitude_val"
+                             Grid.Row="0" Grid.Column="2"
+                             Margin="0,0,0,0" Height="65" 
+                             TextWrapping="Wrap" FontSize="25" Text="34.521"/>
+                    
+                    <TextBlock x:Name="Longitude" Grid.Row="1" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="Longitude:" FontSize="30"/>
+                    <TextBox x:Name="Longitude_val"
+                             Grid.Row="1" Grid.Column="2"
+                             Margin="0,0,0,0" Height="65" 
+                             TextWrapping="Wrap" FontSize="25" Text="34.521"/>
+                    
+                    <TextBlock x:Name="Count" Grid.Row="3" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="Count:" FontSize="30"/>  
+                    <TextBox x:Name="Count_val" 
+                             Grid.Row="3" Grid.Column="2"
+                             Margin="0,0,0,0" Height="65" 
+                             TextWrapping="Wrap" FontSize="25" Text="34.521"/>
+
+                    <TextBlock x:Name="From" Grid.Row="5" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="From:" FontSize="30"/>
+                    <TextBox x:Name="From_val"
+                             Grid.Row="5" Grid.Column="2"
+                             Margin="0,0,0,0" Height="65" 
+                             TextWrapping="Wrap" FontSize="25" Text="34.521"/>
+
+                    <TextBlock x:Name="To" Grid.Row="6" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="To:" FontSize="30"/>
+                    <TextBox x:Name="To-val"
+                             Grid.Row="6" Grid.Column="2"
+                             Margin="0,0,0,0" Height="65" 
+                             TextWrapping="Wrap" FontSize="25" Text="34.521"/>
+                </Grid>
+            </phone:PanoramaItem>
+
+            <!--Panorama item two-->
+            <phone:PanoramaItem Header="Details">
+                <Grid ShowGridLines="True">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="160" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock x:Name="Twitter" 
+                               Grid.Row="0" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="Twitter:" FontSize="30"/>
+                    <TextBlock x:Name="Flicker" 
+                               Grid.Row="1" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="Flicker:" FontSize="30"/>
+                    <TextBlock x:Name="Instagram" 
+                               Grid.Row="2" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="Instagram:" FontSize="30"/>
+                </Grid>
+            </phone:PanoramaItem>
+        </phone:Panorama>
+    </Grid>
+
+</phone:PhoneApplicationPage>
