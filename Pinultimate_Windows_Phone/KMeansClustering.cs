@@ -12,7 +12,9 @@ namespace Pinultimate_Windows_Phone
 
         #region "Public API for ClusteringProcessor"
 
-        private const int TESTING_K = 1;
+        private const int TESTING_K = 10;
+
+        private const double DEFAULT_RADIUS = 0.5;
 
         private int K { get; set; }
         private ResponseData<GridLocationData> Data { get; set; }
@@ -42,8 +44,27 @@ namespace Pinultimate_Windows_Phone
         
         public List<Cluster> Clusters()
         {
-            List<ClusterCenter> centers = InitClusters();
-            return ClusterLocationFromCenters(centers, LocationData);
+            if (LocationData.Count() < K)
+            {
+                return SparseDataPointsToClusters(LocationData);
+            }
+            else
+            {
+                List<ClusterCenter> centers = InitClusters();
+                return ClusterLocationFromCenters(centers, LocationData);
+            }
+            
+        }
+
+        private List<Cluster> SparseDataPointsToClusters(List<GridLocationData> LocationData)
+        {
+            List<Cluster> toReturn = new List<Cluster>();
+            foreach (GridLocationData dataPoint in LocationData)
+            {
+                Cluster toAdd = new Cluster(dataPoint.Latitude, dataPoint.Longitude, dataPoint.Count, DEFAULT_RADIUS);
+                toReturn.Add(toAdd);
+            }
+            return toReturn;
         }
 
         #endregion
@@ -267,6 +288,7 @@ namespace Pinultimate_Windows_Phone
                     centers.Add(newCenter);
                 }
                 sum = calculateCost(centers, distances, Data.LocationData.ToList());
+                if(i == NUM_ITERATIONS - 1 && centers.Count() < K) NUM_ITERATIONS += NUM_ITERATIONS;
             }
             return centers;
         }

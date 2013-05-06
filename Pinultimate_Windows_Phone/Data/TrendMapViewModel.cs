@@ -12,6 +12,8 @@ using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Threading;
 using System.Diagnostics;
+using Coding4Fun.Toolkit.Controls;
+using System.Windows.Media.Imaging;
 
 namespace Pinultimate_Windows_Phone.Data
 {
@@ -39,16 +41,43 @@ namespace Pinultimate_Windows_Phone.Data
         public MapOverlay meIndicatorOverlay { get; set; }
         #endregion
 
-        private readonly LocationFetcher locationFetcher = new LocationFetcher();
+        #region "Toast Prompts"
+        private readonly ToastPrompt fetchingClusters = new ToastPrompt
+            {
+                Title = "Location",
+                TextOrientation = System.Windows.Controls.Orientation.Vertical,
+                Message = "Gathering clusters...",
+                ImageSource = new BitmapImage(new Uri("../../ApplicationIcon.png", UriKind.RelativeOrAbsolute)),
+                MillisecondsUntilHidden = 2000
+            };
+
+        private readonly ToastPrompt noClustersFound = new ToastPrompt
+            {
+                Title = "Location",
+                TextOrientation = System.Windows.Controls.Orientation.Vertical,
+                Message = "No clusters found",
+                ImageSource = new BitmapImage(new Uri("../../ApplicationIcon.png", UriKind.RelativeOrAbsolute)),
+                MillisecondsUntilHidden = 2000
+            };
+        #endregion
+
+        private readonly LocationFetcher locationFetcher; 
         private MapLayer meIndicatorLayer;
 
         public TrendMapViewModel(MainPage MainPage)
         {
+           
             mainPage = MainPage;
             trendMap.ZoomLevelChanged += TrendMap_ZoomLevelChanged;
             trendMap.CenterChanged += TrendMap_CenterChanged;
             geoTracker = new GeoTracker(mainPage);
             geoTracker.StartTracking();
+
+            locationFetcher = new LocationFetcher(
+               new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingStartedHandler(fetchClustersStartedCallback),
+               new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingCompletionHandler(fetchClustersFinishedCallback),
+               new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingErrorHandler(fetchClustersErrorCallback));
+
             clusterList = new ClusterList();
             clusterList.ClustersChanged += UpdateMapWithNewClusters;
             InitializeMeIndicator();
@@ -56,8 +85,14 @@ namespace Pinultimate_Windows_Phone.Data
 
         #region "data callbacks"
 
-        public void fetchClustersCallback(QueryResult<GridLocationData> result)
+        public void fetchClustersStartedCallback ()
         {
+            fetchingClusters.Show();
+        }
+
+        public void fetchClustersFinishedCallback(QueryResult<GridLocationData> result)
+        {
+            fetchingClusters.Hide();
             processors = ClusteringProcessor.GetClusteringProcessors(result);
             // TODO: we only get the first one for now, we'll get the rest later
             // TODO: make it asynchronous
@@ -68,11 +103,16 @@ namespace Pinultimate_Windows_Phone.Data
             }
             else
             {
-                MessageBox.Show("No clusters could be found",
-                  "Location",
-                  MessageBoxButton.OK);
+                noClustersFound.Show();
             }
             
+        }
+
+        private void fetchClustersErrorCallback()
+        {
+            MessageBox.Show("We weren't able to retrieve any data from the server. Check to see if you have Internet access.",
+                  "Location",
+                  MessageBoxButton.OK);
         }
 
         #endregion
@@ -83,7 +123,7 @@ namespace Pinultimate_Windows_Phone.Data
         {
             LocationRectangle boundingBox = GetBoundingBox();
 
-            locationFetcher.FetchClusters(new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingCompletionHandler(fetchClustersCallback),
+            locationFetcher.FetchClusters(
     boundingBox.Northwest.Latitude, boundingBox.Northwest.Longitude, boundingBox.WidthInDegrees, boundingBox.HeightInDegrees);
         }
 
@@ -113,6 +153,13 @@ namespace Pinultimate_Windows_Phone.Data
 
         public void LocateMapToMe()
         {
+            if (meLocation == null)
+            {
+                MessageBox.Show("We weren't able to locate your position. (Have you enabled Location Services on your phone?)",
+                  "Location",
+                  MessageBoxButton.OK);
+                return;
+            }
             LocateMapToCoordinate(meLocation);
         }
 
@@ -131,7 +178,9 @@ namespace Pinultimate_Windows_Phone.Data
                 meIndicatorOverlay.Content = meIndicator;
                 meIndicatorOverlay.PositionOrigin = new Point(0.5, 0.5);
                 meIndicatorLayer.Add(meIndicatorOverlay);
-                meLocation = await geoTracker.GetCurrentLocation();
+                //fetchingLocation.Show();
+                meLocation = await geoCoordinateTask;
+                //fetchingLocation.Hide();
                 meIndicatorOverlay.GeoCoordinate = meLocation;
                 trendMap.Layers.Add(meIndicatorLayer);
                 LocateMapToMe();

@@ -72,7 +72,7 @@
                     <TextBlock x:Name="To" Grid.Row="6" Grid.Column="1" 
                                Margin="0,0,0,5" VerticalAlignment="Bottom"
                                TextWrapping="Wrap" Text="To:" FontSize="30"/>
-                    <TextBox x:Name="To-val"
+                    <TextBox x:Name="To_val"
                              Grid.Row="6" Grid.Column="2"
                              Margin="0,0,0,0" Height="65" 
                              TextWrapping="Wrap" FontSize="25" Text="34.521"/>

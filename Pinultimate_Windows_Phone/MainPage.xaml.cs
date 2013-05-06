@@ -88,7 +88,7 @@ namespace Pinultimate_Windows_Phone
             LocationFetcher locFetcher = new LocationFetcher();
 
             string gridQuery = QueryURL.CreateGridQuery(37.0, -122.0, 0.5, 0.5, 5);
-            locFetcher.JSONResponseForURL(gridQuery,checkinHandler);
+            //locFetcher.JSONResponseForURL(gridQuery,checkinHandler);
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)

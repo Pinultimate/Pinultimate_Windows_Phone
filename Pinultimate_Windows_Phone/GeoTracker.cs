@@ -40,13 +40,13 @@ namespace Pinultimate_Windows_Phone
                     status = "ready";
                     break;
                 case PositionStatus.NotInitialized:
+                    status = "not initialized";
                     // the initial state of the geolocator, once the tracking operation is stopped by the user the geolocator moves back to this state
 
                     break;
             }
 
-            mainPage.updateAppBar(status);
-           
+            Debug.WriteLine("Position Status {0}", status);
         }
 
         private void geolocator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)

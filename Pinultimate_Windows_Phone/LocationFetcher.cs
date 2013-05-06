@@ -18,27 +18,40 @@ namespace Pinultimate_Windows_Phone
 
         public LocationFetcher() { }
 
-        // This will be used as a callback function when the JSON data is fully downloaded
-        public JSONLoadingCompletionHandler completionHandler { get; set; }
+        public LocationFetcher(JSONLoadingStartedHandler startingCallback, JSONLoadingCompletionHandler completionCallback, JSONLoadingErrorHandler errorCallback)
+        {
+            this.startingHandler = startingCallback;
+            this.completionHandler = completionCallback;
+            this.errorHandler = errorCallback;
+        }
+        
+        // Callback functions when HTTP request starts, ends with success, or ends with an error
+        private JSONLoadingStartedHandler startingHandler { get; set; }
+        private JSONLoadingCompletionHandler completionHandler { get; set; }
+        private JSONLoadingErrorHandler errorHandler { get; set; }
 
         // The callback function called when the JSON has successfully been loaded and deserialized
+        public delegate void JSONLoadingStartedHandler();
         public delegate void JSONLoadingCompletionHandler(QueryResult<GridLocationData> result);
+        public delegate void JSONLoadingErrorHandler();
 
-        public void FetchClusters(JSONLoadingCompletionHandler callback, double latitude, double longitude, double latrange, double lonrange)
+        public void FetchClusters(double latitude, double longitude, double latrange, double lonrange)
         {
             string query = QueryURL.CreateGridQuery(latitude, longitude, latrange, lonrange, RESOLUTION);
-            JSONResponseForURL(query, callback);
+            JSONResponseForURL(query);
         }
 
-        public void JSONResponseForURL(string url, JSONLoadingCompletionHandler callback)
-        {
-            // Set completion handler to supplied callback
-            this.completionHandler = callback;
+        private void JSONResponseForURL(string url)
+        {           
             WebClient jsonWebClient = new WebClient();
             jsonWebClient.DownloadProgressChanged += jsonWebClient_DownloadProgressChanged;
             jsonWebClient.DownloadStringCompleted += jsonWebClient_DownloadStringCompleted;
             try
             {
+                if (this.startingHandler != null)
+                {
+                    this.startingHandler();
+                }
                 jsonWebClient.DownloadStringAsync(new Uri(url));
                 Debug.WriteLine("Request sent to: {0}", url);
             }
@@ -60,6 +73,10 @@ namespace Pinultimate_Windows_Phone
             if (e.Error != null)
             {
                 Debug.WriteLine("Download error: {0}", e.Error.ToString());
+                if (this.errorHandler != null)
+                {
+                    this.errorHandler();
+                }
                 return;
             }
 
@@ -136,10 +153,8 @@ namespace Pinultimate_Windows_Phone
         [DataMember(Name = "count")]
         public int Count { get; set; }
 
-        public bool Equals(GridLocationData obj)
+        public bool Equals(GridLocationData other)
         {
-            if (obj == null || obj.GetType() != GetType()) return false;
-            GridLocationData other = (GridLocationData) obj;
             return Latitude == other.Latitude && Longitude == other.Longitude && Count == other.Count;
         }
 
