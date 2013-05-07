@@ -68,15 +68,19 @@ namespace Pinultimate_Windows_Phone.Data
         {
            
             mainPage = MainPage;
-            trendMap.ZoomLevelChanged += TrendMap_ZoomLevelChanged;
-            trendMap.CenterChanged += TrendMap_CenterChanged;
+            //trendMap.ZoomLevelChanged += TrendMap_ZoomLevelChanged;
+            //trendMap.CenterChanged += TrendMap_CenterChanged;
             geoTracker = new GeoTracker(mainPage);
             geoTracker.StartTracking();
+
+            var gestureBase = new MapGestureBase(trendMap);
+            gestureBase.SuppressMapGestures = false;
 
             locationFetcher = new LocationFetcher(
                new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingStartedHandler(fetchClustersStartedCallback),
                new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingCompletionHandler(fetchClustersFinishedCallback),
-               new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingErrorHandler(fetchClustersErrorCallback));
+               new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingErrorHandler(fetchClustersErrorCallback)
+            );
 
             clusterList = new ClusterList();
             clusterList.ClustersChanged += UpdateMapWithNewClusters;
@@ -183,8 +187,26 @@ namespace Pinultimate_Windows_Phone.Data
                 //fetchingLocation.Hide();
                 meIndicatorOverlay.GeoCoordinate = meLocation;
                 trendMap.Layers.Add(meIndicatorLayer);
+                //trendMap.ManipulationCompleted += trendMap_ManipulationCompleted;
+                //trendMap.ManipulationStarted += trendMap_ManipulationStarted;
+                //trendMap.ManipulationDelta += trendMap_ManipulationDelta;
                 LocateMapToMe();
             }
+        }
+
+        void trendMap_ManipulationDelta(object sender, System.Windows.Input.ManipulationDeltaEventArgs e)
+        {
+            Debug.WriteLine("Manipulation Delta");
+        }
+
+        void trendMap_ManipulationStarted(object sender, System.Windows.Input.ManipulationStartedEventArgs e)
+        {
+            Debug.WriteLine("Manipulation Started");
+        }
+
+        void trendMap_ManipulationCompleted(object sender, System.Windows.Input.ManipulationCompletedEventArgs e)
+        {
+            Debug.WriteLine("Manipulation Completed");
         }
 
         #endregion

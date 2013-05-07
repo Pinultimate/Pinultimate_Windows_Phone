@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using Pinultimate_Windows_Phone.Data;
+using System.ComponentModel;
 
 namespace Pinultimate_Windows_Phone
 {
@@ -20,15 +21,43 @@ namespace Pinultimate_Windows_Phone
 
         public LocationFetcher(JSONLoadingStartedHandler startingCallback, JSONLoadingCompletionHandler completionCallback, JSONLoadingErrorHandler errorCallback)
         {
-            this.startingHandler = startingCallback;
-            this.completionHandler = completionCallback;
-            this.errorHandler = errorCallback;
+            startingHandler = startingCallback;
+            completionHandler = completionCallback;
+            errorHandler = errorCallback;
+
+
+            backgroundWorker = new BackgroundWorker();
+            backgroundWorker.WorkerReportsProgress = true;
+            backgroundWorker.WorkerSupportsCancellation = true;
+            backgroundWorker.DoWork += new DoWorkEventHandler(bw_DoWork);
+            backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(bw_ProgressChanged);
+            backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
+        }
+
+        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void bw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            string query = e.Argument as string;
+
+            JSONResponseForURL(query);
+            
+        }
+
+        private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
         
         // Callback functions when HTTP request starts, ends with success, or ends with an error
         private JSONLoadingStartedHandler startingHandler { get; set; }
         private JSONLoadingCompletionHandler completionHandler { get; set; }
         private JSONLoadingErrorHandler errorHandler { get; set; }
+        private BackgroundWorker backgroundWorker { get; set; }
 
         // The callback function called when the JSON has successfully been loaded and deserialized
         public delegate void JSONLoadingStartedHandler();
@@ -39,6 +68,12 @@ namespace Pinultimate_Windows_Phone
         {
             string query = QueryURL.CreateGridQuery(latitude, longitude, latrange, lonrange, RESOLUTION);
             JSONResponseForURL(query);
+            //if (backgroundWorker.IsBusy)
+            //{
+            //    backgroundWorker.CancelAsync();
+            //}
+            //backgroundWorker.RunWorkerAsync(query);
+            
         }
 
         private void JSONResponseForURL(string url)
@@ -99,7 +134,6 @@ namespace Pinultimate_Windows_Phone
 
             Debug.WriteLine("{0}/{1} bytes Downloaded, {2}%", bytesRecieved, totalBytesToRecieve, progress);
         }
-
     }
 
     [DataContract]
