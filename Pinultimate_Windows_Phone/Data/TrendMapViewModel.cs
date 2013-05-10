@@ -145,9 +145,27 @@ namespace Pinultimate_Windows_Phone.Data
             notificationPanel.Visibility = Visibility.Collapsed;
         }
 
+        public void ChangeNotificationText(String newMessage)
+        {
+            notificationText.Text = newMessage;
+        }
+
+        public bool NotificationVisible()
+        {
+            return notificationPanel.Visibility == Visibility.Visible;
+        }
+
         public void fetchClustersStartedCallback ()
         {
-            fetchingClusters.Show();
+            //fetchingClusters.Show();
+            if (NotificationVisible())
+            {
+                ChangeNotificationText("Abandoning previous search. Refetching social data around you...");
+            }
+            else
+            {
+                ShowNotification("Fetching social data around you...");
+            }
         }
 
         public void fetchClustersFinishedCallback(QueryResult<GridLocationData> result)
@@ -161,10 +179,11 @@ namespace Pinultimate_Windows_Phone.Data
                 List<Cluster> clusters = processors[processors.Count - 1].Clusters();
                 clusterList.AddResults(clusters);
             }
-            else
-            {
-                noClustersFound.Show();
-            }
+            HideNotification();
+            //else
+            //{
+            //    noClustersFound.Show();
+            //}
             
         }
 
