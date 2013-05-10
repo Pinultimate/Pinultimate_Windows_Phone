@@ -122,7 +122,9 @@ namespace Pinultimate_Windows_Phone.Data
             };
         #endregion
 
-        private readonly LocationFetcher locationFetcher; 
+        private readonly LocationFetcher locationFetcher;
+        private readonly List<Cluster> EMPTY_CLUSTER_LIST = new List<Cluster>();
+
         private MapLayer meIndicatorLayer;
         private MapLayer clustersLayer;
 
@@ -191,12 +193,16 @@ namespace Pinultimate_Windows_Phone.Data
             fetchingClusters.Hide();
             processors = ClusteringProcessor.GetClusteringProcessors(result);
             // TODO: we only get the first one for now, we'll get the rest later
-            // TODO: make it asynchronous
+            List<Cluster> clusters = null;
             if (processors.Count() > 0)
             {
-                List<Cluster> clusters = processors[processors.Count - 1].Clusters();
-                clusterList.AddResults(clusters);
+                clusters = processors[processors.Count - 1].Clusters();
             }
+            else
+            {
+                clusters = EMPTY_CLUSTER_LIST;
+            }
+            clusterList.AddResults(clusters);
             HideNotification();
             //else
             //{
