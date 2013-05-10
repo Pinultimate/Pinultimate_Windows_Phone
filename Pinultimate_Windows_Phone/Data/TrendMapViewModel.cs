@@ -14,6 +14,7 @@ using System.Threading;
 using System.Diagnostics;
 using Coding4Fun.Toolkit.Controls;
 using System.Windows.Media.Imaging;
+using Microsoft.Phone.Shell;
 
 namespace Pinultimate_Windows_Phone.Data
 {
@@ -58,6 +59,28 @@ namespace Pinultimate_Windows_Phone.Data
                 return mainPage.applicationBarViewModel;
             }
         }
+        public Canvas notificationPanel
+        {
+            get
+            {
+                return mainPage.NotificationPanel;
+            }
+            set
+            {
+                mainPage.NotificationPanel = value;
+            }
+        }
+        public TextBlock notificationText
+        {
+            get
+            {
+                return mainPage.NotificationText;
+            }
+            set
+            {
+                mainPage.NotificationText = value;
+            }
+        }
         private Ellipse meIndicator { get; set; }
 
 
@@ -69,20 +92,17 @@ namespace Pinultimate_Windows_Phone.Data
         #endregion
 
         #region "Toast Prompts"
+
         private readonly ToastPrompt fetchingClusters = new ToastPrompt
             {
-                Title = "Location",
-                TextOrientation = System.Windows.Controls.Orientation.Vertical,
-                Message = "Gathering clusters...",
+                Title = "Gathering clusters...",
                 ImageSource = new BitmapImage(new Uri("../../ApplicationIcon.png", UriKind.RelativeOrAbsolute)),
-                MillisecondsUntilHidden = 2000
+                //MillisecondsUntilHidden = 2000
             };
 
         private readonly ToastPrompt noClustersFound = new ToastPrompt
             {
-                Title = "Location",
-                TextOrientation = System.Windows.Controls.Orientation.Vertical,
-                Message = "No clusters found",
+                Title = "No clusters found",
                 ImageSource = new BitmapImage(new Uri("../../ApplicationIcon.png", UriKind.RelativeOrAbsolute)),
                 MillisecondsUntilHidden = 2000
             };
@@ -95,6 +115,7 @@ namespace Pinultimate_Windows_Phone.Data
         public TrendMapViewModel(MainPage MainPage)
         {
             mainPage = MainPage;
+            ShowNotification("Preparing TrendMap for you...");
             geoTracker = new GeoTracker(mainPage);
             geoTracker.StartTracking();
 
@@ -110,6 +131,19 @@ namespace Pinultimate_Windows_Phone.Data
         }
 
         #region "data callbacks"
+
+        public void ShowNotification(String text)
+        {
+            notificationPanel.Visibility = Visibility.Visible;
+            notificationText.Visibility = Visibility.Visible;
+            notificationText.Text = text;
+        }
+
+        public void HideNotification()
+        {
+            notificationText.Visibility = Visibility.Collapsed;
+            notificationPanel.Visibility = Visibility.Collapsed;
+        }
 
         public void fetchClustersStartedCallback ()
         {
@@ -184,7 +218,7 @@ namespace Pinultimate_Windows_Phone.Data
 
         public async void RelocateAndRedrawMe()
         {
-            BeginLoadingProgress();
+            BeginLoadingProgress("Relocating your position...");
             meLocation = await geoTracker.GetCurrentLocation();
             if (meLocation == null)
             {
@@ -259,8 +293,9 @@ namespace Pinultimate_Windows_Phone.Data
         #endregion
 
         #region "loading progress bar"
-        private void BeginLoadingProgress()
+        private void BeginLoadingProgress(String message)
         {
+            ShowNotification(message);
             loadingProgress.Visibility = Visibility.Visible;
             trendMap.Opacity = 0.5;
             timelineViewModel.setOpacity(0.5);
@@ -270,6 +305,7 @@ namespace Pinultimate_Windows_Phone.Data
             applicationBarViewModel.DisablePrevButton();
             applicationBarViewModel.DisableMeButton();
             applicationBarViewModel.DisableReloadMenu();
+
         }
 
         private void EndLoadingProgress()
@@ -285,6 +321,8 @@ namespace Pinultimate_Windows_Phone.Data
             applicationBarViewModel.ConfigureTimelineButtonsOnCondition();
             applicationBarViewModel.EnableMeButton();
             applicationBarViewModel.EnableReloadMenu();
+
+            HideNotification();
         }
         #endregion
 

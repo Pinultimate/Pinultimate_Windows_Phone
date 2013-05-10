@@ -39,7 +39,11 @@
 
 
         <Grid x:Name="ContentPanel" Grid.Row="0" Margin="0,0,0,0">
-            <maps:Map ZoomLevel="12" x:Name="TrendMap" Margin="0,0,0,0" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="77*"/>
+                <ColumnDefinition Width="403*"/>
+            </Grid.ColumnDefinitions>
+            <maps:Map ZoomLevel="12" x:Name="TrendMap" Margin="0,0,0,0" Visibility="Collapsed" Grid.ColumnSpan="2">
                 <toolkit:GestureService.GestureListener>
                     <toolkit:GestureListener
             PinchStarted="GestureListener_PinchStarted"
@@ -49,17 +53,21 @@
             DoubleTap="GestureListener_DoubleTap"/>
                 </toolkit:GestureService.GestureListener>
             </maps:Map>
-            <TextBox x:Name="SearchBar" HorizontalAlignment="Right" Height="70" TextWrapping="Wrap" VerticalAlignment="Top" Width="480">
+            <!--<Slider x:Name="TimeSlider" HorizontalAlignment="Left" VerticalAlignment="Bottom" Minimum="0" Maximum="24" Width="356" Height="93" RenderTransformOrigin="0.635,0.558" Margin="0,0,0,-13" />-->
+            <TextBlock x:Name="TimeLabel" VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="22" TextWrapping="Wrap" Margin="0,0,10,29" Visibility="Collapsed" Grid.Column="1" />
+            <ProgressBar x:Name="Timeline" Height="20" VerticalAlignment="Bottom"  HorizontalAlignment="Center" Width="470" Margin="5,0,5,10" Visibility="Collapsed" Grid.ColumnSpan="2" />
+            <ProgressBar x:Name="LoadingProgress" Margin="10,372,10,371" Height="25" IsIndeterminate="True" Visibility="Visible" Grid.ColumnSpan="2" />
+            <TextBox x:Name="SearchBar" HorizontalAlignment="Right" Height="70" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" Grid.ColumnSpan="2">
                 <TextBox.InputScope>
                     <InputScope>
-                        <InputScopeName NameValue="Maps"></InputScopeName>
+                        <InputScopeName NameValue="Maps"/>
                     </InputScope>
                 </TextBox.InputScope>
             </TextBox>
-            <!--<Slider x:Name="TimeSlider" HorizontalAlignment="Left" VerticalAlignment="Bottom" Minimum="0" Maximum="24" Width="356" Height="93" RenderTransformOrigin="0.635,0.558" Margin="0,0,0,-13" />-->
-            <TextBlock x:Name="TimeLabel" VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="22" TextWrapping="Wrap" Margin="0,0,10,29" Visibility="Collapsed" />
-            <ProgressBar x:Name="Timeline" Height="20" VerticalAlignment="Bottom"  HorizontalAlignment="Center" Width="470" Margin="15,0,15,10" Visibility="Collapsed" />
-            <ProgressBar x:Name="LoadingProgress" Margin="10" Height="25" IsIndeterminate="True" Visibility="Visible" />
+
+            <Canvas x:Name="NotificationPanel" Background="{StaticResource ResourceKey=PhoneAccentBrush}" VerticalAlignment="Top" Height="50" Width="{Binding ActualWidth, ElementName=ContentPanel}">
+                <TextBlock x:Name="NotificationText" Margin="25,20" Text="" FontSize="18" Foreground="WhiteSmoke" />
+            </Canvas>
         </Grid>
 
         <!--Uncomment to see an alignment grid to help ensure your controls are
