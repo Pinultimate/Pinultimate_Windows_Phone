@@ -70,46 +70,6 @@
         }
 
         /// <summary>
-        /// Gets or sets the address of the store
-        /// </summary>
-        public string Address
-        {
-            get
-            {
-                return this.address;
-            }
-
-            set
-            {
-                if (this.address != value)
-                {
-                    this.address = value;
-                    this.NotifyPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets whether the store Pushpin is visible or not in the map
-        /// </summary>
-        public Visibility Visibility
-        {
-            get
-            {
-                return this.visibility;
-            }
-
-            set
-            {
-                if (this.visibility != value)
-                {
-                    this.visibility = value;
-                    this.NotifyPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
         /// Generic NotifyPropertyChanged
         /// </summary>
         /// <param name="propertyName">Name of the property</param>

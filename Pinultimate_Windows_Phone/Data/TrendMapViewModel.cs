@@ -163,19 +163,12 @@ namespace Pinultimate_Windows_Phone.Data
             }
         }
 
-
-        private void TrendMap_CenterChanged(object sender, MapCenterChangedEventArgs e)
+        private void TapOnCluster(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            LocationRectangle boundingBox = GetBoundingBox();
-
-            locationFetcher.FetchClusters(
-    boundingBox.Northwest.Latitude, boundingBox.Northwest.Longitude, boundingBox.WidthInDegrees, boundingBox.HeightInDegrees);
+            Cluster currentCluster = (Cluster) (sender as Border).DataContext;
+            NavigationUtils.Navigate(mainPage.NavigationService, "/ClusterInformationPanorama.xaml", currentCluster);
         }
 
-        private void TrendMap_ZoomLevelChanged(object sender, MapZoomLevelChangedEventArgs e)
-        {
-            LocationRectangle boundingBox = GetBoundingBox();
-        }
         #endregion
 
         #region "Map Center Change Functions"
@@ -327,7 +320,7 @@ namespace Pinultimate_Windows_Phone.Data
 
         private void DrawCluster(Cluster cluster)
         {
-            clustersLayer.Add(TrendMapDrawingUtils.CreateMapLayerForCluster(cluster));
+            clustersLayer.Add(TrendMapDrawingUtils.CreateMapLayerForCluster(cluster, TapOnCluster));
         }
 
         public void cancelCurrentQuery()

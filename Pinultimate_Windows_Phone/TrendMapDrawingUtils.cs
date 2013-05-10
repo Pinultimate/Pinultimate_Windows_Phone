@@ -7,22 +7,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace Pinultimate_Windows_Phone
 {
-    class TrendMapDrawingUtils
+    public class TrendMapDrawingUtils
     {
 
         private const int RADIUS_SCALE = 100;
 
-        public static MapOverlay CreateMapLayerForCluster(Cluster cluster)
+        public static MapOverlay CreateMapLayerForCluster(Cluster cluster, EventHandler<GestureEventArgs> circle_Tap)
         {
             // Create a small circle to mark the current location.
             // Create a MapOverlay to contain the circle.
-            MapOverlay overlay = CreateMapOverlay(CreateCircleForMapDisplay(cluster.Radius, cluster.Count));
-
+            Border circle = CreateCircleForMapDisplay(cluster.Radius, cluster.Count);
+            circle.DataContext = cluster;
+            circle.Tap += circle_Tap;
+            MapOverlay overlay = CreateMapOverlay(circle);
             overlay.GeoCoordinate = cluster.GeoCoordinate;
             return overlay;
         }
@@ -31,7 +34,7 @@ namespace Pinultimate_Windows_Phone
         {
             // Text label for circle, count number
             TextBlock countLabel = new TextBlock();
-            countLabel.Text = count.ToString();
+            countLabel.Text = (count).ToString();
             countLabel.TextAlignment = TextAlignment.Center;
             countLabel.VerticalAlignment = VerticalAlignment.Center;
             countLabel.Foreground = new SolidColorBrush(Colors.White);
