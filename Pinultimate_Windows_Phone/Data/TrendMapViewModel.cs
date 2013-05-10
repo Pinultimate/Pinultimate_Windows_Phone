@@ -149,6 +149,25 @@ namespace Pinultimate_Windows_Phone.Data
         #endregion
 
         #region "map UI callbacks"
+        public class QueryLocationParams
+        {
+            public double Resolution { get; set; }
+            public double Longitude { get; set; }
+            public double Latitude { get; set; }
+            public double LonRange { get; set; }
+            public double LatRange { get; set; }
+
+            public QueryLocationParams(LocationRectangle boundingBox, int numGrids)
+            {
+                Longitude = boundingBox.Center.Longitude;
+                Latitude = boundingBox.Center.Latitude;
+                LonRange = boundingBox.WidthInDegrees;
+                LatRange = boundingBox.HeightInDegrees;
+                // ensure that the Longitude-wise there are numGrids' grids
+                Resolution = boundingBox.WidthInDegrees / numGrids;
+            }
+        }
+
 
         private void TrendMap_CenterChanged(object sender, MapCenterChangedEventArgs e)
         {
@@ -216,7 +235,6 @@ namespace Pinultimate_Windows_Phone.Data
                 //trendMap.ManipulationStarted += trendMap_ManipulationStarted;
                 //trendMap.ManipulationDelta += trendMap_ManipulationDelta;
                 
-                //LocateMapToMe();
                 if (meLocation == null)
                 {
                     MessageBox.Show("We weren't able to locate your position. (Have you enabled Location Services on your phone?)",
@@ -273,8 +291,6 @@ namespace Pinultimate_Windows_Phone.Data
             meIndicator.Visibility = Visibility.Visible;
             meIndicator.Opacity = 0.5;
 
-            //applicationBarViewModel.EnableNextButton();
-            //applicationBarViewModel.EnablePrevButton();
             applicationBarViewModel.ConfigureTimelineButtonsOnCondition();
             applicationBarViewModel.EnableMeButton();
             applicationBarViewModel.EnableReloadMenu();
