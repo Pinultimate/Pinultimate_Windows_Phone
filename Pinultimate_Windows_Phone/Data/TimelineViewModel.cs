@@ -46,21 +46,19 @@ namespace Pinultimate_Windows_Phone.Data
         public TimelineViewModel(MainPage MainPage)
         {
             mainPage = MainPage;
-            timeline.Minimum = 1;
+            timeLabel.Foreground = (SolidColorBrush)Application.Current.Resources["PhoneAccentBrush"];
+            timeline.Minimum = 0;
             timeline.Maximum = 24;
             timeline.Value = timeline.Maximum;
-            timeLabel.Text = timeline.Value.ToString();
+            timeLabel.Text = LabelText(GetCurrentTime());
             //applicationBarViewModel.ConfigureTimelineButtonsOnCondition();
             timeline.ValueChanged += Timeline_ValueChanged;
 
-            timeLabel.Foreground = (SolidColorBrush)Application.Current.Resources["PhoneAccentBrush"];
-            timeLabel.Text = timeline.Value.ToString();
         }
 
-        public void ChangeRange(int minimum, int maximum)
+        public void ChangeNumHours(int numHours)
         {
-            timeline.Minimum = minimum;
-            timeline.Maximum = maximum;
+            timeline.Maximum = numHours;
             //ConfigureApplicationBarButtons();
             applicationBarViewModel.ConfigureTimelineButtonsOnCondition();
         }
@@ -80,6 +78,50 @@ namespace Pinultimate_Windows_Phone.Data
             return (int)timeline.Value;
         }
 
+        public DateTime GetMaximumTime()
+        {
+            DateTime current = DateTime.Now;
+            return NormalizeDateTime(current);
+        }
+
+        public DateTime GetMinimumTime()
+        {
+            DateTime maximumTime = GetMaximumTime();
+            return maximumTime.Subtract(TimeSpan.FromHours(GetMaximum()));
+        }
+
+        public DateTime GetCurrentTime()
+        {
+            DateTime maximumTime = GetMaximumTime();
+            return maximumTime.Subtract(TimeSpan.FromHours(GetMaximum() - GetCurrentValue()));
+        }
+
+        private DateTime NormalizeDateTime(DateTime dt)
+        {
+            return new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, 0, 0);
+        }
+
+        private String GetDateDescription(DateTime dt)
+        {
+            DateTime current = DateTime.Now;
+            if (current.Date == dt.Date)
+            {
+                return "Today";
+            }
+            else if (current.Subtract(TimeSpan.FromDays(1)).Date == dt.Date)
+            {
+                return "Yesterday";
+            } 
+            else
+            {
+                return dt.ToString("ddd");
+            }
+        }
+
+        private String GetTimeDescription(DateTime dt)
+        {
+            return dt.ToShortTimeString();
+        }
 
         private void ConfigureApplicationBarButtons()
         {
@@ -104,9 +146,14 @@ namespace Pinultimate_Windows_Phone.Data
 
         private void Timeline_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            timeLabel.Text = timeline.Value.ToString();
+            timeLabel.Text = LabelText(GetCurrentTime());
             //ConfigureApplicationBarButtons();
             applicationBarViewModel.ConfigureTimelineButtonsOnCondition();
+        }
+
+        private String LabelText(DateTime normalizedTime)
+        {
+            return GetDateDescription(normalizedTime) + " " + GetTimeDescription(normalizedTime);
         }
 
         public void IncreaseHour()
