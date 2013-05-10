@@ -20,6 +20,8 @@ namespace Pinultimate_Windows_Phone.Data
 {
     public class TrendMapViewModel
     {
+        #region "instance variables"
+
         public ClusterList clusterList { get; set; }
         public List<ClusteringProcessor> processors { get; set; }
         public MainPage mainPage { get; set; }
@@ -83,6 +85,7 @@ namespace Pinultimate_Windows_Phone.Data
         }
         private Ellipse meIndicator { get; set; }
 
+        #endregion
 
         #region "Me"
         public GeoTracker geoTracker { get; set; }

@@ -51,7 +51,7 @@ namespace Pinultimate_Windows_Phone
 
         private void geolocator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
         {
-            mainPage.updateMap(args.Position.Coordinate.Latitude, args.Position.Coordinate.Longitude);
+            // TODO later on we can use this to better optimize our queries
         }
 
         public void StartTracking()
