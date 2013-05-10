@@ -83,6 +83,17 @@ namespace Pinultimate_Windows_Phone.Data
                 mainPage.NotificationText = value;
             }
         }
+        public TextBlock secondaryNotificationText
+        {
+            get
+            {
+                return mainPage.SecondaryNotificationText;
+            }
+            set
+            {
+                mainPage.SecondaryNotificationText = value;
+            }
+        }
         private Ellipse meIndicator { get; set; }
 
         #endregion
@@ -118,7 +129,7 @@ namespace Pinultimate_Windows_Phone.Data
         public TrendMapViewModel(MainPage MainPage)
         {
             mainPage = MainPage;
-            ShowNotification("Preparing TrendMap for you...");
+            ShowNotification("TrendMap", "Preparing TrendMap for you...\n haha");
             geoTracker = new GeoTracker(mainPage);
             geoTracker.StartTracking();
 
@@ -135,10 +146,12 @@ namespace Pinultimate_Windows_Phone.Data
 
         #region "data callbacks"
 
-        public void ShowNotification(String text)
+        public void ShowNotification(String title, String text)
         {
             notificationPanel.Visibility = Visibility.Visible;
             notificationText.Visibility = Visibility.Visible;
+            secondaryNotificationText.Visibility = Visibility.Visible;
+            secondaryNotificationText.Text = title;
             notificationText.Text = text;
         }
 
@@ -146,10 +159,12 @@ namespace Pinultimate_Windows_Phone.Data
         {
             notificationText.Visibility = Visibility.Collapsed;
             notificationPanel.Visibility = Visibility.Collapsed;
+            secondaryNotificationText.Visibility = Visibility.Collapsed;
         }
 
-        public void ChangeNotificationText(String newMessage)
+        public void ChangeNotificationText(String title, String newMessage)
         {
+            secondaryNotificationText.Text = title;
             notificationText.Text = newMessage;
         }
 
@@ -163,11 +178,11 @@ namespace Pinultimate_Windows_Phone.Data
             //fetchingClusters.Show();
             if (NotificationVisible())
             {
-                ChangeNotificationText("Abandoning previous search. Refetching social data around you...");
+                ChangeNotificationText("Abandoned previous query", "Refetching social data around you...");
             }
             else
             {
-                ShowNotification("Fetching social data around you...");
+                ShowNotification("Location Data", "Fetching social data around you...");
             }
         }
 
@@ -240,7 +255,7 @@ namespace Pinultimate_Windows_Phone.Data
 
         public async void RelocateAndRedrawMe()
         {
-            BeginLoadingProgress("Relocating your position...");
+            BeginLoadingProgress("GPS", "Relocating your position...");
             meLocation = await geoTracker.GetCurrentLocation();
             if (meLocation == null)
             {
@@ -315,9 +330,9 @@ namespace Pinultimate_Windows_Phone.Data
         #endregion
 
         #region "loading progress bar"
-        private void BeginLoadingProgress(String message)
+        private void BeginLoadingProgress(String title, String message)
         {
-            ShowNotification(message);
+            ShowNotification(title, message);
             loadingProgress.Visibility = Visibility.Visible;
             trendMap.Opacity = 0.5;
             timelineViewModel.setOpacity(0.5);

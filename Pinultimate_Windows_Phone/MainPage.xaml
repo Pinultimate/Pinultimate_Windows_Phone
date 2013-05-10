@@ -65,8 +65,9 @@
                 </TextBox.InputScope>
             </TextBox>
 
-            <Canvas x:Name="NotificationPanel" Background="{StaticResource ResourceKey=PhoneAccentBrush}" VerticalAlignment="Top" Height="50" Width="{Binding ActualWidth, ElementName=ContentPanel}">
-                <TextBlock x:Name="NotificationText" Margin="25,20" Text="" FontSize="18" Foreground="WhiteSmoke" />
+            <Canvas x:Name="NotificationPanel" Background="{StaticResource ResourceKey=PhoneAccentBrush}" VerticalAlignment="Top" Height="55" Width="{Binding ActualWidth, ElementName=ContentPanel}">
+                <TextBlock x:Name="SecondaryNotificationText" VerticalAlignment="Bottom" Margin="25,2" Text="text" FontSize="18" Foreground="WhiteSmoke" />
+                <TextBlock x:Name="NotificationText" VerticalAlignment="Bottom" Margin="25,24" Text="text" FontSize="20" Foreground="WhiteSmoke" />
             </Canvas>
         </Grid>
 
