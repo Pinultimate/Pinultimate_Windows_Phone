@@ -21,43 +21,18 @@ namespace Pinultimate_Windows_Phone
 
         public LocationFetcher(JSONLoadingStartedHandler startingCallback, JSONLoadingCompletionHandler completionCallback, JSONLoadingErrorHandler errorCallback)
         {
+            instantiateWebClient();
             startingHandler = startingCallback;
             completionHandler = completionCallback;
             errorHandler = errorCallback;
-
-
-            backgroundWorker = new BackgroundWorker();
-            backgroundWorker.WorkerReportsProgress = true;
-            backgroundWorker.WorkerSupportsCancellation = true;
-            backgroundWorker.DoWork += new DoWorkEventHandler(bw_DoWork);
-            backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(bw_ProgressChanged);
-            backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
         }
 
-        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void bw_DoWork(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            string query = e.Argument as string;
-
-            JSONResponseForURL(query);
-            
-        }
-
-        private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-        
         // Callback functions when HTTP request starts, ends with success, or ends with an error
         private JSONLoadingStartedHandler startingHandler { get; set; }
         private JSONLoadingCompletionHandler completionHandler { get; set; }
         private JSONLoadingErrorHandler errorHandler { get; set; }
-        private BackgroundWorker backgroundWorker { get; set; }
+        private WebClient webClient { get; set; }
+        private WebClient oldWebClient { get; set; }
 
         // The callback function called when the JSON has successfully been loaded and deserialized
         public delegate void JSONLoadingStartedHandler();
@@ -66,28 +41,29 @@ namespace Pinultimate_Windows_Phone
 
         public void FetchClusters(double latitude, double longitude, double latrange, double lonrange)
         {
+            Debug.WriteLine("Initiating HTTP Request to fetch clusters");
+            instantiateWebClient();
             string query = QueryURL.CreateGridQuery(latitude, longitude, latrange, lonrange, RESOLUTION);
             JSONResponseForURL(query);
-            //if (backgroundWorker.IsBusy)
-            //{
-            //    backgroundWorker.CancelAsync();
-            //}
-            //backgroundWorker.RunWorkerAsync(query);
-            
+        }
+
+        private void instantiateWebClient()
+        {
+            webClient = new WebClient();
+            webClient.DownloadProgressChanged += jsonWebClient_DownloadProgressChanged;
+            webClient.DownloadStringCompleted += jsonWebClient_DownloadStringCompleted;
         }
 
         private void JSONResponseForURL(string url)
         {           
-            WebClient jsonWebClient = new WebClient();
-            jsonWebClient.DownloadProgressChanged += jsonWebClient_DownloadProgressChanged;
-            jsonWebClient.DownloadStringCompleted += jsonWebClient_DownloadStringCompleted;
+
             try
             {
                 if (this.startingHandler != null)
                 {
                     this.startingHandler();
                 }
-                jsonWebClient.DownloadStringAsync(new Uri(url));
+                webClient.DownloadStringAsync(new Uri(url));
                 Debug.WriteLine("Request sent to: {0}", url);
             }
             catch (System.Net.WebException exception)
@@ -97,7 +73,7 @@ namespace Pinultimate_Windows_Phone
         }
 
         /* Automatically Generated callback for download completion */
-        void jsonWebClient_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+        private void jsonWebClient_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
         {
             if (e.Cancelled == true)
             {
@@ -133,6 +109,13 @@ namespace Pinultimate_Windows_Phone
             int progress = e.ProgressPercentage;
 
             Debug.WriteLine("{0}/{1} bytes Downloaded, {2}%", bytesRecieved, totalBytesToRecieve, progress);
+        }
+
+        public void cancelWebRequest()
+        {
+            Debug.WriteLine("canceling web request");
+            webClient.CancelAsync();
+            oldWebClient = webClient;
         }
     }
 

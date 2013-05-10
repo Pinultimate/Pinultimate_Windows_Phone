@@ -90,18 +90,13 @@ namespace Pinultimate_Windows_Phone.Data
 
         private readonly LocationFetcher locationFetcher; 
         private MapLayer meIndicatorLayer;
+        private MapLayer clustersLayer;
 
         public TrendMapViewModel(MainPage MainPage)
         {
-           
             mainPage = MainPage;
-            //trendMap.ZoomLevelChanged += TrendMap_ZoomLevelChanged;
-            //trendMap.CenterChanged += TrendMap_CenterChanged;
             geoTracker = new GeoTracker(mainPage);
             geoTracker.StartTracking();
-
-            var gestureBase = new MapGestureBase(trendMap);
-            gestureBase.SuppressMapGestures = false;
 
             locationFetcher = new LocationFetcher(
                new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingStartedHandler(fetchClustersStartedCallback),
@@ -111,7 +106,7 @@ namespace Pinultimate_Windows_Phone.Data
 
             clusterList = new ClusterList();
             clusterList.ClustersChanged += UpdateMapWithNewClusters;
-            InitializeMeIndicator();
+            InitializeMeIndicatorAndClustersLayer();
         }
 
         #region "data callbacks"
@@ -190,7 +185,6 @@ namespace Pinultimate_Windows_Phone.Data
             trendMap.Center = coordinate;
         }
 
-
         #endregion
 
         #region "Me Indicator"
@@ -212,7 +206,7 @@ namespace Pinultimate_Windows_Phone.Data
             EndLoadingProgress();
         }
 
-        private async void InitializeMeIndicator()
+        private async void InitializeMeIndicatorAndClustersLayer()
         {
             Task<GeoCoordinate> geoCoordinateTask = geoTracker.GetCurrentLocation();
             if (geoCoordinateTask != null)
@@ -229,6 +223,10 @@ namespace Pinultimate_Windows_Phone.Data
                 meIndicatorOverlay.PositionOrigin = new Point(0.5, 0.5);
                 meIndicatorLayer.Add(meIndicatorOverlay);
                 trendMap.Layers.Add(meIndicatorLayer);
+
+                clustersLayer = new MapLayer();
+                trendMap.Layers.Add(clustersLayer);
+
                 meLocation = await geoCoordinateTask;
 
                 //trendMap.ManipulationCompleted += trendMap_ManipulationCompleted;
@@ -312,12 +310,9 @@ namespace Pinultimate_Windows_Phone.Data
 
         private void UpdateMapWithNewClusters(object sender, NotifyCollectionChangedEventArgs e)
         {
-            
-            if (clusterList.Count == 0)
-            {
-                ClearMap();
-                return;
-            }
+
+            ClearClustersFromMap();
+            if (clusterList.Count == 0) return;
             Debug.WriteLine("Drawing Clusters");
             foreach (Cluster cluster in clusterList)
             {
@@ -325,15 +320,29 @@ namespace Pinultimate_Windows_Phone.Data
             }
         }
 
-        private void ClearMap()
+        private void ClearClustersFromMap()
         {
-            trendMap.Layers.Clear();
-            trendMap.Layers.Add(meIndicatorLayer);
+            clustersLayer.Clear();
         }
 
         private void DrawCluster(Cluster cluster)
         {
-            trendMap.Layers.Add(TrendMapDrawingUtils.CreateMapLayerForCluster(cluster));
+            clustersLayer.Add(TrendMapDrawingUtils.CreateMapLayerForCluster(cluster));
+        }
+
+        public void cancelCurrentQuery()
+        {
+            locationFetcher.cancelWebRequest();
+        }
+
+        public void initiateNewQuery()
+        {
+            LocationRectangle boundingBox = GetBoundingBox();
+
+            locationFetcher.FetchClusters(
+                boundingBox.Northwest.Latitude, boundingBox.Northwest.Longitude,
+                boundingBox.WidthInDegrees, boundingBox.HeightInDegrees
+            );
         }
     }
 }

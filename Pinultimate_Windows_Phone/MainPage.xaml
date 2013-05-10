@@ -46,7 +46,6 @@
             PinchCompleted="GestureListener_PinchCompleted"
             DragStarted="GestureListener_DragStarted"
             DragCompleted="GestureListener_DragCompleted"
-            Flick="GestureListener_Flick"
             DoubleTap="GestureListener_DoubleTap"/>
                 </toolkit:GestureService.GestureListener>
             </maps:Map>

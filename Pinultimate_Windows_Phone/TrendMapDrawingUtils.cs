@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -13,32 +14,45 @@ namespace Pinultimate_Windows_Phone
 {
     class TrendMapDrawingUtils
     {
-        public static MapLayer CreateMapLayerForCluster(Cluster cluster)
+
+        private const int RADIUS_SCALE = 100;
+
+        public static MapOverlay CreateMapLayerForCluster(Cluster cluster)
         {
             // Create a small circle to mark the current location.
             // Create a MapOverlay to contain the circle.
             MapOverlay overlay = CreateMapOverlay(CreateCircleForMapDisplay(cluster.Radius, cluster.Count));
 
-            // Create a MapLayer to contain the MapOverlay.
-            MapLayer clusterLayer = new MapLayer();
-            clusterLayer.Add(overlay);
-
             overlay.GeoCoordinate = cluster.GeoCoordinate;
-            return clusterLayer;
+            return overlay;
         }
 
-        private static Ellipse CreateCircleForMapDisplay(double radius, int count)
+        private static Border CreateCircleForMapDisplay(double radius, int count)
         {
-            // TODO add count as part of text
-            Ellipse toReturn = new Ellipse();
-            toReturn.Fill = new SolidColorBrush(Colors.Blue);
-            toReturn.Height = radius;
-            toReturn.Width = radius;
-            toReturn.Opacity = 50;
-            return toReturn;
+            // Text label for circle, count number
+            TextBlock countLabel = new TextBlock();
+            countLabel.Text = count.ToString();
+            countLabel.TextAlignment = TextAlignment.Center;
+            countLabel.VerticalAlignment = VerticalAlignment.Center;
+            countLabel.Foreground = new SolidColorBrush(Colors.White);
+
+            // Create "circle" that will contain circle
+            Border border = new Border();
+            double size = radius * RADIUS_SCALE;
+            border.CornerRadius =  new CornerRadius(size / 2);
+            //Ellipse toReturn = new Ellipse();
+            border.Background = new SolidColorBrush(Colors.Green);
+            border.BorderBrush = new SolidColorBrush(Colors.Black);
+            border.BorderThickness = new Thickness(1);
+            border.Height = size;
+            border.Width = size;
+            border.Opacity = 0.8;
+            border.Child = countLabel;
+
+            return border;
         }
 
-        private static MapOverlay CreateMapOverlay(Ellipse circle)
+        private static MapOverlay CreateMapOverlay(Border circle)
         {
             MapOverlay toReturn = new MapOverlay();
             toReturn.Content = circle;
