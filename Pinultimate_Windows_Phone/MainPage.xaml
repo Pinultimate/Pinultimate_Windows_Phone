@@ -6,6 +6,8 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit=
+"clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:maps="clr-namespace:Microsoft.Phone.Maps.Controls;assembly=Microsoft.Phone.Maps"
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -37,8 +39,18 @@
 
 
         <Grid x:Name="ContentPanel" Grid.Row="0" Margin="0,0,0,0">
-            <maps:Map ZoomLevel="12" x:Name="TrendMap" Margin="0,0,0,0" Visibility="Collapsed" />
-            <TextBox x:Name="SearchBar" HorizontalAlignment="Right" Height="70" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" >
+            <maps:Map ZoomLevel="12" x:Name="TrendMap" Margin="0,0,0,0" Visibility="Collapsed">
+                <toolkit:GestureService.GestureListener>
+                    <toolkit:GestureListener
+            PinchStarted="GestureListener_PinchStarted"
+            PinchCompleted="GestureListener_PinchCompleted"
+            DragStarted="GestureListener_DragStarted"
+            DragCompleted="GestureListener_DragCompleted"
+            Flick="GestureListener_Flick"
+            DoubleTap="GestureListener_DoubleTap"/>
+                </toolkit:GestureService.GestureListener>
+            </maps:Map>
+            <TextBox x:Name="SearchBar" HorizontalAlignment="Right" Height="70" TextWrapping="Wrap" VerticalAlignment="Top" Width="480">
                 <TextBox.InputScope>
                     <InputScope>
                         <InputScopeName NameValue="Maps"></InputScopeName>

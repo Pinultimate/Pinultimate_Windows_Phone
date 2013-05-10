@@ -42,19 +42,21 @@ namespace Pinultimate_Windows_Phone
 
         void el_ManipulationStarted(object sender, ManipulationStartedEventArgs e)
         {
-            Debug.WriteLine("Manipulation Started");
+            //Debug.WriteLine("Manipulation Started");
         }
 
         private void el_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
         {
-            Debug.WriteLine("Manipulation Ended");
+            //Debug.WriteLine("Manipulation Ended");
         }
 
         private void MapElement_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
         {
-            Debug.WriteLine("Manipulation Delta");
+            //Debug.WriteLine("Manipulation Delta");
             if (SuppressMapGestures)
                 e.Handled = true;
+            else
+                e.Handled = false;
         }
     }
 }

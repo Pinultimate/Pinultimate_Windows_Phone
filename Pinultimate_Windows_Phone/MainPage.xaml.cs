@@ -83,6 +83,36 @@ namespace Pinultimate_Windows_Phone
             }
         }
 
+        private void GestureListener_PinchStarted(object sender, PinchStartedGestureEventArgs e)
+        {
+            Debug.WriteLine("Pinch Started");
+        }
+
+        private void GestureListener_PinchCompleted(object sender, PinchGestureEventArgs e)
+        {
+            Debug.WriteLine("Pinch Completed");
+        }
+
+        private void GestureListener_DragStarted(object sender, DragStartedGestureEventArgs e)
+        {
+            Debug.WriteLine("Drag Started");
+        }
+
+        private void GestureListener_DragCompleted(object sender, DragCompletedGestureEventArgs e)
+        {
+            Debug.WriteLine("Drag Ended");
+        }
+
+        private void GestureListener_DoubleTap(object sender,  Microsoft.Phone.Controls.GestureEventArgs e)
+        {
+            Debug.WriteLine("Double Tap");
+        }
+
+        private void GestureListener_Flick(object sender, FlickGestureEventArgs e)
+        {
+            Debug.WriteLine("Flick");
+        }
+
         private void testAPI()
         {
             LocationFetcher locFetcher = new LocationFetcher();
