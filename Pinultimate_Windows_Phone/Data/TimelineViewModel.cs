@@ -47,8 +47,10 @@ namespace Pinultimate_Windows_Phone.Data
             mainPage = MainPage;
             timeline.Minimum = 1;
             timeline.Maximum = 24;
-            timeline.ValueChanged += Timeline_ValueChanged;
             timeline.Value = timeline.Maximum;
+            timeLabel.Text = timeline.Value.ToString();
+            //applicationBarViewModel.ConfigureTimelineButtonsOnCondition();
+            timeline.ValueChanged += Timeline_ValueChanged;
 
             timeLabel.Foreground = (SolidColorBrush)Application.Current.Resources["PhoneAccentBrush"];
             timeLabel.Text = timeline.Value.ToString();
@@ -58,7 +60,23 @@ namespace Pinultimate_Windows_Phone.Data
         {
             timeline.Minimum = minimum;
             timeline.Maximum = maximum;
-            ConfigureApplicationBarButtons();
+            //ConfigureApplicationBarButtons();
+            applicationBarViewModel.ConfigureTimelineButtonsOnCondition();
+        }
+
+        public int GetMaximum()
+        {
+            return (int)timeline.Maximum;
+        }
+
+        public int GetMinimum()
+        {
+            return (int)timeline.Minimum;
+        }
+
+        public int GetCurrentValue()
+        {
+            return (int)timeline.Value;
         }
 
         private void ConfigureApplicationBarButtons()
@@ -85,7 +103,8 @@ namespace Pinultimate_Windows_Phone.Data
         private void Timeline_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             timeLabel.Text = timeline.Value.ToString();
-            ConfigureApplicationBarButtons();
+            //ConfigureApplicationBarButtons();
+            applicationBarViewModel.ConfigureTimelineButtonsOnCondition();
         }
 
         public void IncreaseHour()
@@ -104,6 +123,18 @@ namespace Pinultimate_Windows_Phone.Data
             {
                 timeline.Value = value - 1;
             }
+        }
+
+        public void setVisibility(Visibility visibility)
+        {
+            timeline.Visibility = visibility;
+            timeLabel.Visibility = visibility;
+        }
+
+        internal void setOpacity(double opacity)
+        {
+            timeline.Opacity = opacity;
+            timeLabel.Opacity = opacity;
         }
     }
 }

@@ -42,6 +42,11 @@ namespace Pinultimate_Windows_Phone.Data
 
             applicationBar.MenuItems.Add(reloadMenuItem);
             applicationBar.MenuItems.Add(settingsMenuItem);
+
+            meButton.IsEnabled = false;
+            backwardButton.IsEnabled = false;
+            forwardButton.IsEnabled = false;
+            reloadMenuItem.IsEnabled = false;
         }
 
         public MainPage mainPage { get; set; }
@@ -128,7 +133,8 @@ namespace Pinultimate_Windows_Phone.Data
         private void MeButton_Click(object sender, EventArgs e)
         {
             ApplicationBarIconButton meButton = (ApplicationBarIconButton)applicationBar.Buttons[0];
-            trendMapViewModel.LocateMapToMe();
+            //trendMapViewModel.LocateMapToMe();
+            trendMapViewModel.RelocateAndRedrawMe();
         }
 
         private void SearchButton_Click(object sender, EventArgs e)
@@ -152,6 +158,27 @@ namespace Pinultimate_Windows_Phone.Data
         }
 
         #region "Button Enabler/Disabler"
+        public void ConfigureTimelineButtonsOnCondition()
+        {
+            int value = timelineViewModel.GetCurrentValue();
+            if (value == timelineViewModel.GetMaximum())
+            {
+                DisableNextButton();
+            }
+            else if (value < timelineViewModel.GetMaximum())
+            {
+                EnableNextButton();
+            }
+            if (value == timelineViewModel.GetMinimum())
+            {
+                DisablePrevButton();
+            }
+            else if (value > timelineViewModel.GetMinimum())
+            {
+                EnablePrevButton();
+            }
+        }
+
         public void EnablePrevButton()
         {
             ApplicationBarIconButton prevButton = (ApplicationBarIconButton)applicationBar.Buttons[2];
@@ -174,6 +201,30 @@ namespace Pinultimate_Windows_Phone.Data
         {
             ApplicationBarIconButton nextButton = (ApplicationBarIconButton)applicationBar.Buttons[3];
             nextButton.IsEnabled = false;
+        }
+
+        public void EnableMeButton()
+        {
+            ApplicationBarIconButton meButton = (ApplicationBarIconButton)applicationBar.Buttons[0];
+            meButton.IsEnabled = true;
+        }
+
+        public void DisableMeButton()
+        {
+            ApplicationBarIconButton meButton = (ApplicationBarIconButton)applicationBar.Buttons[0];
+            meButton.IsEnabled = false;
+        }
+
+        public void EnableReloadMenu()
+        {
+            ApplicationBarMenuItem reloadMenuItem = (ApplicationBarMenuItem)applicationBar.MenuItems[0];
+            reloadMenuItem.IsEnabled = true;
+        }
+
+        public void DisableReloadMenu()
+        {
+            ApplicationBarMenuItem reloadMenuItem = (ApplicationBarMenuItem)applicationBar.MenuItems[0];
+            reloadMenuItem.IsEnabled = false;
         }
         #endregion
     }

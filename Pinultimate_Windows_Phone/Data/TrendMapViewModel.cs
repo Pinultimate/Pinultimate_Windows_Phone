@@ -33,6 +33,33 @@ namespace Pinultimate_Windows_Phone.Data
                 mainPage.TrendMap = value;
             }
         }
+        public ProgressBar loadingProgress
+        {
+            get
+            {
+                return mainPage.LoadingProgress;
+            }
+            set
+            {
+                mainPage.LoadingProgress = value;
+            }
+        }
+        private TimelineViewModel timelineViewModel
+        {
+            get
+            {
+                return mainPage.timelineViewModel;
+            }
+        }
+        private ApplicationBarViewModel applicationBarViewModel
+        {
+            get
+            {
+                return mainPage.applicationBarViewModel;
+            }
+        }
+        private Ellipse meIndicator { get; set; }
+
 
         #region "Me"
         public GeoTracker geoTracker { get; set; }
@@ -151,20 +178,19 @@ namespace Pinultimate_Windows_Phone.Data
 
         public async void RelocateAndRedrawMe()
         {
+            BeginLoadingProgress();
             meLocation = await geoTracker.GetCurrentLocation();
-            meIndicatorOverlay.GeoCoordinate = meLocation;
-        }
-
-        public void LocateMapToMe()
-        {
             if (meLocation == null)
             {
                 MessageBox.Show("We weren't able to locate your position. (Have you enabled Location Services on your phone?)",
-                  "Location",
-                  MessageBoxButton.OK);
-                return;
+                  "Location", MessageBoxButton.OK);
             }
-            LocateMapToCoordinate(meLocation);
+            else
+            {
+                meIndicatorOverlay.GeoCoordinate = meLocation;
+                LocateMapToCoordinate(meLocation);
+            }
+            EndLoadingProgress();
         }
 
         private async void InitializeMeIndicator()
@@ -174,23 +200,35 @@ namespace Pinultimate_Windows_Phone.Data
             {
                 meIndicatorLayer = new MapLayer();
                 meIndicatorOverlay = new MapOverlay();
-                Ellipse meIndicator = new Ellipse();
+                meIndicator = new Ellipse();
                 meIndicator.Fill = new SolidColorBrush(Colors.Blue);
                 meIndicator.Height = 10;
                 meIndicator.Width = 10;
-                meIndicator.Opacity = 50;
+                meIndicator.Opacity = 0.5;
+                meIndicator.Visibility = Visibility.Collapsed;
                 meIndicatorOverlay.Content = meIndicator;
                 meIndicatorOverlay.PositionOrigin = new Point(0.5, 0.5);
                 meIndicatorLayer.Add(meIndicatorOverlay);
-                //fetchingLocation.Show();
-                meLocation = await geoCoordinateTask;
-                //fetchingLocation.Hide();
-                meIndicatorOverlay.GeoCoordinate = meLocation;
                 trendMap.Layers.Add(meIndicatorLayer);
+                meLocation = await geoCoordinateTask;
+
                 //trendMap.ManipulationCompleted += trendMap_ManipulationCompleted;
                 //trendMap.ManipulationStarted += trendMap_ManipulationStarted;
                 //trendMap.ManipulationDelta += trendMap_ManipulationDelta;
-                LocateMapToMe();
+                
+                //LocateMapToMe();
+                if (meLocation == null)
+                {
+                    MessageBox.Show("We weren't able to locate your position. (Have you enabled Location Services on your phone?)",
+                      "Location", MessageBoxButton.OK);
+                }
+                else
+                {
+                    // are both necessary?
+                    meIndicatorOverlay.GeoCoordinate = meLocation;
+                    LocateMapToCoordinate(meLocation);
+                }
+                EndLoadingProgress();
             }
         }
 
@@ -209,6 +247,38 @@ namespace Pinultimate_Windows_Phone.Data
             Debug.WriteLine("Manipulation Completed");
         }
 
+        #endregion
+
+        #region "loading progress bar"
+        private void BeginLoadingProgress()
+        {
+            loadingProgress.Visibility = Visibility.Visible;
+            trendMap.Opacity = 0.5;
+            timelineViewModel.setOpacity(0.5);
+            meIndicator.Opacity = 0.2;
+
+            applicationBarViewModel.DisableNextButton();
+            applicationBarViewModel.DisablePrevButton();
+            applicationBarViewModel.DisableMeButton();
+            applicationBarViewModel.DisableReloadMenu();
+        }
+
+        private void EndLoadingProgress()
+        {
+            loadingProgress.Visibility = Visibility.Collapsed;
+            trendMap.Visibility = Visibility.Visible;
+            trendMap.Opacity = 1;
+            timelineViewModel.setVisibility(Visibility.Visible);
+            timelineViewModel.setOpacity(1);
+            meIndicator.Visibility = Visibility.Visible;
+            meIndicator.Opacity = 0.5;
+
+            //applicationBarViewModel.EnableNextButton();
+            //applicationBarViewModel.EnablePrevButton();
+            applicationBarViewModel.ConfigureTimelineButtonsOnCondition();
+            applicationBarViewModel.EnableMeButton();
+            applicationBarViewModel.EnableReloadMenu();
+        }
         #endregion
 
         private LocationRectangle GetBoundingBox()

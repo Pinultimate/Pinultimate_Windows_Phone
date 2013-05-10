@@ -31,8 +31,8 @@ namespace Pinultimate_Windows_Phone
             InitializeComponent();
             appSettings = new AppSettings();
             applicationBarViewModel = new ApplicationBarViewModel(this);
-            trendMapViewModel = new TrendMapViewModel(this);
             timelineViewModel = new TimelineViewModel(this);
+            trendMapViewModel = new TrendMapViewModel(this);
             searchBarViewModel = new SearchBarViewModel(trendMapViewModel, SearchBar);
 
             

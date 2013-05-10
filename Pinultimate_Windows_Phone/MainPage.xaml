@@ -16,11 +16,6 @@
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
-        <!--<Grid.RowDefinitions>
-            <RowDefinition Height="Auto" MinHeight="93"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
--->
         <!-- LOCALIZATION NOTE:
             To localize the displayed strings copy their values to appropriately named
             keys in the app's neutral language resource file (AppResources.resx) then
@@ -40,20 +35,10 @@
             CurrentUICulture of the app at run time.
          -->
 
-        <!--TitlePanel contains the name of the application and page title-->
-        <!--<StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Style="{StaticResource LongListSelectorGroupHeaderStyle}" Margin="12,0" Height="48">
-            	<Run Text="TrendMap"/>
-            	<LineBreak/>
-               	<Run/>
-            </TextBlock>
-        </StackPanel>
-        -->
-        <!--ContentPanel - place additional content here-->
 
         <Grid x:Name="ContentPanel" Grid.Row="0" Margin="0,0,0,0">
-            <maps:Map ZoomLevel="7" x:Name="TrendMap" Margin="0,0,0,0" />
-            <TextBox x:Name="SearchBar" HorizontalAlignment="Right" Height="70" TextWrapping="Wrap" VerticalAlignment="Top" Width="480">
+            <maps:Map ZoomLevel="12" x:Name="TrendMap" Margin="0,0,0,0" Visibility="Collapsed" />
+            <TextBox x:Name="SearchBar" HorizontalAlignment="Right" Height="70" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" >
                 <TextBox.InputScope>
                     <InputScope>
                         <InputScopeName NameValue="Maps"></InputScopeName>
@@ -61,8 +46,9 @@
                 </TextBox.InputScope>
             </TextBox>
             <!--<Slider x:Name="TimeSlider" HorizontalAlignment="Left" VerticalAlignment="Bottom" Minimum="0" Maximum="24" Width="356" Height="93" RenderTransformOrigin="0.635,0.558" Margin="0,0,0,-13" />-->
-            <TextBlock x:Name="TimeLabel" VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="22" TextWrapping="Wrap" Margin="0,0,10,29" />
-            <ProgressBar x:Name="Timeline" Height="20" VerticalAlignment="Bottom"  HorizontalAlignment="Center" Width="470" Margin="15,0,15,10"/>
+            <TextBlock x:Name="TimeLabel" VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="22" TextWrapping="Wrap" Margin="0,0,10,29" Visibility="Collapsed" />
+            <ProgressBar x:Name="Timeline" Height="20" VerticalAlignment="Bottom"  HorizontalAlignment="Center" Width="470" Margin="15,0,15,10" Visibility="Collapsed" />
+            <ProgressBar x:Name="LoadingProgress" Margin="10" Height="25" IsIndeterminate="True" Visibility="Visible" />
         </Grid>
 
         <!--Uncomment to see an alignment grid to help ensure your controls are
