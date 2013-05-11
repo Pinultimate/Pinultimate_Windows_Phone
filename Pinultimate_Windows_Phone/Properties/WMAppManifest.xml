@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="en-US" />
-  <App xmlns="" ProductID="{f3b66f48-1686-4ccc-93a3-f3e763c21fe7}" Title="Pinultimate" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Pinultimate_Windows_Phone author" Description="Sample description" Publisher="Pinultimate_Windows_Phone" PublisherID="{d7f99146-6420-4b31-a92f-66726bec61fa}">
-    <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
+  <App xmlns="" ProductID="{f3b66f48-1686-4ccc-93a3-f3e763c21fe7}" Title="TrendMap" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Pinultimate_Windows_Phone author" Description="Sample description" Publisher="Pinultimate_Windows_Phone" PublisherID="{d7f99146-6420-4b31-a92f-66726bec61fa}">
+    <IconPath IsRelative="true" IsResource="false">Assets\TrendMapApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
       <Capability Name="ID_CAP_MEDIALIB_AUDIO" />
@@ -18,10 +18,10 @@
     <Tokens>
       <PrimaryToken TokenID="Pinultimate_Windows_PhoneToken" TaskName="_default">
         <TemplateFlip>
-          <SmallImageURI IsRelative="true" IsResource="false">Assets\Tiles\FlipCycleTileSmall.png</SmallImageURI>
+          <SmallImageURI IsRelative="true" IsResource="false">Assets\Tiles\TrendMapTileSmall.png</SmallImageURI>
           <Count>0</Count>
-          <BackgroundImageURI IsRelative="true" IsResource="false">Assets\Tiles\FlipCycleTileMedium.png</BackgroundImageURI>
-          <Title>Pinultimate</Title>
+          <BackgroundImageURI IsRelative="true" IsResource="false">Assets\Tiles\TrendMapTileMedium.png</BackgroundImageURI>
+          <Title>TrendMap</Title>
           <BackContent>
           </BackContent>
           <BackBackgroundImageURI>
