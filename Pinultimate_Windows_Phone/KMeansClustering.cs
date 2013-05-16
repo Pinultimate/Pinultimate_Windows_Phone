@@ -214,14 +214,13 @@ namespace Pinultimate_Windows_Phone
             {
                 double radius = center.Radius(clusters[center]);
                 Cluster cluster = new Cluster(center.Latitude, center.Longitude, clusters[center].Count, 0, 0, 0, radius);
-                // Hongxia
+
                 foreach (GridLocationData gridLocationData in clusters[center]) {
                     cluster.Flickr += gridLocationData.Flickr;
                     cluster.Instagram += gridLocationData.Instagram;
                     cluster.Twitter += gridLocationData.Twitter;
                 }
 
-                // Hongxia
                 results.Add(cluster);
             }
             return results;
