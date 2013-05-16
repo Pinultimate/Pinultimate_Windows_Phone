@@ -98,14 +98,26 @@
                                Grid.Row="0" Grid.Column="1" 
                                Margin="0,0,0,5" VerticalAlignment="Bottom"
                                TextWrapping="Wrap" Text="Twitter:" FontSize="30"/>
-                    <TextBlock x:Name="Flicker" 
+                    <TextBlock x:Name="Twitter_val"
+                               Grid.Row="0" Grid.Column="2" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="{Binding Twitter}" FontSize="30"/>
+                    <TextBlock x:Name="Flickr" 
                                Grid.Row="1" Grid.Column="1" 
                                Margin="0,0,0,5" VerticalAlignment="Bottom"
-                               TextWrapping="Wrap" Text="Flicker:" FontSize="30"/>
+                               TextWrapping="Wrap" Text="Flickr:" FontSize="30"/>
+                    <TextBlock x:Name="Flickr_val"
+                               Grid.Row="1" Grid.Column="2" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="{Binding Flickr}" FontSize="30"/>
                     <TextBlock x:Name="Instagram" 
                                Grid.Row="2" Grid.Column="1" 
                                Margin="0,0,0,5" VerticalAlignment="Bottom"
                                TextWrapping="Wrap" Text="Instagram:" FontSize="30"/>
+                    <TextBlock x:Name="Instagram_val"
+                               Grid.Row="2" Grid.Column="2" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="{Binding Instagram}" FontSize="30"/>
                 </Grid>
             </phone:PanoramaItem>
         </phone:Panorama>

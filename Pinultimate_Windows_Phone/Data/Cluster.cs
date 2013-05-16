@@ -12,19 +12,9 @@
     public class Cluster : INotifyPropertyChanged
     {
         /// <summary>
-        /// Address of the store
-        /// </summary>
-        private string address;
-
-        /// <summary>
         /// GeoCoordinate of the store
         /// </summary>
         private GeoCoordinate geoCoordinate;
-
-        /// <summary>
-        /// Whether the store is visible or not in the map
-        /// </summary>
-        private Visibility visibility;
 
         /// <summary>
         /// Event to be raised when a property value has changed
