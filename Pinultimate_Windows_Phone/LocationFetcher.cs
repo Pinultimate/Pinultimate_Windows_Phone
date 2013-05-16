@@ -46,6 +46,7 @@ namespace Pinultimate_Windows_Phone
             string query = QueryURL.CreateGridQuery(latitude, longitude, latrange, lonrange, RESOLUTION);
             string subquery_timeframe = QueryURL.CreateTimeRangeQuery(min, max);
             query += subquery_timeframe;
+            Debug.WriteLine("query: " + query);
             JSONResponseForURL(query);
         }
 
@@ -235,7 +236,7 @@ namespace Pinultimate_Windows_Phone
     {
         static QueryURL()
         {
-            ServerURL = "http://www.pinultimate.net/";
+            ServerURL = "http://api.pinultimate.net/";
             AppURL = "heatmap/";
         }
 

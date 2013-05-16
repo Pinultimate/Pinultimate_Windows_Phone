@@ -131,7 +131,7 @@ namespace Pinultimate_Windows_Phone.Data
         public TrendMapViewModel(MainPage MainPage)
         {
             mainPage = MainPage;
-            ShowNotification("TrendMap", "Preparing TrendMap for you...\n haha");
+            ShowNotification("TrendMap", "Preparing TrendMap for you...");
             geoTracker = new GeoTracker(mainPage);
             geoTracker.StartTracking();
 
