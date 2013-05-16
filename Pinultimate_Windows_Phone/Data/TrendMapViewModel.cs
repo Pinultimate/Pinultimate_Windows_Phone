@@ -144,6 +144,13 @@ namespace Pinultimate_Windows_Phone.Data
             clusterList = new ClusterList();
             clusterList.ClustersChanged += UpdateMapWithNewClusters;
             InitializeMeIndicatorAndClustersLayer();
+            trendMap.CenterChanged += trendMap_Loaded;
+        }
+
+        private void trendMap_Loaded(object sender, MapCenterChangedEventArgs e)
+        {
+            InitiateNewQuery();
+            trendMap.CenterChanged -= trendMap_Loaded;
         }
 
         #region "data callbacks"
@@ -408,7 +415,7 @@ namespace Pinultimate_Windows_Phone.Data
             locationFetcher.cancelWebRequest();
         }
 
-        public void initiateNewQuery()
+        public void InitiateNewQuery()
         {
             LocationRectangle boundingBox = GetBoundingBox();
 

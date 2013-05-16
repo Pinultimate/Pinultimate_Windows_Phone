@@ -56,7 +56,7 @@ namespace Pinultimate_Windows_Phone
         private void GestureListener_PinchCompleted(object sender, PinchGestureEventArgs e)
         {
             Debug.WriteLine("Pinch Completed");
-            trendMapViewModel.initiateNewQuery();
+            trendMapViewModel.InitiateNewQuery();
         }
 
         private void GestureListener_DragStarted(object sender, DragStartedGestureEventArgs e)
@@ -68,14 +68,14 @@ namespace Pinultimate_Windows_Phone
         private void GestureListener_DragCompleted(object sender, DragCompletedGestureEventArgs e)
         {
             Debug.WriteLine("Drag Ended");
-            trendMapViewModel.initiateNewQuery();
+            trendMapViewModel.InitiateNewQuery();
         }
 
         private void GestureListener_DoubleTap(object sender,  Microsoft.Phone.Controls.GestureEventArgs e)
         {
             Debug.WriteLine("Double Tap");
             trendMapViewModel.cancelCurrentQuery();
-            trendMapViewModel.initiateNewQuery();
+            trendMapViewModel.InitiateNewQuery();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
