@@ -41,19 +41,42 @@ namespace Pinultimate_Windows_Phone
             return toReturn;
         }
 
-        
         public List<Cluster> Clusters()
         {
+            List<int> ks = new List<int>();
+            for (int i = 1; i <= 4; ++i)
+            {
+                ks.Add(i);
+            }
+            double minCost = Double.MaxValue;
+            List<Cluster> minClusters = new List<Cluster>();
+            foreach (int i in ks)
+            {
+                List<Cluster> clusters = new List<Cluster>();
+                double cost = ClustersWithK(i, clusters);
+                if (cost < minCost)
+                {
+                    minCost = cost;
+                    minClusters = clusters;
+                }
+            }
+            return minClusters;
+        }
+
+        private double ClustersWithK(int k, List<Cluster> result)
+        {
+            K = k;
             if (LocationData.Count() < K)
             {
-                return SparseDataPointsToClusters(LocationData);
+                result = SparseDataPointsToClusters(LocationData);
+                return 0;
             }
             else
             {
                 List<ClusterCenter> centers = InitClusters();
-                return ClusterLocationFromCenters(centers, LocationData);
-            }
-            
+                double cost = ClusterLocationFromCenters(centers, LocationData, result);
+                return cost;
+            } 
         }
 
         private List<Cluster> SparseDataPointsToClusters(List<GridLocationData> LocationData)
@@ -157,7 +180,7 @@ namespace Pinultimate_Windows_Phone
             }
         }
 
-        private List<Cluster> ClusterLocationFromCenters(List<ClusterCenter> centers, List<GridLocationData> locationData)
+        private double ClusterLocationFromCenters(List<ClusterCenter> centers, List<GridLocationData> locationData, List<Cluster> results)
         {
             Dictionary<ClusterCenter, List<GridLocationData>> clusters = new Dictionary<ClusterCenter, List<GridLocationData>>();
             foreach (ClusterCenter center in centers)
@@ -209,21 +232,21 @@ namespace Pinultimate_Windows_Phone
                 }
             }
 
-            List<Cluster> results = new List<Cluster>();
+            double cost = 0;
             foreach (ClusterCenter center in clusters.Keys)
             {
                 double radius = center.Radius(clusters[center]);
                 Cluster cluster = new Cluster(center.Latitude, center.Longitude, clusters[center].Count, 0, 0, 0, radius);
-
                 foreach (GridLocationData gridLocationData in clusters[center]) {
                     cluster.Flickr += gridLocationData.Flickr;
                     cluster.Instagram += gridLocationData.Instagram;
                     cluster.Twitter += gridLocationData.Twitter;
+                    cost += gridLocationData.DistanceToCenter(cluster);
                 }
 
                 results.Add(cluster);
             }
-            return results;
+            return cost;
         }
 
         private double calculateCost(List<ClusterCenter> centers, Dictionary<GridLocationData, double> distances,  List<GridLocationData> locationData) 
@@ -259,7 +282,10 @@ namespace Pinultimate_Windows_Phone
 
             List<ClusterCenter> centers = KMeansPlus(oldCentersLocation, oldCenters);
 
-            List<Cluster> clusters = ClusterLocationFromCenters(centers, oldCentersLocation);
+            //List<Cluster> clusters = ClusterLocationFromCenters(centers, oldCentersLocation);
+            List<Cluster> clusters = new List<Cluster>();
+            ClusterLocationFromCenters(centers, oldCentersLocation, clusters); 
+
             List<ClusterCenter> result = new List<ClusterCenter>();
             foreach (Cluster c in clusters)
             {

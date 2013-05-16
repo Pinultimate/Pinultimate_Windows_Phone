@@ -191,6 +191,11 @@ namespace Pinultimate_Windows_Phone
         {
             return base.GetHashCode();
         }
+
+        internal double DistanceToCenter(Cluster cluster)
+        {
+            return Math.Pow(this.Latitude - cluster.Latitude, 2) + Math.Pow(this.Longitude - cluster.Longitude, 2);
+        }
     }
 
     public class GridLocationDataEqCoordinates : EqualityComparer<GridLocationData>
