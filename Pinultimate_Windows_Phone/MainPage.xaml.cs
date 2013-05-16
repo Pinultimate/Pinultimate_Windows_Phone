@@ -78,14 +78,9 @@ namespace Pinultimate_Windows_Phone
             trendMapViewModel.initiateNewQuery();
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (IsolatedStorageSettings.ApplicationSettings.Contains("LocationConsent"))
-            {
-                // User has opted in or out of Location
-                return;
-            }
-            else
+            if (!IsolatedStorageSettings.ApplicationSettings.Contains("LocationConsent"))
             {
                 MessageBoxResult result =
                     MessageBox.Show("This app accesses your phone's location. Is that ok?",
@@ -104,6 +99,11 @@ namespace Pinultimate_Windows_Phone
 
                 IsolatedStorageSettings.ApplicationSettings.Save();
             }
+            if (!e.IsNavigationInitiator)
+            {
+                Analytics.open();
+            }
         }
+
     }
 }
