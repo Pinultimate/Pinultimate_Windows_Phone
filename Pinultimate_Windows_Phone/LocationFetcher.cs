@@ -39,11 +39,13 @@ namespace Pinultimate_Windows_Phone
         public delegate void JSONLoadingCompletionHandler(QueryResult<GridLocationData> result);
         public delegate void JSONLoadingErrorHandler();
 
-        public void FetchClusters(double latitude, double longitude, double latrange, double lonrange)
+        public void FetchClusters(double latitude, double longitude, double latrange, double lonrange, DateTime min, DateTime max)
         {
             Debug.WriteLine("Initiating HTTP Request to fetch clusters");
             instantiateWebClient();
             string query = QueryURL.CreateGridQuery(latitude, longitude, latrange, lonrange, RESOLUTION);
+            string subquery_timeframe = QueryURL.CreateTimeRangeQuery(min, max);
+            query += subquery_timeframe;
             JSONResponseForURL(query);
         }
 
@@ -55,7 +57,7 @@ namespace Pinultimate_Windows_Phone
         }
 
         private void JSONResponseForURL(string url)
-        {           
+        {
 
             try
             {
@@ -169,6 +171,15 @@ namespace Pinultimate_Windows_Phone
 
         [DataMember(Name = "count")]
         public int Count { get; set; }
+
+        [DataMember(Name = "flickr")]
+        public int Flickr { get; set; }
+
+        [DataMember(Name = "twitter")]
+        public int Twitter { get; set; }
+
+        [DataMember(Name = "instagram")]
+        public int Instagram { get; set; }
 
         public bool Equals(GridLocationData other)
         {

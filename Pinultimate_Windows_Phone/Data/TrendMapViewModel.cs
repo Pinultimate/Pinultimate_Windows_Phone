@@ -204,10 +204,6 @@ namespace Pinultimate_Windows_Phone.Data
             }
             clusterList.AddResults(clusters);
             HideNotification();
-            //else
-            //{
-            //    noClustersFound.Show();
-            //}
             
         }
 
@@ -415,7 +411,8 @@ namespace Pinultimate_Windows_Phone.Data
 
             locationFetcher.FetchClusters(
                 boundingBox.Northwest.Latitude, boundingBox.Northwest.Longitude,
-                boundingBox.WidthInDegrees, boundingBox.HeightInDegrees
+                boundingBox.WidthInDegrees, boundingBox.HeightInDegrees,
+                timelineViewModel.GetMinimumTime(), timelineViewModel.GetMaximumTime()
             );
         }
     }
