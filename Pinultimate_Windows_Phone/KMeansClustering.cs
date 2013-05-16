@@ -61,7 +61,7 @@ namespace Pinultimate_Windows_Phone
             List<Cluster> toReturn = new List<Cluster>();
             foreach (GridLocationData dataPoint in LocationData)
             {
-                Cluster toAdd = new Cluster(dataPoint.Latitude, dataPoint.Longitude, dataPoint.Count, DEFAULT_RADIUS);
+                Cluster toAdd = new Cluster(dataPoint.Latitude, dataPoint.Longitude, dataPoint.Count, dataPoint.Flickr, dataPoint.Instagram, dataPoint.Twitter, DEFAULT_RADIUS);  
                 toReturn.Add(toAdd);
             }
             return toReturn;
@@ -213,7 +213,15 @@ namespace Pinultimate_Windows_Phone
             foreach (ClusterCenter center in clusters.Keys)
             {
                 double radius = center.Radius(clusters[center]);
-                Cluster cluster = new Cluster(center.Latitude, center.Longitude, clusters[center].Count, radius);
+                Cluster cluster = new Cluster(center.Latitude, center.Longitude, clusters[center].Count, 0, 0, 0, radius);
+                // Hongxia
+                foreach (GridLocationData gridLocationData in clusters[center]) {
+                    cluster.Flickr += gridLocationData.Flickr;
+                    cluster.Instagram += gridLocationData.Instagram;
+                    cluster.Twitter += gridLocationData.Twitter;
+                }
+
+                // Hongxia
                 results.Add(cluster);
             }
             return results;

@@ -5,6 +5,7 @@
     using System.Runtime.CompilerServices;
     using System.Windows;
     using Microsoft.Phone.Maps.Controls;
+    using System;
 
     /// <summary>
     /// Store data
@@ -21,17 +22,24 @@
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Cluster(double latitude, double longitude, int count, double radius)
+        public Cluster(double latitude, double longitude, int count, int flickr, int instagram, int twitter, double radius)
         {
             Latitude = latitude;
             Longitude = longitude;
             Count = count;
+            Flickr = flickr;
+            Instagram = instagram;
+            Twitter = twitter;
             Radius = radius;
         }
 
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public DateTime Timestamp { get; set; }
         public int Count { get; set; }
+        public int Twitter { get; set; }
+        public int Flickr { get; set; }
+        public int Instagram { get; set; }
         public double Radius { get; set; }
 
         /// <summary>

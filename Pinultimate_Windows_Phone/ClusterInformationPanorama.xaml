@@ -28,9 +28,9 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="60"/>
                         <RowDefinition Height="60"/>
-                        <RowDefinition Height="40"/>
                         <RowDefinition Height="60"/>
-                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
                         <RowDefinition Height="60"/>
                         <RowDefinition Height="60"/>
                         <RowDefinition Height="Auto"/>
@@ -53,35 +53,36 @@
                              Margin="10,20,-10,15" Height="65"
                              TextWrapping="Wrap" FontSize="25" Text="{Binding Longitude}" Grid.RowSpan="2"/>
 
-                    <TextBlock x:Name="Count" Grid.Row="3" Grid.Column="1" 
+                    <TextBlock x:Name="From" Grid.Row="2" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}"
+                               TextWrapping="Wrap" Text="Time:" FontSize="30"/>
+                    <TextBlock x:Name="From_val"
+                             Grid.Row="2" Grid.Column="2"
+                             Margin="10,20,-10,35" Height="65"
+                             TextWrapping="Wrap" FontSize="25" Text="{Binding Timestamp}" Grid.RowSpan="2"/>
+                    
+                    <TextBlock x:Name="Radius" Grid.Row="3" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}"
+                               TextWrapping="Wrap" Text="Radius:" FontSize="30"/>
+                    <TextBlock x:Name="Radius_val"
+                             Grid.Row="3" Grid.Column="2"
+                             Margin="10,20,-10,35" Height="65"
+                             TextWrapping="Wrap" FontSize="25" Text="{Binding Radius}" Grid.RowSpan="2"/>
+
+                    <TextBlock x:Name="Count" Grid.Row="4" Grid.Column="1" 
                                Margin="0,0,0,5" VerticalAlignment="Bottom" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}"
                                TextWrapping="Wrap" Text="Count:" FontSize="30"/>
                     <TextBlock x:Name="Count_val" 
-                             Grid.Row="3" Grid.Column="2"
+                             Grid.Row="4" Grid.Column="2"
                              Margin="10,20,-10,15" Height="65"
                              TextWrapping="Wrap" FontSize="25" Text="{Binding Count}" Grid.RowSpan="2"/>
 
-                    <TextBlock x:Name="From" Grid.Row="5" Grid.Column="1" 
-                               Margin="0,0,0,5" VerticalAlignment="Bottom" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}"
-                               TextWrapping="Wrap" Text="From:" FontSize="30"/>
-                    <TextBlock x:Name="From_val"
-                             Grid.Row="5" Grid.Column="2"
-                             Margin="10,20,-10,35" Height="65"
-                             TextWrapping="Wrap" FontSize="25" Text="34.521" Grid.RowSpan="2"/>
-
-                    <TextBlock x:Name="To" Grid.Row="6" Grid.Column="1" 
-                               Margin="0,0,0,5" VerticalAlignment="Bottom" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}"
-                               TextWrapping="Wrap" Text="To:" FontSize="30"/>
-                    <TextBlock x:Name="To_val"
-                             Grid.Row="6" Grid.Column="2"
-                             Margin="10,20,-10,-25" Height="65" Foreground="White"
-                             TextWrapping="Wrap" FontSize="25" Text="34.521" Grid.RowSpan="2"/>
                 </Grid>
             </phone:PanoramaItem>
 
             <!--Panorama item two-->
             <phone:PanoramaItem Header="Details">
-                <Grid ShowGridLines="True">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="20" />
                         <ColumnDefinition Width="160" />
