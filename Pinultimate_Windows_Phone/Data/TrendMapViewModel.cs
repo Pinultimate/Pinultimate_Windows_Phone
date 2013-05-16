@@ -238,6 +238,7 @@ namespace Pinultimate_Windows_Phone.Data
 
         private void TapOnCluster(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            Analytics.tap();
             Cluster currentCluster = (Cluster) (sender as Border).DataContext;
             NavigationUtils.Navigate(mainPage.NavigationService, "/ClusterInformationPanorama.xaml", currentCluster);
         }

@@ -105,5 +105,13 @@ namespace Pinultimate_Windows_Phone
             }
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            if (!e.IsNavigationInitiator)
+            {
+                Analytics.close();
+            }
+        }
+
     }
 }
