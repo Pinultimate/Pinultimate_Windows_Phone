@@ -196,7 +196,8 @@ namespace Pinultimate_Windows_Phone.Data
             List<Cluster> clusters = null;
             if (processors.Count() > 0)
             {
-                clusters = processors[processors.Count - 1].Clusters();
+                int currentTimeIndex = timelineViewModel.GetCurrentValue();
+                clusters = processors[currentTimeIndex].Clusters();
             }
             else
             {
@@ -387,6 +388,7 @@ namespace Pinultimate_Windows_Phone.Data
             Debug.WriteLine("Drawing Clusters");
             foreach (Cluster cluster in clusterList)
             {
+                cluster.Timestamp = timelineViewModel.GetCurrentTime();
                 DrawCluster(cluster);
             }
         }
@@ -415,6 +417,13 @@ namespace Pinultimate_Windows_Phone.Data
                 boundingBox.WidthInDegrees, boundingBox.HeightInDegrees,
                 timelineViewModel.GetMinimumTime(), timelineViewModel.GetMaximumTime()
             );
+        }
+
+        public void selectClustersForGivenTime()
+        {
+             int currentTimeIndex = timelineViewModel.GetCurrentValue();
+             List<Cluster> clusters = processors[currentTimeIndex].Clusters();
+            clusterList.AddResults(clusters);
         }
     }
 }

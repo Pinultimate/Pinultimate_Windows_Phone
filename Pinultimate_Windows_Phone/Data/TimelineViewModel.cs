@@ -7,8 +7,8 @@ namespace Pinultimate_Windows_Phone.Data
 {
     public class TimelineViewModel
     {
-        public MainPage mainPage { get; set; }
-        public ProgressBar timeline
+        private MainPage mainPage { get; set; }
+        private ProgressBar timeline
         {
             get
             {
@@ -19,7 +19,7 @@ namespace Pinultimate_Windows_Phone.Data
                 mainPage.Timeline = value;
             }
         }
-        public TextBlock timeLabel
+        private TextBlock timeLabel
         {
             get
             {
@@ -31,7 +31,7 @@ namespace Pinultimate_Windows_Phone.Data
             }
         }
 
-        public ApplicationBarViewModel applicationBarViewModel
+        private ApplicationBarViewModel applicationBarViewModel
         {
             get
             {
@@ -40,6 +40,18 @@ namespace Pinultimate_Windows_Phone.Data
             set
             {
                 mainPage.applicationBarViewModel = value;
+            }
+        }
+
+        private TrendMapViewModel trendMapViewModel
+        {
+            get
+            {
+                return mainPage.trendMapViewModel;
+            }
+            set
+            {
+                mainPage.trendMapViewModel = value;
             }
         }
 
@@ -87,7 +99,7 @@ namespace Pinultimate_Windows_Phone.Data
         public DateTime GetMinimumTime()
         {
             DateTime maximumTime = GetMaximumTime();
-            return maximumTime.Subtract(TimeSpan.FromHours(GetMaximum()));
+            return maximumTime.Subtract(TimeSpan.FromDays(1));
         }
 
         public DateTime GetCurrentTime()
@@ -149,6 +161,7 @@ namespace Pinultimate_Windows_Phone.Data
             timeLabel.Text = LabelText(GetCurrentTime());
             //ConfigureApplicationBarButtons();
             applicationBarViewModel.ConfigureTimelineButtonsOnCondition();
+            trendMapViewModel.selectClustersForGivenTime();
         }
 
         private String LabelText(DateTime normalizedTime)

@@ -15,7 +15,7 @@ namespace Pinultimate_Windows_Phone
 {
     public class LocationFetcher
     {
-        private const double RESOLUTION = 0.05;
+        private const double GRANULARITY = 15;
 
         public LocationFetcher() { }
 
@@ -43,11 +43,17 @@ namespace Pinultimate_Windows_Phone
         {
             Debug.WriteLine("Initiating HTTP Request to fetch clusters");
             instantiateWebClient();
-            string query = QueryURL.CreateGridQuery(latitude, longitude, latrange, lonrange, RESOLUTION);
+            string query = QueryURL.CreateGridQuery(latitude, longitude, latrange, lonrange, calculateResolution(latrange, lonrange));
             string subquery_timeframe = QueryURL.CreateTimeRangeQuery(min, max);
             query += subquery_timeframe;
             Debug.WriteLine("query: " + query);
             JSONResponseForURL(query);
+        }
+
+        private double calculateResolution(double width, double height)
+        {
+            double min = width < height ? width : height;
+            return min / GRANULARITY;
         }
 
         private void instantiateWebClient()
@@ -59,7 +65,6 @@ namespace Pinultimate_Windows_Phone
 
         private void JSONResponseForURL(string url)
         {
-
             try
             {
                 if (this.startingHandler != null)
