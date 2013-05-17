@@ -29,6 +29,7 @@ namespace Pinultimate_Windows_Phone
         public MainPage()
         {
             InitializeComponent();
+            TrendMap.Loaded += TrendMap_Loaded;
             appSettings = new AppSettings();
             applicationBarViewModel = new ApplicationBarViewModel(this);
             timelineViewModel = new TimelineViewModel(this);
@@ -39,6 +40,12 @@ namespace Pinultimate_Windows_Phone
             this.currentTimestamp = NormalizeTimestamp(DateTime.Now);
 
             Debug.WriteLine("\nZoom Level: {0}", TrendMap.ZoomLevel);
+        }
+
+        private void TrendMap_Loaded(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Phone.Maps.MapsSettings.ApplicationContext.ApplicationId = "4ae744ff-a0b9-4aad-b459-8fe3fcb50bd6";
+            Microsoft.Phone.Maps.MapsSettings.ApplicationContext.AuthenticationToken = "FbGGZbw8PiMV_dUQEZjzLA";
         }
 
         private DateTime NormalizeTimestamp(DateTime time)
