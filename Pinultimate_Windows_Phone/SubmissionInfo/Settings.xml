@@ -1,7 +1,6 @@
 <MarketplaceDetails>
-  <SmallAppTile>
-  </SmallAppTile>
-  <ScreenShots>;;;;;;;;</ScreenShots>
-  <ScreenShotsWXGA>;;;;;;;;</ScreenShotsWXGA>
-  <ScreenShots720P>;;;;;;;;</ScreenShots720P>
+  <SmallAppTile>TrendMapTile300x300.png</SmallAppTile>
+  <ScreenShots>TrendMapScreenshot1_WVGA.png;;;;;;;;</ScreenShots>
+  <ScreenShotsWXGA>TrendMapScreenshot1_WXGA.png;;;;;;;;</ScreenShotsWXGA>
+  <ScreenShots720P>TrendMapScreenshot1_720p.png;;;;;;;;</ScreenShots720P>
 </MarketplaceDetails>

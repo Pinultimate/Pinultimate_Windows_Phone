@@ -25,6 +25,13 @@ namespace Pinultimate_Windows_Phone.Data
         public ClusterList clusterList { get; set; }
         public List<ClusteringProcessor> processors { get; set; }
         public MainPage mainPage { get; set; }
+        private AppSettings appSettings
+        {
+            get
+            {
+               return mainPage.appSettings;
+            }
+        }
         public Map trendMap
         {
             get
@@ -101,7 +108,7 @@ namespace Pinultimate_Windows_Phone.Data
         #region "Me"
         public GeoTracker geoTracker { get; set; }
         public GeoCoordinate meLocation { get; set; }
-        //public Ellipse meIndicator { get; set; }
+
         public MapOverlay meIndicatorOverlay { get; set; }
         #endregion
 
@@ -162,6 +169,9 @@ namespace Pinultimate_Windows_Phone.Data
             secondaryNotificationText.Visibility = Visibility.Visible;
             secondaryNotificationText.Text = title;
             notificationText.Text = text;
+
+            applicationBarViewModel.DisableNextButton();
+            applicationBarViewModel.DisablePrevButton();
         }
 
         public void HideNotification()
@@ -169,6 +179,8 @@ namespace Pinultimate_Windows_Phone.Data
             notificationText.Visibility = Visibility.Collapsed;
             notificationPanel.Visibility = Visibility.Collapsed;
             secondaryNotificationText.Visibility = Visibility.Collapsed;
+
+            applicationBarViewModel.ConfigureTimelineButtonsOnCondition();
         }
 
         public void ChangeNotificationText(String title, String newMessage)
@@ -276,6 +288,7 @@ namespace Pinultimate_Windows_Phone.Data
             else
             {
                 meIndicatorOverlay.GeoCoordinate = meLocation;
+                meIndicator.Fill = new SolidColorBrush(appSettings.ThemeColor);
                 LocateMapToCoordinate(meLocation);
             }
             EndLoadingProgress();
@@ -289,7 +302,7 @@ namespace Pinultimate_Windows_Phone.Data
                 meIndicatorLayer = new MapLayer();
                 meIndicatorOverlay = new MapOverlay();
                 meIndicator = new Ellipse();
-                meIndicator.Fill = new SolidColorBrush(Colors.Blue);
+                meIndicator.Fill = new SolidColorBrush(appSettings.ThemeColor);
                 meIndicator.Height = 10;
                 meIndicator.Width = 10;
                 meIndicator.Opacity = 0.5;
@@ -349,8 +362,7 @@ namespace Pinultimate_Windows_Phone.Data
             timelineViewModel.setOpacity(0.5);
             meIndicator.Opacity = 0.2;
 
-            applicationBarViewModel.DisableNextButton();
-            applicationBarViewModel.DisablePrevButton();
+            
             applicationBarViewModel.DisableMeButton();
             applicationBarViewModel.DisableReloadMenu();
 
@@ -366,7 +378,6 @@ namespace Pinultimate_Windows_Phone.Data
             meIndicator.Visibility = Visibility.Visible;
             meIndicator.Opacity = 0.5;
 
-            applicationBarViewModel.ConfigureTimelineButtonsOnCondition();
             applicationBarViewModel.EnableMeButton();
             applicationBarViewModel.EnableReloadMenu();
 

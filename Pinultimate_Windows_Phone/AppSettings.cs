@@ -4,21 +4,33 @@ using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace Pinultimate_Windows_Phone
 {
     public class AppSettings
     {
         // Our settings
-        IsolatedStorageSettings settings;
+        private IsolatedStorageSettings settings;
 
         // The key names of our settings
-        const string CheckBoxSettingKeyName = "CheckBoxSetting";
-        const string ListBoxSettingKeyName = "ListBoxSetting";
+        public const string TrackerSettingKeyName = "TrackerSetting";
+        public const string ThemeColorSettingKeyName = "ThemeColorSetting";
 
         // The default value of our settings
-        const bool CheckBoxSettingDefault = true;
-        const int ListBoxSettingDefault = 0;
+        private const bool TrackerSettingDefault = true;
+        private int ListBoxSettingDefault = 2; // default is Blue
+
+        private List<Color> themeColors = new List<Color> { Colors.Red, Colors.Orange, Colors.Blue };
+
+        public Color ThemeColor
+        {
+            get
+            {
+                return themeColors[ThemeColorPosition];
+            }
+        }
+
 
         /// <summary>
         /// Constructor that gets the application settings.
@@ -36,7 +48,7 @@ namespace Pinultimate_Windows_Phone
         /// <param name="Key"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public bool AddOrUpdateValue(string Key, Object value)
+        private bool AddOrUpdateValue(string Key, Object value)
         {
             bool valueChanged = false;
 
@@ -68,7 +80,7 @@ namespace Pinultimate_Windows_Phone
         /// <param name="Key"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public T GetValueOrDefault<T>(string Key, T defaultValue)
+        private T GetValueOrDefault<T>(string Key, T defaultValue)
         {
             T value;
 
@@ -88,11 +100,18 @@ namespace Pinultimate_Windows_Phone
         /// <summary>
         /// Save the settings.
         /// </summary>
-        public void Save()
+        private void Save()
         {
             settings.Save();
         }
 
+        /// <summary>
+        /// Save the settings.
+        /// </summary>
+        public bool Contains(String key)
+        {
+            return settings.Contains(key);
+        }
 
         /// <summary>
         /// Property to get and set a CheckBox Setting Key.
@@ -101,30 +120,29 @@ namespace Pinultimate_Windows_Phone
         {
             get
             {
-                return GetValueOrDefault<bool>(CheckBoxSettingKeyName, CheckBoxSettingDefault);
+                return GetValueOrDefault<bool>(TrackerSettingKeyName, TrackerSettingDefault);
             }
             set
             {
-                if (AddOrUpdateValue(CheckBoxSettingKeyName, value))
+                if (AddOrUpdateValue(TrackerSettingKeyName, value))
                 {
                     Save();
                 }
             }
         }
 
-
         /// <summary>
         /// Property to get and set a ListBox Setting Key.
         /// </summary>
-        public int TimerSetting
+        public int ThemeColorPosition
         {
             get
             {
-                return GetValueOrDefault<int>(ListBoxSettingKeyName, ListBoxSettingDefault);
+                return GetValueOrDefault<int>(ThemeColorSettingKeyName, ListBoxSettingDefault);
             }
             set
             {
-                if (AddOrUpdateValue(ListBoxSettingKeyName, value))
+                if (AddOrUpdateValue(ThemeColorSettingKeyName, value))
                 {
                     Save();
                 }

@@ -14,8 +14,15 @@ namespace Pinultimate_Windows_Phone
     public class GeoTracker
     {
         private Geolocator geolocator;
-        private bool tracking;
+        private bool tracking {
+              get {
+                  return mainPage.appSettings.TrackingSetting;
+              }
+        }
         private MainPage mainPage;
+        private const double STANORD_LAT = 37.4225;
+        private const double STANFORD_LONG = -122.1653;
+        private readonly GeoCoordinate LOCATION_DISABLED = new GeoCoordinate(STANORD_LAT, STANFORD_LONG);
 
         private void geolocator_StatusChanged(Geolocator sender, StatusChangedEventArgs args)
         {
@@ -62,8 +69,6 @@ namespace Pinultimate_Windows_Phone
 
             this.geolocator.StatusChanged += geolocator_StatusChanged;
             this.geolocator.PositionChanged += geolocator_PositionChanged;
-
-            this.tracking = true;
         }
 
         public void StopTracking()
@@ -71,8 +76,6 @@ namespace Pinultimate_Windows_Phone
             this.geolocator.PositionChanged -= geolocator_PositionChanged;
             this.geolocator.StatusChanged -= geolocator_StatusChanged;
             this.geolocator = null;
-
-            this.tracking = false;
         }
 
         public bool IsTracking()
@@ -83,20 +86,18 @@ namespace Pinultimate_Windows_Phone
         public async Task<GeoCoordinate> GetCurrentLocation()
         {
             // Get current location
-            if (this.tracking)
-            {
-                Debug.Assert(this.geolocator != null);
-                Geoposition position = await this.geolocator.GetGeopositionAsync();
-                Geocoordinate coordinate = position.Coordinate;
-                return CoordinateConverter.ConvertGeocoordinate(coordinate);
-            }
-            return null;            
+            if (!this.tracking)
+                return LOCATION_DISABLED;
+
+            Debug.Assert(this.geolocator != null);
+            Geoposition position = await this.geolocator.GetGeopositionAsync();
+            Geocoordinate coordinate = position.Coordinate;
+            return CoordinateConverter.ConvertGeocoordinate(coordinate);
         }
 
         public GeoTracker(MainPage mainPage)
         {
             this.mainPage = mainPage;
-            this.tracking = false;
         }
     }
 }

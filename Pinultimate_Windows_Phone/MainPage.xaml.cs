@@ -17,7 +17,7 @@ namespace Pinultimate_Windows_Phone
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        
+
         private DateTime currentTimestamp { get; set; }
 
         public AppSettings appSettings { get; set; }
@@ -31,15 +31,28 @@ namespace Pinultimate_Windows_Phone
             InitializeComponent();
             TrendMap.Loaded += TrendMap_Loaded;
             appSettings = new AppSettings();
+            CheckLocationPermission();
             applicationBarViewModel = new ApplicationBarViewModel(this);
             timelineViewModel = new TimelineViewModel(this);
             trendMapViewModel = new TrendMapViewModel(this);
             searchBarViewModel = new SearchBarViewModel(trendMapViewModel, SearchBar);
 
-            
+
             this.currentTimestamp = NormalizeTimestamp(DateTime.Now);
 
             Debug.WriteLine("\nZoom Level: {0}", TrendMap.ZoomLevel);
+        }
+
+        private void CheckLocationPermission()
+        {
+            if (!appSettings.Contains(AppSettings.TrackerSettingKeyName))
+            {
+                MessageBoxResult result =
+                    MessageBox.Show("This app accesses your phone's location. Is that ok?",
+                    "Location",
+                    MessageBoxButton.OKCancel);
+                appSettings.TrackingSetting = (result == MessageBoxResult.OK);
+            }
         }
 
         private void TrendMap_Loaded(object sender, RoutedEventArgs e)
@@ -57,7 +70,7 @@ namespace Pinultimate_Windows_Phone
         {
             Debug.WriteLine("Pinch Started");
             trendMapViewModel.cancelCurrentQuery();
-            
+
         }
 
         private void GestureListener_PinchCompleted(object sender, PinchGestureEventArgs e)
@@ -78,7 +91,7 @@ namespace Pinultimate_Windows_Phone
             trendMapViewModel.InitiateNewQuery();
         }
 
-        private void GestureListener_DoubleTap(object sender,  Microsoft.Phone.Controls.GestureEventArgs e)
+        private void GestureListener_DoubleTap(object sender, Microsoft.Phone.Controls.GestureEventArgs e)
         {
             Debug.WriteLine("Double Tap");
             trendMapViewModel.cancelCurrentQuery();
@@ -87,28 +100,13 @@ namespace Pinultimate_Windows_Phone
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (!IsolatedStorageSettings.ApplicationSettings.Contains("LocationConsent"))
-            {
-                MessageBoxResult result =
-                    MessageBox.Show("This app accesses your phone's location. Is that ok?",
-                    "Location",
-                    MessageBoxButton.OKCancel);
-
-                if (result == MessageBoxResult.OK)
-                {
-                    IsolatedStorageSettings.ApplicationSettings["LocationConsent"] = true;
-                    IsolatedStorageSettings.ApplicationSettings["LocationTimeInterval"] = "1 min";
-                }
-                else
-                {
-                    IsolatedStorageSettings.ApplicationSettings["LocationConsent"] = false;
-                }
-
-                IsolatedStorageSettings.ApplicationSettings.Save();
-            }
             if (!e.IsNavigationInitiator)
             {
                 Analytics.open();
+            }
+            else
+            {
+                trendMapViewModel.RelocateAndRedrawMe();
             }
         }
 

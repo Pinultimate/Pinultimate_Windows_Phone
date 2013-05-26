@@ -126,8 +126,7 @@ namespace Pinultimate_Windows_Phone.Data
         private void SettingsMenuItem_Click(object sender, EventArgs e)
         {
             ApplicationBarMenuItem settingsMenuItem = (ApplicationBarMenuItem)applicationBar.MenuItems[1];
-            Uri settingsUri = new Uri("/SettingsPanorama.xaml", UriKind.Relative);
-            mainPage.NavigationService.Navigate(settingsUri);
+            NavigationUtils.Navigate(mainPage.NavigationService, "/SettingsPanorama.xaml", mainPage.appSettings); 
         }
 
         private void MeButton_Click(object sender, EventArgs e)

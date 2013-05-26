@@ -29,43 +29,33 @@
     <Grid x:Name="LayoutRoot">
         <phone:Panorama x:Name="Settings_Panorama" Title="Settings">
 
-            <phone:PanoramaItem x:Name="UI_Settings" Header="UI:">
+            <phone:PanoramaItem x:Name="UI_Settings" Header="UI">
                 <Grid x:Name="Main_Content" HorizontalAlignment="Left" Height="483" VerticalAlignment="Top" Width="420">
-                    <TextBlock x:Name="Look_and_Feel" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Look and Feel:" VerticalAlignment="Top" Width="410" FontSize="36" Foreground="#FFF71A1A"/>
+                    <TextBlock x:Name="Look_and_Feel" HorizontalAlignment="Left" TextWrapping="Wrap" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}" Text="Look and Feel:" VerticalAlignment="Top" Width="410" FontSize="36" Margin="0,2,0,0"/>
                     <TextBlock x:Name="Color_Label" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Theme Color:" VerticalAlignment="Top" Margin="9,60,0,0" FontSize="30"/>
-                    <toolkit:ListPicker x:Name="Theme_Color_Picker" Width="250" Margin="200,46,0,-22">
-                        <toolkit:ListPickerItem Content="blue" Width="239" />
-                        <toolkit:ListPickerItem Content="green" />
-                        <toolkit:ListPickerItem Content="silver" />
-                    </toolkit:ListPicker>
+                    <ListBox x:Name="Theme_Color_Picker" Width="250" Margin="204,64,-34,-40" SelectedIndex="{Binding Source={StaticResource appSettings}, Path=ThemeColorPosition, Mode=TwoWay}">
+                        <ListBoxItem FontSize="28" Content="red" Height="50"/>
+                        <ListBoxItem FontSize="28" Content="orange" Height="50"/>
+                        <ListBoxItem FontSize="28" Content="blue" Height="50"/>
+                    </ListBox>
                     <TextBlock x:Name="Color_Label_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Theme Color:" VerticalAlignment="Top" Margin="9,60,0,0" FontSize="30"/>
-                    <TextBlock x:Name="Playback_Period_Label" HorizontalAlignment="Left" Margin="10,201,0,0" TextWrapping="Wrap" Text="Playback Period:" VerticalAlignment="Top" FontSize="30" Width="219"/>
-                    <toolkit:ListPicker x:Name="Playerback_Period_Picker" Width="200" Margin="210,191,-30,-92">
-                        <toolkit:ListPickerItem Content="24 hours" Margin="0" />
-                        <toolkit:ListPickerItem Content="48 hours" />
-                        <toolkit:ListPickerItem Content="72 hours" />
-                    </toolkit:ListPicker>
-                    <TextBlock HorizontalAlignment="Left" Margin="0,143,0,0" TextWrapping="Wrap" Text="TextBlock:" VerticalAlignment="Top" FontSize="36" Foreground="#FFF71A1A" Width="410"/>
                 </Grid>
             </phone:PanoramaItem>
 
             <!--Panorama item two-->
-            <phone:PanoramaItem x:Name="Accounts" Header="Data Sources">
+            <phone:PanoramaItem x:Name="Accounts" Header="Personal Info">
                 <Grid x:Name="Main_Content1" HorizontalAlignment="Left" Height="483" VerticalAlignment="Top" Width="420">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="11*"/>
                         <ColumnDefinition Width="59*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="Public_Title" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Public:" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="420" FontSize="36" Foreground="#FFF71A1A"/>
-                    <TextBlock x:Name="Twitter_Label" HorizontalAlignment="Left" Margin="10,53,0,0" TextWrapping="Wrap" Text="Twitter:" VerticalAlignment="Top" Grid.ColumnSpan="2" FontSize="30"/>
-                    <toolkit:ToggleSwitch x:Name="Twitter_Switch" Width="200" Grid.Column="1" Margin="112,26,42,332" Height="125" Content="Off"/>
-                    <TextBlock x:Name="Instagram_Label" HorizontalAlignment="Left" Margin="10,115,0,0" TextWrapping="Wrap" Text="Instagram:" VerticalAlignment="Top" Grid.ColumnSpan="2" FontSize="30"/>
-                    <toolkit:ToggleSwitch x:Name="Instagram_Switch" Width="200" Grid.Column="1" Margin="112,95,42,263" Height="125" Content="Off"/>
-                    <TextBlock x:Name="Flickr_Label" HorizontalAlignment="Left" Margin="10,180,0,0" TextWrapping="Wrap" Text="Flickr:" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="139" FontSize="30"/>
-                    <toolkit:ToggleSwitch x:Name="Flickr_Switch" Width="200" Grid.Column="1" Margin="112,157,42,201" Height="125" Content="Off"/>
-                    <TextBlock x:Name="Private_Title" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Private:" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="420" FontSize="36" Foreground="#FFF71A1A" Margin="0,234,0,0"/>
-                    <TextBlock x:Name="Facebook_Label" HorizontalAlignment="Left" Margin="10,301,0,0" TextWrapping="Wrap" Text="Facebook:" VerticalAlignment="Top" Grid.ColumnSpan="2" FontSize="30"/>
-                    <toolkit:ToggleSwitch x:Name="Facebook_Switch" Width="200" Grid.Column="1" Margin="112,282,42,76" Height="125" Content="Off"/>
+
+                    <TextBlock x:Name="Location_Title" HorizontalAlignment="Left" TextWrapping="Wrap" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}" Text="Track Location:" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="420" FontSize="36"/>
+                    <toolkit:ToggleSwitch x:Name="Track_Location_Switch" Width="200" Margin="10,48,210,310" Height="125" IsChecked="{Binding Source={StaticResource appSettings}, Path=TrackingSetting, Mode=TwoWay}" Grid.ColumnSpan="2"/>
+                    <TextBlock FontSize="20" Width="410" Grid.ColumnSpan="2" Margin="10,144,0,10"
+                             Text="Each time TrendMap requests your&#xD;&#xA;location, Microsoft will collect information&#xD;&#xA;about your location to provide and improve&#xD;&#xA;its location services. This information is&#xD;&#xA;not used to identify or contact you.&#xD;&#xA;TrendMap does not capture your location&#xD;&#xA;information." />
+
+                    <HyperlinkButton NavigateUri="http://privacy.microsoft.com/en-us/default.mspx" TargetName="Microsoft Privacy Policy" HorizontalContentAlignment="Left" FontSize="20" Margin="0,352,96,102" Grid.ColumnSpan="2">Read Privacy Statement online</HyperlinkButton>
                 </Grid>
             </phone:PanoramaItem>
         </phone:Panorama>

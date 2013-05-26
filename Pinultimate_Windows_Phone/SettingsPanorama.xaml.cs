@@ -26,5 +26,12 @@ namespace Pinultimate_Windows_Phone
         {
 
         }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            AppSettings appSettings = (AppSettings) NavigationUtils.GetLastNavigationData(NavigationService);
+            DataContext = appSettings;
+        }
     }
 }
