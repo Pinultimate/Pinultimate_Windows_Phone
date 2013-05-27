@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Phone.Maps.Services;
+using System;
+using System.Collections.Generic;
+using System.Device.Location;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -11,6 +14,9 @@ namespace Pinultimate_Windows_Phone.Data
         private Boolean hasSearchInput { get; set; }
         public TrendMapViewModel trendMapViewModel { get; set; }
         public TextBox searchBar { get; set; }
+        private GeocodeQuery geocodeQuery = null;
+        private bool _isRouteSearch = false; // True when route is being searched, otherwise false
+        private List<GeoCoordinate> MyCoordinates = new List<GeoCoordinate>();
 
         public SearchBarViewModel(TrendMapViewModel TrendMapViewModel, TextBox SearchBar)
         {
@@ -25,6 +31,39 @@ namespace Pinultimate_Windows_Phone.Data
             searchBar.TextChanged += SearchBar_TextChanged;
             searchBar.Visibility = Visibility.Collapsed;
             hasSearchInput = false;
+        }
+
+        private void SearchForTerm(String searchTerm)
+        {
+            geocodeQuery = new GeocodeQuery();
+            geocodeQuery.SearchTerm = searchTerm;
+            geocodeQuery.GeoCoordinate = trendMapViewModel.meLocation;
+            geocodeQuery.QueryCompleted += GeocodeQuery_QueryCompleted;
+            trendMapViewModel.BeginLoadingProgress("Search", "searching for your query...");
+            geocodeQuery.QueryAsync();
+        }
+
+        private void GeocodeQuery_QueryCompleted(object sender, QueryCompletedEventArgs<IList<MapLocation>> e)
+        {
+            trendMapViewModel.EndLoadingProgress();
+            if (e.Error == null)
+            {
+                if (e.Result.Count > 0)
+                {
+                    if (_isRouteSearch) // Query is made to locate the destination of a route
+                    {
+                        // TODO
+                    }
+                    else // Query is made to search the map for a keyword
+                    {
+                        trendMapViewModel.AddSearchResultsToMap(e.Result);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No match found. Narrow your search e.g. Seattle WA.");
+                }
+            }
         }
 
         private void SearchBar_SelectionChanged(object sender, RoutedEventArgs e)
@@ -62,6 +101,7 @@ namespace Pinultimate_Windows_Phone.Data
                 {
                     // Perform search with Search_Bar text
                     trendMapViewModel.trendMap.Focus();
+                    SearchForTerm(searchBar.Text);
                 }
             }
         }

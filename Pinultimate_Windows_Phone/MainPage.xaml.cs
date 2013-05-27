@@ -3,6 +3,7 @@ using Microsoft.Phone.Maps.Controls;
 using Microsoft.Phone.Shell;
 using Pinultimate_Windows_Phone.Data;
 using System;
+using System.ComponentModel;
 using System.Device.Location;
 using System.Diagnostics;
 using System.IO.IsolatedStorage;
@@ -119,5 +120,20 @@ namespace Pinultimate_Windows_Phone
             }
         }
 
+        protected override void OnBackKeyPress(CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+
+            if (trendMapViewModel.SearchResultsPresent())
+            {
+                // Cancel the back button press
+                e.Cancel = true;
+                trendMapViewModel.ClearSearchResultsFromMap();
+
+                // No history, allow the back button
+                // Or do whatever you need to do, like navigate the application page
+                return;
+            }
+        }
     }
 }

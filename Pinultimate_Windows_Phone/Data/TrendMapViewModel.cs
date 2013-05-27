@@ -15,6 +15,7 @@ using System.Diagnostics;
 using Coding4Fun.Toolkit.Controls;
 using System.Windows.Media.Imaging;
 using Microsoft.Phone.Shell;
+using Microsoft.Phone.Maps.Services;
 
 namespace Pinultimate_Windows_Phone.Data
 {
@@ -29,7 +30,7 @@ namespace Pinultimate_Windows_Phone.Data
         {
             get
             {
-               return mainPage.appSettings;
+                return mainPage.appSettings;
             }
         }
         public Map trendMap
@@ -134,6 +135,7 @@ namespace Pinultimate_Windows_Phone.Data
 
         private MapLayer meIndicatorLayer;
         private MapLayer clustersLayer;
+        private MapLayer searchResultsLayer;
 
         public TrendMapViewModel(MainPage MainPage)
         {
@@ -150,7 +152,7 @@ namespace Pinultimate_Windows_Phone.Data
 
             clusterList = new ClusterList();
             clusterList.ClustersChanged += UpdateMapWithNewClusters;
-            InitializeMeIndicatorAndClustersLayer();
+            InitializeMeIndicatorAndLayers();
             trendMap.CenterChanged += trendMap_Loaded;
         }
 
@@ -194,7 +196,7 @@ namespace Pinultimate_Windows_Phone.Data
             return notificationPanel.Visibility == Visibility.Visible;
         }
 
-        public void fetchClustersStartedCallback ()
+        public void fetchClustersStartedCallback()
         {
             if (NotificationVisible())
             {
@@ -222,7 +224,7 @@ namespace Pinultimate_Windows_Phone.Data
             }
             clusterList.AddResults(clusters);
             HideNotification();
-            
+
         }
 
         private void fetchClustersErrorCallback()
@@ -261,7 +263,7 @@ namespace Pinultimate_Windows_Phone.Data
             {
                 SoundEffects.SFxClusterTap.Play();
             }
-            Cluster currentCluster = (Cluster) (sender as Border).DataContext;
+            Cluster currentCluster = (Cluster)(sender as Border).DataContext;
             NavigationUtils.Navigate(mainPage.NavigationService, "/ClusterInformationPanorama.xaml", currentCluster);
         }
 
@@ -296,7 +298,7 @@ namespace Pinultimate_Windows_Phone.Data
             EndLoadingProgress();
         }
 
-        private async void InitializeMeIndicatorAndClustersLayer()
+        private async void InitializeMeIndicatorAndLayers()
         {
             Task<GeoCoordinate> geoCoordinateTask = geoTracker.GetCurrentLocation();
             if (geoCoordinateTask != null)
@@ -317,12 +319,11 @@ namespace Pinultimate_Windows_Phone.Data
                 clustersLayer = new MapLayer();
                 trendMap.Layers.Add(clustersLayer);
 
+                searchResultsLayer = new MapLayer();
+                trendMap.Layers.Add(searchResultsLayer);
+
                 meLocation = await geoCoordinateTask;
 
-                //trendMap.ManipulationCompleted += trendMap_ManipulationCompleted;
-                //trendMap.ManipulationStarted += trendMap_ManipulationStarted;
-                //trendMap.ManipulationDelta += trendMap_ManipulationDelta;
-                
                 if (meLocation == null)
                 {
                     MessageBox.Show("We weren't able to locate your position. (Have you enabled Location Services on your phone?)",
@@ -356,7 +357,7 @@ namespace Pinultimate_Windows_Phone.Data
         #endregion
 
         #region "loading progress bar"
-        private void BeginLoadingProgress(String title, String message)
+        public void BeginLoadingProgress(String title, String message)
         {
             ShowNotification(title, message);
             loadingProgress.Visibility = Visibility.Visible;
@@ -364,13 +365,13 @@ namespace Pinultimate_Windows_Phone.Data
             timelineViewModel.setOpacity(0.5);
             meIndicator.Opacity = 0.2;
 
-            
+
             applicationBarViewModel.DisableMeButton();
             applicationBarViewModel.DisableReloadMenu();
 
         }
 
-        private void EndLoadingProgress()
+        public void EndLoadingProgress()
         {
             loadingProgress.Visibility = Visibility.Collapsed;
             trendMap.Visibility = Visibility.Visible;
@@ -441,9 +442,50 @@ namespace Pinultimate_Windows_Phone.Data
 
         public void selectClustersForGivenTime()
         {
-             int currentTimeIndex = timelineViewModel.GetCurrentValue();
-             List<Cluster> clusters = processors[currentTimeIndex].Clusters();
+            int currentTimeIndex = timelineViewModel.GetCurrentValue();
+            List<Cluster> clusters = processors[currentTimeIndex].Clusters();
             clusterList.AddResults(clusters);
+        }
+
+        public void AddSearchResultsToMap(IList<MapLocation> results)
+        {
+            ClearSearchResultsFromMap();
+            // Add all results to MyCoordinates for drawing the map markers
+            for (int i = 0; i < results.Count; i++)
+            {
+                DrawMapMarker(results[i].GeoCoordinate, Colors.Red, searchResultsLayer);
+            }
+        }
+
+        public void ClearSearchResultsFromMap()
+        {
+            searchResultsLayer.Clear();
+        }
+
+        public bool SearchResultsPresent()
+        {
+            return searchResultsLayer.Count > 0;
+        }
+
+        private void DrawMapMarker(GeoCoordinate coordinate, Color color, MapLayer mapLayer)
+        {
+            // Create a map marker
+            Polygon polygon = new Polygon();
+            polygon.Points.Add(new Point(0, 0));
+            polygon.Points.Add(new Point(0, 75));
+            polygon.Points.Add(new Point(25, 0));
+            polygon.Fill = new SolidColorBrush(color);
+
+            // Enable marker to be tapped for location information
+            polygon.Tag = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
+            //polygon.MouseLeftButtonUp += new MouseButtonEventHandler(Marker_Click);
+
+            // Create a MapOverlay and add marker
+            MapOverlay overlay = new MapOverlay();
+            overlay.Content = polygon;
+            overlay.GeoCoordinate = new GeoCoordinate(coordinate.Latitude, coordinate.Longitude);
+            overlay.PositionOrigin = new Point(0.0, 1.0);
+            mapLayer.Add(overlay);
         }
     }
 }
