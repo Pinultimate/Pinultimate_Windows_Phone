@@ -38,7 +38,11 @@
                         <ListBoxItem FontSize="28" Content="orange" Height="50"/>
                         <ListBoxItem FontSize="28" Content="blue" Height="50"/>
                     </ListBox>
-                    <TextBlock x:Name="Color_Label_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Theme Color:" VerticalAlignment="Top" Margin="9,60,0,0" FontSize="30"/>
+                    <TextBlock Text="Sounds" x:Name="Color_Label_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top"
+                               Margin="9,236,0,0" FontSize="30"/>
+                        
+                    <toolkit:ToggleSwitch x:Name="Sounds_Switch" Width="200" Margin="195,209,25,149" Height="125"
+                                          IsChecked="{Binding Source={StaticResource appSettings}, Path=SoundSetting, Mode=TwoWay}"/>
                 </Grid>
             </phone:PanoramaItem>
 

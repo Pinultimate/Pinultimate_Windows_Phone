@@ -16,10 +16,12 @@ namespace Pinultimate_Windows_Phone
         // The key names of our settings
         public const string TrackerSettingKeyName = "TrackerSetting";
         public const string ThemeColorSettingKeyName = "ThemeColorSetting";
+        public const string SoundSettingKeyName = "SoundSetting";
 
         // The default value of our settings
         private const bool TrackerSettingDefault = true;
-        private int ListBoxSettingDefault = 2; // default is Blue
+        private const bool SoundSettingDefault = true;
+        private const int ListBoxSettingDefault = 2; // default is Blue
 
         private List<Color> themeColors = new List<Color> { Colors.Red, Colors.Orange, Colors.Blue };
 
@@ -106,7 +108,7 @@ namespace Pinultimate_Windows_Phone
         }
 
         /// <summary>
-        /// Save the settings.
+        /// Check if this setting has been set.
         /// </summary>
         public bool Contains(String key)
         {
@@ -125,6 +127,24 @@ namespace Pinultimate_Windows_Phone
             set
             {
                 if (AddOrUpdateValue(TrackerSettingKeyName, value))
+                {
+                    Save();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Property to get and set a CheckBox Setting Key.
+        /// </summary>
+        public bool SoundSetting
+        {
+            get
+            {
+                return GetValueOrDefault<bool>(SoundSettingKeyName, SoundSettingDefault);
+            }
+            set
+            {
+                if (AddOrUpdateValue(SoundSettingKeyName, value))
                 {
                     Save();
                 }

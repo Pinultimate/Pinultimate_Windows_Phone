@@ -196,7 +196,6 @@ namespace Pinultimate_Windows_Phone.Data
 
         public void fetchClustersStartedCallback ()
         {
-            //fetchingClusters.Show();
             if (NotificationVisible())
             {
                 ChangeNotificationText("Abandoned previous query", "Refetching social data around you...");
@@ -211,7 +210,6 @@ namespace Pinultimate_Windows_Phone.Data
         {
             fetchingClusters.Hide();
             processors = ClusteringProcessor.GetClusteringProcessors(result);
-            // TODO: we only get the first one for now, we'll get the rest later
             List<Cluster> clusters = null;
             if (processors.Count() > 0)
             {
@@ -259,7 +257,10 @@ namespace Pinultimate_Windows_Phone.Data
         private void TapOnCluster(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Analytics.tap();
-            SoundEffects.SFxClusterTap.Play();
+            if (appSettings.SoundSetting)
+            {
+                SoundEffects.SFxClusterTap.Play();
+            }
             Cluster currentCluster = (Cluster) (sender as Border).DataContext;
             NavigationUtils.Navigate(mainPage.NavigationService, "/ClusterInformationPanorama.xaml", currentCluster);
         }
