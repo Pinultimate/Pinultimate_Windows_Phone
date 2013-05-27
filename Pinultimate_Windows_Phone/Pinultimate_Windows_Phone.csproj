@@ -123,6 +123,7 @@
     <Compile Include="SettingsPanorama.xaml.cs">
       <DependentUpon>SettingsPanorama.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SoundEffects.cs" />
     <Compile Include="TrendMapDrawingUtils.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -191,6 +192,9 @@
     <Content Include="Images\transport.play.png" />
     <Content Include="ReadMe.Coding4Fun.Toolkit.txt" />
     <Content Include="README_FIRST.txt" />
+    <Resource Include="Sounds\pop0.wav" />
+    <Resource Include="Sounds\pop1.wav" />
+    <Resource Include="Sounds\pop2.wav" />
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
@@ -229,6 +233,7 @@
       <HintPath>..\packages\WPToolkitTestFx.4.2012.11.14\lib\sl4-wp71\Microsoft.VisualStudio.QualityTools.UnitTesting.Phone.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

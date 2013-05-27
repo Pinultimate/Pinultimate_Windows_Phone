@@ -29,6 +29,7 @@ namespace Pinultimate_Windows_Phone
         public MainPage()
         {
             InitializeComponent();
+            SoundEffects.Initialize();
             TrendMap.Loaded += TrendMap_Loaded;
             appSettings = new AppSettings();
             CheckLocationPermission();
