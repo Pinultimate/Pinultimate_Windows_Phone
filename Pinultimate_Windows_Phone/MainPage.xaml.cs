@@ -87,7 +87,6 @@ namespace Pinultimate_Windows_Phone
             trendMapViewModel.cancelCurrentQuery();
         }
 
-<<<<<<< HEAD
         private void GestureListener_DragCompleted(object sender, DragCompletedGestureEventArgs e)
         {
             Debug.WriteLine("Drag Ended");
@@ -111,25 +110,6 @@ namespace Pinultimate_Windows_Phone
             {
                 trendMapViewModel.RelocateAndRedrawMe();
             }
-=======
-        private void accessAPI()
-        {
-            string url = "http://www.sportsgametimes.com/games/nba/1";
-
-            Debug.WriteLine("\nURL: {0}", url);
-            WebRequest requestToServer = WebRequest.Create(url);
-        }
-
-        // Constructor
-        public MainPage()
-        {
-            InitializeComponent();
-            Debug.WriteLine("Hello!");
-            showCurrentLocationOnMap();
-            accessAPI();
-            // Sample code to localize the ApplicationBar
-            //BuildLocalizedApplicationBar();
->>>>>>> Learning the environment
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
