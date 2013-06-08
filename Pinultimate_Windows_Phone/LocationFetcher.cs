@@ -19,12 +19,13 @@ namespace Pinultimate_Windows_Phone
 
         public LocationFetcher() { }
 
-        public LocationFetcher(JSONLoadingStartedHandler startingCallback, JSONLoadingCompletionHandler completionCallback, JSONLoadingErrorHandler errorCallback)
+        public LocationFetcher(Type type, JSONLoadingStartedHandler startingCallback, JSONLoadingCompletionHandler completionCallback, JSONLoadingErrorHandler errorCallback)
         {
             instantiateWebClient();
             startingHandler = startingCallback;
             completionHandler = completionCallback;
             errorHandler = errorCallback;
+            responseType = type;
         }
 
         // Callback functions when HTTP request starts, ends with success, or ends with an error
@@ -33,10 +34,12 @@ namespace Pinultimate_Windows_Phone
         private JSONLoadingErrorHandler errorHandler { get; set; }
         private WebClient webClient { get; set; }
         private WebClient oldWebClient { get; set; }
+        private Type responseType { get; set; }
 
         // The callback function called when the JSON has successfully been loaded and deserialized
         public delegate void JSONLoadingStartedHandler();
-        public delegate void JSONLoadingCompletionHandler(QueryResult<GridLocationData> result);
+        //public delegate void JSONLoadingCompletionHandler(QueryResult<GridLocationData> result);
+        public delegate void JSONLoadingCompletionHandler(Object result);
         public delegate void JSONLoadingErrorHandler();
 
         public void FetchClusters(double latitude, double longitude, double latrange, double lonrange, DateTime min, DateTime max)
@@ -44,6 +47,17 @@ namespace Pinultimate_Windows_Phone
             Debug.WriteLine("Initiating HTTP Request to fetch clusters");
             instantiateWebClient();
             string query = QueryURL.CreateGridQuery(latitude, longitude, latrange, lonrange, calculateResolution(latrange, lonrange));
+            string subquery_timeframe = QueryURL.CreateTimeRangeQuery(min, max);
+            query += subquery_timeframe;
+            Debug.WriteLine("query: " + query);
+            JSONResponseForURL(query);
+        }
+
+        public void FetchTweets(double latitude, double longitude, double radius, DateTime min, DateTime max)
+        {
+            Debug.WriteLine("Initiating HTTP Request to fetch tweets");
+            instantiateWebClient();
+            string query = QueryURL.CreateTweetQuery(latitude, longitude, radius);
             string subquery_timeframe = QueryURL.CreateTimeRangeQuery(min, max);
             query += subquery_timeframe;
             Debug.WriteLine("query: " + query);
@@ -100,7 +114,8 @@ namespace Pinultimate_Windows_Phone
             }
 
             string result = e.Result;
-            QueryResult<GridLocationData> queryResult = ResponseParser.Parse<GridLocationData>(result);
+            //QueryResult<GridLocationData> queryResult = ResponseParser.Parse(result);
+            Object queryResult = ResponseParser.Parse(result, responseType);
             Debug.WriteLine("JSON Result: {0}", result);
             // Call user supplied callback function with result
             if (this.completionHandler != null)
@@ -234,6 +249,17 @@ namespace Pinultimate_Windows_Phone
                 return result;
             }
         }
+
+        public static Object Parse(string response, Type type)
+        {
+            var result = Activator.CreateInstance(type);
+            using (var memStream = new MemoryStream(Encoding.Unicode.GetBytes(response)))
+            {
+                var serializer = new DataContractJsonSerializer(result.GetType());
+                result = serializer.ReadObject(memStream);
+                return result;
+            }
+        }
     }
 
     /* Query URL Generator */
@@ -253,6 +279,13 @@ namespace Pinultimate_Windows_Phone
             StringBuilder query = new StringBuilder(ServerURL + AppURL);
             query.Append("resolution/" + resolution + "/");
             query.Append("search/center/" + latitude + "/" + longitude + "/region/" + latrange + "/" + lonrange + "/");
+            return query.ToString();
+        }
+
+        public static string CreateTweetQuery(double latitude, double longitude, double radius)
+        {
+            StringBuilder query = new StringBuilder(ServerURL + AppURL);
+            query.Append("tweets/center/" + latitude + "/" + longitude + "/radius/" + radius + "/");
             return query.ToString();
         }
 

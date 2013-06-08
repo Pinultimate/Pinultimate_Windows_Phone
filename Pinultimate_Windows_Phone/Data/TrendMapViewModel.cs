@@ -16,6 +16,8 @@ using Coding4Fun.Toolkit.Controls;
 using System.Windows.Media.Imaging;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Maps.Services;
+using LinqToTwitter;
+using System.Windows.Threading;
 
 namespace Pinultimate_Windows_Phone.Data
 {
@@ -145,6 +147,7 @@ namespace Pinultimate_Windows_Phone.Data
             geoTracker.StartTracking();
 
             locationFetcher = new LocationFetcher(
+               typeof(QueryResult<GridLocationData>),
                new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingStartedHandler(fetchClustersStartedCallback),
                new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingCompletionHandler(fetchClustersFinishedCallback),
                new Pinultimate_Windows_Phone.LocationFetcher.JSONLoadingErrorHandler(fetchClustersErrorCallback)
@@ -208,8 +211,9 @@ namespace Pinultimate_Windows_Phone.Data
             }
         }
 
-        public void fetchClustersFinishedCallback(QueryResult<GridLocationData> result)
+        public void fetchClustersFinishedCallback(Object resultObject)
         {
+            QueryResult<GridLocationData> result = (QueryResult<GridLocationData>)resultObject;
             fetchingClusters.Hide();
             processors = ClusteringProcessor.GetClusteringProcessors(result);
             List<Cluster> clusters = null;
@@ -264,7 +268,54 @@ namespace Pinultimate_Windows_Phone.Data
                 SoundEffects.SFxClusterTap.Play();
             }
             Cluster currentCluster = (Cluster)(sender as Border).DataContext;
+            
             NavigationUtils.Navigate(mainPage.NavigationService, "/ClusterInformationPanorama.xaml", currentCluster);
+        }
+
+        private void QueryTwitter(Cluster cluster)
+        {
+            // lat lon and radius
+            String geoQueryString = cluster.Latitude + "," + cluster.Longitude + "," + cluster.Radius;
+
+
+            Console.WriteLine("00000000");
+            var auth = new SingleUserAuthorizer
+            {
+                Credentials = new InMemoryCredentials
+                {
+                    ConsumerKey = "A7R0OmDF2kJvdIwHkYaSaA",
+                    ConsumerSecret = "FDFfHcKyr2vxa33qMghDPETi2CfztsxC9LPVNyJe0",
+                    OAuthToken = "1373732868-rJSi4IAzTh5ruvimgs4NxsrZUtOOgKT8LLceeU",
+                    AccessToken = "LtPxpNbsiy5tWgMd1SfEaEvt0NPlkXvRH3ky1hkovw"
+                }
+            };
+
+            Console.WriteLine("1111");
+            var twitterCtx = new TwitterContext(auth, "https://api.twitter.com/", "https://search.twitter.com/");
+            Console.WriteLine("22222");
+
+
+            (from search in twitterCtx.Search
+             where search.Type == SearchType.Search &&
+                   search.Query == "LINQ to Twitter" &&
+                   search.Count == 1
+             select search)
+                .MaterializedAsyncCallback(asyncResponse =>
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        if (asyncResponse.Status != TwitterErrorStatus.Success)
+                        {
+                            MessageBox.Show("Error: " + asyncResponse.Exception.Message);
+                            return;
+                        }
+                        var srch = asyncResponse.State.SingleOrDefault();
+                        Console.WriteLine("\nQuery: {0}\n", srch.SearchMetaData.Query);
+                        Console.WriteLine("\nGeoCode: {0}\n", geoQueryString);
+                        srch.Statuses.ForEach(entry =>
+                            Console.WriteLine("Content: {0}\n", entry.Text));
+                    })
+                );
+
         }
 
         #endregion

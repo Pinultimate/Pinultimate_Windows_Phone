@@ -16,7 +16,7 @@
     <!--LayoutRoot contains the root grid where all other page content is placed-->
     <Grid x:Name="LayoutRoot">
         <phone:Panorama Title="Cluster Info">
-
+            
             <!--Panorama item one-->
             <phone:PanoramaItem Header="About">
                 <Grid>
@@ -43,31 +43,31 @@
                     <TextBlock x:Name="Latitude_val"
                              Grid.Row="0" Grid.Column="2"
                              Margin="10,20,-10,35" Height="65"
-                             TextWrapping="Wrap" FontSize="25" Text="{Binding Latitude}" Grid.RowSpan="2"/>
+                             TextWrapping="Wrap" FontSize="25" Grid.RowSpan="2"/>
 
                     <TextBlock x:Name="Longitude" Grid.Row="1" Grid.Column="1" 
                                Margin="0,0,0,5" VerticalAlignment="Bottom" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}"
                                TextWrapping="Wrap" Text="Longitude:" FontSize="30"/>
                     <TextBlock x:Name="Longitude_val"
                              Grid.Row="1" Grid.Column="2"
-                             Margin="10,20,-10,15" Height="65"
-                             TextWrapping="Wrap" FontSize="25" Text="{Binding Longitude}" Grid.RowSpan="2"/>
+                             Margin="10,20,-10,35" Height="65"
+                             TextWrapping="Wrap" FontSize="25" Grid.RowSpan="2"/>
 
                     <TextBlock x:Name="From" Grid.Row="2" Grid.Column="1" 
                                Margin="0,0,0,5" VerticalAlignment="Bottom" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}"
                                TextWrapping="Wrap" Text="Time:" FontSize="30"/>
-                    <TextBlock x:Name="From_val"
+                    <TextBlock x:Name="Timestamp_val"
                              Grid.Row="2" Grid.Column="2"
                              Margin="10,20,-10,35" Height="65"
-                             TextWrapping="Wrap" FontSize="25" Text="{Binding Timestamp}" Grid.RowSpan="2"/>
+                             TextWrapping="Wrap" FontSize="25" Grid.RowSpan="2"/>
                     
-                    <TextBlock x:Name="Radius" Grid.Row="3" Grid.Column="1" 
+                    <!--<TextBlock x:Name="Radius" Grid.Row="3" Grid.Column="1" 
                                Margin="0,0,0,5" VerticalAlignment="Bottom" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}"
                                TextWrapping="Wrap" Text="Radius:" FontSize="30"/>
                     <TextBlock x:Name="Radius_val"
                              Grid.Row="3" Grid.Column="2"
                              Margin="10,20,-10,35" Height="65"
-                             TextWrapping="Wrap" FontSize="25" Text="{Binding Radius}" Grid.RowSpan="2"/>
+                             TextWrapping="Wrap" FontSize="25" Grid.RowSpan="2"/>
 
                     <TextBlock x:Name="Count" Grid.Row="4" Grid.Column="1" 
                                Margin="0,0,0,5" VerticalAlignment="Bottom" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}"
@@ -75,13 +75,38 @@
                     <TextBlock x:Name="Count_val" 
                              Grid.Row="4" Grid.Column="2"
                              Margin="10,20,-10,35" Height="65"
-                             TextWrapping="Wrap" FontSize="25" Text="{Binding Count}" Grid.RowSpan="2"/>
+                             TextWrapping="Wrap" FontSize="25" Grid.RowSpan="2"/>-->
+
+                    <TextBlock x:Name="Twitter" 
+                               Grid.Row="3" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="Twitter:" FontSize="30" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}"/>
+                    <TextBlock x:Name="Twitter_val"
+                               Grid.Row="3" Grid.Column="2" Height="65"
+                               Margin="10,20,-10,35"
+                               TextWrapping="Wrap" FontSize="25" Grid.RowSpan="2"/>
+                    <TextBlock x:Name="Flickr" 
+                               Grid.Row="4" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="Flickr:" FontSize="30" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}"/>
+                    <TextBlock x:Name="Flickr_val"
+                               Grid.Row="4" Grid.Column="2" Height="65"
+                               Margin="10,20,-10,35"
+                               TextWrapping="Wrap" FontSize="25" Grid.RowSpan="2"/>
+                    <TextBlock x:Name="Instagram" 
+                               Grid.Row="5" Grid.Column="1" 
+                               Margin="0,0,0,5" VerticalAlignment="Bottom"
+                               TextWrapping="Wrap" Text="Instagram:" FontSize="30" Foreground="{StaticResource ResourceKey=PhoneAccentBrush}"/>
+                    <TextBlock x:Name="Instagram_val"
+                               Grid.Row="5" Grid.Column="2" Height="65"
+                               Margin="10,20,-10,35"
+                               TextWrapping="Wrap" FontSize="25" Grid.RowSpan="2"/>
 
                 </Grid>
             </phone:PanoramaItem>
 
             <!--Panorama item two-->
-            <phone:PanoramaItem Header="Details">
+            <!--<phone:PanoramaItem Header="Details">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="20" />
@@ -120,6 +145,14 @@
                                Margin="0,0,0,5" VerticalAlignment="Bottom"
                                TextWrapping="Wrap" Text="{Binding Instagram}" FontSize="30"/>
                 </Grid>
+            </phone:PanoramaItem>-->
+
+            <!-- Tweets -->
+            <phone:PanoramaItem Header="Tweets" x:Name="TweetsHeader">
+                <ScrollViewer>
+                    <StackPanel  x:Name="Tweets">
+                    </StackPanel>
+                </ScrollViewer>
             </phone:PanoramaItem>
         </phone:Panorama>
     </Grid>
